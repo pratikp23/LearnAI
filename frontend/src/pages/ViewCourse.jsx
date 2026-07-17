@@ -85,6 +85,10 @@ function ViewCourse() {
         }
     }, [creatorData, courseData, courseId]);
 
+    if (!userData) {
+        return null;
+    }
+
     const handleEnroll = async () => {
         if (!userData) return toast.error("Please login to enroll");
         setEnrollLoading(true);

@@ -13,6 +13,10 @@ function Profile() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  if (!userData) {
+    return null;
+  }
+
   const handleLogout = async () => {
     try {
       await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true });

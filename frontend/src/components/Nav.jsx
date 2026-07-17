@@ -99,26 +99,26 @@ function Nav() {
                   className="w-[50px] h-[50px] rounded-full border-2 border-[var(--neon-purple)] cursor-pointer overflow-hidden p-[2px] hover:shadow-[0_0_15px_rgba(188,19,254,0.5)] transition-all"
                   onClick={() => setShowPro((prev) => !prev)}
                 >
-                  {userData.photoUrl ? (
+                  {userData?.photoUrl ? (
                     <img
-                      src={userData.photoUrl}
+                      src={userData?.photoUrl}
                       className="w-full h-full rounded-full object-cover"
                       alt="Profile"
                     />
                   ) : (
                     <div className="w-full h-full bg-[var(--primary-bg)] flex items-center justify-center text-white font-bold text-xl">
-                      {userData?.name.slice(0, 1).toUpperCase()}
+                      {userData?.name ? userData.name.slice(0, 1).toUpperCase() : ""}
                     </div>
                   )}
                 </div>
               )}
 
             {/* Dropdown Menu */}
-              {showPro && (
+              {showPro && userData && (
                 <div className="absolute top-[120%] right-0 w-56 glass rounded-2xl overflow-hidden animate-slide-up flex flex-col p-2 border border-white/10 shadow-2xl">
                   <div className="px-4 py-3 mb-2 border-b border-white/5">
                     <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Account</p>
-                    <p className="text-sm text-white font-medium truncate">{userData.name}</p>
+                    <p className="text-sm text-white font-medium truncate">{userData?.name}</p>
                   </div>
                   <span
                     className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/10 rounded-xl cursor-pointer text-gray-300 hover:text-[var(--neon-blue)] transition-all"
@@ -176,19 +176,19 @@ function Nav() {
         ) : (
           <div className="flex flex-col items-center gap-4">
             <div className="w-20 h-20 rounded-full border-2 border-[var(--neon-purple)] p-1">
-              {userData.photoUrl ? (
+              {userData?.photoUrl ? (
                 <img
-                  src={userData.photoUrl}
+                  src={userData?.photoUrl}
                   className="w-full h-full rounded-full object-cover"
                   alt="Profile"
                 />
               ) : (
                 <div className="w-full h-full bg-[var(--primary-bg)] rounded-full flex items-center justify-center text-white font-bold text-3xl">
-                  {userData?.name.slice(0, 1).toUpperCase()}
+                  {userData?.name ? userData.name.slice(0, 1).toUpperCase() : ""}
                 </div>
               )}
             </div>
-            <h3 className="text-2xl font-bold text-white">{userData.name}</h3>
+            <h3 className="text-2xl font-bold text-white">{userData?.name}</h3>
           </div>
         )}
 

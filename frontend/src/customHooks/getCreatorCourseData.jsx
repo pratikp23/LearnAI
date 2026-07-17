@@ -11,17 +11,18 @@ const getCreatorCourseData = () => {
   return (
     useEffect(()=>{
     const getCreatorData = async () => {
+      if (!userData || userData.role !== "educator") {
+        return;
+      }
       try {
         const result = await axios.get(serverUrl + "/api/course/getcreatorcourses" , {withCredentials:true})
         
-         await dispatch(setCreatorCourseData(result.data))
-
-        
+        await dispatch(setCreatorCourseData(result.data))
         console.log(result.data)
         
       } catch (error) {
         console.log(error)
-        toast.error(error.response.data.message)
+        toast.error(error?.response?.data?.message || error.message || "Failed to fetch creator courses")
       }
       
     }

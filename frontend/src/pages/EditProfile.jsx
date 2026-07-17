@@ -18,6 +18,10 @@ function EditProfile() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  if (!userData) {
+    return null;
+  }
+
   const handlePhotoChange = (e) => {
     const file = e.target.files[0]
     setPhotoUrl(file)
