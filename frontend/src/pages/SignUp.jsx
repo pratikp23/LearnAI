@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import logo from '../assets/logo.jpg'
 import google from "../assets/google.png";
 import axios from 'axios'
@@ -22,42 +22,117 @@ function SignUp() {
     const [step, setStep] = useState(1)
     const [otp, setOtp] = useState("")
     const [demoOtp, setDemoOtp] = useState("")
+    const [timer, setTimer] = useState(90) // 1.30 minutes (90 seconds)
     const navigate = useNavigate()
     let [show,setShow] = useState(false)
     const [loading,setLoading]= useState(false)
     let dispatch = useDispatch()
 
-    const handleSignUp = async () => {
-        if (!name || !email || !password || !role) {
-            return toast.error("Please fill in all details");
+    useEffect(() => {
+        let interval = null;
+        if (step === 2 && timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
         }
-        setLoading(true)
+        return () => clearInterval(interval);
+    }, [step, timer]);
+
+    const formatTimer = (secs) => {
+        const m = Math.floor(secs / 60);
+        const s = secs % 60;
+        return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    };
+
+    const handleResendOtp = async () => {
+        setLoading(true);
         try {
-            if (step === 1) {
-                const result = await axios.post(serverUrl + "/api/auth/send-signup-otp" , { email } , {withCredentials:true} )
+            const cleanEmail = email ? email.trim().toLowerCase() : "";
+            const result = await axios.post(serverUrl + "/api/auth/send-signup-otp", { email: cleanEmail }, { withCredentials: true });
+            const code = result.data?.otp || result.data?.devOtp;
+            if (code) setDemoOtp(code);
+            setTimer(90);
+            toast.success("New verification code generated!");
+        } catch (error) {
+            toast.error(getErrorMessage(error, "Failed to resend code. Please try again."));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSignUp = async (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+
+        if (step === 1) {
+            if (!name || !name.trim()) {
+                return toast.error("Please enter your full name");
+            }
+            const cleanEmail = email ? email.trim().toLowerCase() : "";
+            if (!cleanEmail) {
+                return toast.error("Please enter your email address");
+            }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(cleanEmail)) {
+                return toast.error("Please enter a valid email address");
+            }
+            if (!password) {
+                return toast.error("Please enter a password");
+            }
+            if (password.length < 8) {
+                return toast.error("Password must be at least 8 characters long");
+            }
+            if (!role) {
+                return toast.error("Please select whether you are a Student or Educator");
+            }
+
+            setLoading(true);
+            try {
+                const result = await axios.post(serverUrl + "/api/auth/send-signup-otp", { email: cleanEmail }, { withCredentials: true });
                 const code = result.data?.otp || result.data?.devOtp;
                 if (code) {
                     setDemoOtp(code);
                 }
-                toast.success(result.data.message || "OTP generated successfully");
+                setTimer(90);
+                toast.success(result.data.message || "Verification code generated successfully");
                 setStep(2);
-            } else {
-                if (!otp) {
-                    toast.error("Please enter the OTP sent to your email");
-                    return;
-                }
-                await axios.post(serverUrl + "/api/auth/signup" , {name , email , password , role, otp} , {withCredentials:true} )
-                toast.success("Account created successfully! Please log in with your password.")
-                navigate("/login", { state: { email } })
+            } catch (error) {
+                console.log(error);
+                toast.error(getErrorMessage(error, "Failed to send verification code. Please try again."));
+            } finally {
+                setLoading(false);
             }
-        } 
-        catch (error) {
-            console.log(error)
-            toast.error(getErrorMessage(error, "Sign up failed. Please try again."));
-        } finally {
-            setLoading(false)
+        } else {
+            const cleanOtp = String(otp).trim();
+            if (!cleanOtp) {
+                return toast.error("Please enter the 4-digit verification code");
+            }
+            if (cleanOtp.length !== 4) {
+                return toast.error("Verification code must be 4 digits");
+            }
+            const cleanEmail = email ? email.trim().toLowerCase() : "";
+            setLoading(true);
+            try {
+                await axios.post(
+                    serverUrl + "/api/auth/signup",
+                    {
+                        name: name.trim(),
+                        email: cleanEmail,
+                        password,
+                        role,
+                        otp: cleanOtp
+                    },
+                    { withCredentials: true }
+                );
+                toast.success("Account created successfully! Please log in with your credentials.");
+                navigate("/login", { state: { email: cleanEmail } });
+            } catch (error) {
+                console.log(error);
+                toast.error(getErrorMessage(error, "Sign up failed. Please try again."));
+            } finally {
+                setLoading(false);
+            }
         }
-    }
+    };
 
     const googleSignUp = async () => {
         try {
@@ -84,7 +159,7 @@ function SignUp() {
     return (
         <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#FAFAFC] relative overflow-hidden">
             <DotGridBackground />
-            <form className="w-[95%] md:w-[840px] min-h-[580px] bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl flex overflow-hidden border border-[#EEEEF2] animate-slide-up relative z-10" onSubmit={(e)=>e.preventDefault()}>
+            <form className="w-[95%] md:w-[840px] min-h-[580px] bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl flex overflow-hidden border border-[#EEEEF2] animate-slide-up relative z-10" onSubmit={handleSignUp}>
                 <div className="md:w-[55%] w-full flex flex-col items-center justify-center p-8 md:p-12 gap-4">
                     <div className="text-center md:text-left w-[85%]">
                         <h1 className="font-black text-[#171717] text-3xl">Let's Get Started</h1>
@@ -160,14 +235,30 @@ function SignUp() {
                                     Enter 4-Digit OTP
                                 </label>
                                 <input id='otp' type="text" className="border-2 border-[#5B21B6] w-full h-[48px] rounded-xl text-center text-2xl font-bold tracking-[0.3em] outline-none text-[#171717] bg-[#FAFAFC]" placeholder="1234" maxLength={4} onChange={(e)=>setOtp(e.target.value)} value={otp} />
+
+                                <div className="flex items-center justify-between text-xs font-bold mt-1 px-1">
+                                    {timer > 0 ? (
+                                        <span className="text-[#5B21B6]">⏱️ Valid for: {formatTimer(timer)}</span>
+                                    ) : (
+                                        <span className="text-red-500 font-bold">OTP Expired</span>
+                                    )}
+                                    <button
+                                        type="button"
+                                        disabled={timer > 0 || loading}
+                                        onClick={handleResendOtp}
+                                        className={`underline cursor-pointer ${timer > 0 ? "text-gray-400 cursor-not-allowed" : "text-[#5B21B6] hover:text-[#4C1D95]"}`}
+                                    >
+                                        Resend OTP
+                                    </button>
+                                </div>
                             </div>
-                            <span className="text-xs text-[#5B21B6] font-bold cursor-pointer underline underline-offset-2 hover:text-[#4C1D95]" onClick={() => setStep(1)}>
+                            <span className="text-xs text-[#5B21B6] font-bold cursor-pointer underline underline-offset-2 hover:text-[#4C1D95]" onClick={() => { setStep(1); setOtp(""); }}>
                                 Edit Email / Change details
                             </span>
                         </>
                     )}
 
-                    <button className="w-[85%] h-[48px] bg-[#5B21B6] hover:bg-[#4C1D95] text-white font-bold rounded-xl shadow-[0_4px_16px_rgba(91,33,182,0.25)] hover:shadow-[0_6px_22px_rgba(91,33,182,0.35)] transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center mt-2" disabled={loading} onClick={handleSignUp}>
+                    <button type="submit" className="w-[85%] h-[48px] bg-[#5B21B6] hover:bg-[#4C1D95] text-white font-bold rounded-xl shadow-[0_4px_16px_rgba(91,33,182,0.25)] hover:shadow-[0_6px_22px_rgba(91,33,182,0.35)] transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center mt-2" disabled={loading}>
                         {loading ? <ClipLoader size={24} color='white' /> : (step === 1 ? "Send Verification OTP" : "Verify & Create Account")}
                     </button>
                     

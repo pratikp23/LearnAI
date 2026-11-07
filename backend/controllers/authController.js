@@ -32,16 +32,22 @@ export const signUp=async (req,res)=>{
          if (!otp) {
              return res.status(400).json({message:"A verification code is required to complete registration."})
          }
-         let otpRecord = await Otp.findOne({email})
-         if (!otpRecord || otpRecord.otp !== otp) {
+         const cleanEmail = email ? email.trim().toLowerCase() : ""
+         const cleanOtp = String(otp).trim()
+
+         let otpRecord = await Otp.findOne({ email: cleanEmail })
+         if (!otpRecord || otpRecord.otp.trim() !== cleanOtp) {
              return res.status(400).json({message:"Invalid or expired verification code. Please try again."})
          }
          
-         let existUser= await User.findOne({email})
+         let existUser = await User.findOne({ email: cleanEmail })
          if(existUser){
              return res.status(400).json({message:"An account with this email address already exists. Please log in instead."})
          }
-         if(!validator.isEmail(email)){
+         if(!name || !name.trim()){
+             return res.status(400).json({message:"Please enter your full name."})
+         }
+         if(!validator.isEmail(cleanEmail)){
              return res.status(400).json({message:"Please enter a valid email address."})
          }
          if(password.length < 8){
@@ -50,14 +56,14 @@ export const signUp=async (req,res)=>{
          
          let hashPassword = await bcrypt.hash(password,10)
          let user = await User.create({
-             name ,
-             email ,
-             password:hashPassword ,
-             role,
-             })
+             name: name.trim(),
+             email: cleanEmail,
+             password: hashPassword,
+             role: role || "student",
+         })
          
-         // Clean up verified OTP
-         await Otp.deleteOne({email})
+         // Clean up all verified OTPs for this email
+         await Otp.deleteMany({ email: cleanEmail })
 
          let token = await genToken(user._id)
          res.cookie("token",token,{
@@ -232,10 +238,11 @@ export const resetPassword = async (req,res) => {
 
 export const sendSignupOtp = async (req, res) => {
     try {
-        const { email } = req.body
+        let { email } = req.body
         if (!email || !validator.isEmail(email)) {
             return res.status(400).json({ message: "Please enter a valid email address." })
         }
+        email = email.trim().toLowerCase()
         const existUser = await User.findOne({ email })
         if (existUser) {
             return res.status(400).json({ message: "An account with this email address already exists. Please log in instead." })
@@ -244,7 +251,7 @@ export const sendSignupOtp = async (req, res) => {
         
         await Otp.findOneAndUpdate(
             { email },
-            { otp, createdAt: Date.now() },
+            { otp, createdAt: new Date() },
             { upsert: true, new: true }
         )
         
