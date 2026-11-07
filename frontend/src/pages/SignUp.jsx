@@ -34,10 +34,7 @@ function SignUp() {
         try {
             if (step === 1) {
                 const result = await axios.post(serverUrl + "/api/auth/send-signup-otp" , { email } , {withCredentials:true} )
-                toast.success(result.data.message || "OTP sent successfully")
-                if (result.data?.devOtp) {
-                    setOtp(result.data.devOtp)
-                }
+                toast.success(result.data.message || "OTP sent successfully to your email")
                 setStep(2)
             } else {
                 if (!otp) {

@@ -2,8 +2,9 @@ import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
 
-const emailUser = process.env.EMAIL?.trim()
-const emailPass = process.env.EMAIL_PASS?.trim()
+const emailUser = process.env.EMAIL ? process.env.EMAIL.trim() : ""
+// Google generates 16-character app passwords with spaces (e.g. 'abcd efgh ijkl mnop'). Remove all spaces.
+const emailPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s+/g, "") : ""
 
 if (!emailUser || emailUser.includes("add your email") || !emailPass || emailPass.includes("add your email")) {
   console.warn("⚠️ [MAIL SERVICE WARNING] EMAIL or EMAIL_PASS environment variables are not configured with a valid Gmail App Password. Outgoing OTP emails will fail until valid credentials are provided.");
@@ -11,13 +12,16 @@ if (!emailUser || emailUser.includes("add your email") || !emailPass || emailPas
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: emailUser,
     pass: emailPass,
   },
-  connectionTimeout: 8000,
-  greetingTimeout: 8000,
-  socketTimeout: 8000,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
 });
 
 const senderAddress = `"LearnAI LMS" <${emailUser || "support@learnai.com"}>`

@@ -176,11 +176,11 @@ export const sendOtp = async (req,res) => {
             await sendMail(email, otp);
             return res.status(200).json({ message: "Verification code sent successfully to your email." });
         } catch (mailErr) {
-            console.error("sendOtp mail error:", mailErr.message);
-            return res.status(200).json({ 
-                message: `Verification code generated! (Dev/Demo code: ${otp})`,
-                devOtp: otp 
-            });
+            console.error("sendOtp mail error:", mailErr.code, mailErr.message);
+            const hint = mailErr.code === 'EAUTH' 
+                ? "Gmail authentication failed. Please check your EMAIL and 16-character App Password on Render."
+                : "Unable to send email right now. Please try again in a few moments.";
+            return res.status(500).json({ message: hint });
         }
     } catch (error) {
         return res.status(500).json({message:"Unable to send verification code. Please try again."})
@@ -246,11 +246,11 @@ export const sendSignupOtp = async (req, res) => {
             await sendSignupOtpMail(email, otp);
             return res.status(200).json({ message: "Verification code sent successfully to your email." });
         } catch (mailErr) {
-            console.error("sendSignupOtp mail error:", mailErr.message);
-            return res.status(200).json({ 
-                message: `Verification code generated! (Dev/Demo code: ${otp})`,
-                devOtp: otp 
-            });
+            console.error("sendSignupOtp mail error:", mailErr.code, mailErr.message);
+            const hint = mailErr.code === 'EAUTH' 
+                ? "Gmail authentication failed. Please check your EMAIL and 16-character App Password on Render."
+                : "Unable to send email right now. Please try again in a few moments.";
+            return res.status(500).json({ message: hint });
         }
     } catch (error) {
         console.log("sendSignupOtp error:", error)
