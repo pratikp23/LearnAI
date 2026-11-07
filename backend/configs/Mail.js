@@ -2,34 +2,32 @@ import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
 
-const emailUser = process.env.EMAIL ? process.env.EMAIL.trim() : ""
-// Google generates 16-character app passwords with spaces (e.g. 'abcd efgh ijkl mnop'). Remove all spaces.
-const emailPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s+/g, "") : ""
-
-if (!emailUser || emailUser.includes("add your email") || !emailPass || emailPass.includes("add your email")) {
-  console.warn("⚠️ [MAIL SERVICE WARNING] EMAIL or EMAIL_PASS environment variables are not configured with a valid Gmail App Password. Outgoing OTP emails will fail until valid credentials are provided.");
+const getMailConfig = () => {
+  const user = process.env.EMAIL ? process.env.EMAIL.trim() : ""
+  const pass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s+/g, "") : ""
+  return { user, pass }
 }
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: emailUser,
-    pass: emailPass,
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-});
-
-const senderAddress = `"LearnAI LMS" <${emailUser || "support@learnai.com"}>`
+const getTransporter = () => {
+  const { user, pass } = getMailConfig()
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user,
+      pass,
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  })
+}
 
 // Used for: Password Reset OTP
 export const sendMail = async (to, otp) => {
+    const { user } = getMailConfig()
+    const transporter = getTransporter()
     return transporter.sendMail({
-        from: senderAddress,
+        from: `"LearnAI LMS" <${user || "learnailms@gmail.com"}>`,
         to: to,
         subject: "Password Reset Verification Code - LearnAI",
         html: `
@@ -54,8 +52,10 @@ export const sendMail = async (to, otp) => {
 
 // Used for: Signup Email Verification OTP
 export const sendSignupOtpMail = async (to, otp) => {
+    const { user } = getMailConfig()
+    const transporter = getTransporter()
     return transporter.sendMail({
-        from: senderAddress,
+        from: `"LearnAI LMS" <${user || "learnailms@gmail.com"}>`,
         to: to,
         subject: "Verify Your Email - LearnAI",
         html: `
@@ -79,8 +79,10 @@ export const sendSignupOtpMail = async (to, otp) => {
 }
 
 export const sendMagicLinkMail = async (to, magicLink) => {
+    const { user } = getMailConfig()
+    const transporter = getTransporter()
     return transporter.sendMail({
-        from: senderAddress,
+        from: `"LearnAI LMS" <${user || "learnailms@gmail.com"}>`,
         to: to,
         subject: "Your Magic Sign-In Link - LearnAI",
         html: `

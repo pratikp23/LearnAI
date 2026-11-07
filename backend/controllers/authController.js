@@ -179,7 +179,7 @@ export const sendOtp = async (req,res) => {
             console.error("sendOtp mail error:", mailErr.code, mailErr.message);
             const hint = mailErr.code === 'EAUTH' 
                 ? "Gmail authentication failed. Please check your EMAIL and 16-character App Password on Render."
-                : "Unable to send email right now. Please try again in a few moments.";
+                : `Email delivery error (${mailErr.message || "service error"}). Please check EMAIL and EMAIL_PASS on Render.`;
             return res.status(500).json({ message: hint });
         }
     } catch (error) {
@@ -249,7 +249,7 @@ export const sendSignupOtp = async (req, res) => {
             console.error("sendSignupOtp mail error:", mailErr.code, mailErr.message);
             const hint = mailErr.code === 'EAUTH' 
                 ? "Gmail authentication failed. Please check your EMAIL and 16-character App Password on Render."
-                : "Unable to send email right now. Please try again in a few moments.";
+                : `Email delivery error (${mailErr.message || "service error"}). Please check EMAIL and EMAIL_PASS on Render.`;
             return res.status(500).json({ message: hint });
         }
     } catch (error) {
