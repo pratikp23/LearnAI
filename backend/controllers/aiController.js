@@ -5,8 +5,11 @@ import Mistake from "../models/mistakeModel.js";
 import fs from 'fs';
 dotenv.config();
 
-// const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent";
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const GEMINI_MODELS = [
+    "gemini-flash-latest",
+    "gemini-3.8-flash",
+    "gemini-2.5-flash"
+];
 
 const callGemini = async (prompt) => {
     return callGeminiMultimodal(prompt);
@@ -17,7 +20,6 @@ const callGeminiMultimodal = async (prompt, imagePath = null) => {
     if (!apiKey) {
         const errMsg = 'GEMINI_API_KEY is missing in environment variables';
         console.error(errMsg);
-        fs.appendFileSync('debug_ai.txt', `Gemini Config Error: ${errMsg}\n`);
         throw new Error(errMsg);
     }
 
@@ -46,21 +48,25 @@ const callGeminiMultimodal = async (prompt, imagePath = null) => {
         }
     };
 
-    try {
-        const response = await axios.post(`${GEMINI_API_URL}?key=${apiKey}`, payload, {
-            headers: { "Content-Type": "application/json" }
-        });
-        
-        if (response.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-            return response.data.candidates[0].content.parts[0].text;
+    let lastError = null;
+    for (const model of GEMINI_MODELS) {
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            const response = await axios.post(url, payload, {
+                headers: { "Content-Type": "application/json" }
+            });
+            
+            if (response.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                return response.data.candidates[0].content.parts[0].text;
+            }
+        } catch (error) {
+            lastError = error.response?.data || error.message;
+            console.warn(`Gemini Model ${model} failed, trying next:`, error.response?.status || error.message);
         }
-        throw new Error("Invalid AI response structure");
-    } catch (error) {
-        const errorDetail = error.response?.data || error.message;
-        console.error("Gemini Direct Call Error:", errorDetail);
-        fs.appendFileSync('debug_ai.txt', `Gemini Error: ${JSON.stringify(errorDetail, null, 2)}\n`);
-        throw error;
     }
+
+    console.error("All Gemini Models Failed:", lastError);
+    throw new Error(typeof lastError === 'object' ? JSON.stringify(lastError) : lastError);
 };
 
 const parseJsonFromAi = (text) => {
@@ -86,42 +92,66 @@ export const searchWithAi = async (req, res) => {
         if (!input) return res.status(400).json({ message: "Search query is required" });
 
         const prompt = `
-        You are SkillUp AI. A user is asking for course recommendations.
+        You are SkillUp AI, a friendly learning assistant. A user is asking for course recommendations.
         User Query: "${input}"
-        Categories: [App Development, AI/ML, AI Tools, Data Science, Data Analytics, Ethical Hacking, UI UX Designing, Web Development, Others]
-        Return ONLY a JSON object: { "message": "friendly response", "keywords": ["keyword1", "keyword2"] }
+        Available Course Categories: [App Development, AI/ML, AI Tools, Data Science, Data Analytics, Ethical Hacking, UI UX Designing, Web Development, Others]
+        
+        Analyze what the user is interested in learning.
+        Return ONLY a JSON object with this exact format:
+        { "message": "friendly encouraging 1-2 sentence response", "keywords": ["keyword1", "keyword2", "category"] }
         `;
 
-        const aiText = await callGemini(prompt);
-        const aiData = parseJsonFromAi(aiText);
+        let aiData = null;
+        try {
+            const aiText = await callGemini(prompt);
+            aiData = parseJsonFromAi(aiText);
+        } catch (aiErr) {
+            console.warn("Gemini parse failed in searchWithAi, continuing with text input:", aiErr.message);
+        }
 
-        const searchTerms = [...new Set([...(aiData?.keywords || []), input])];
-        const courses = await Course.find({
+        const inputWords = input.split(/\s+/).filter(w => w.length > 2);
+        const searchTerms = [...new Set([...(aiData?.keywords || []), ...inputWords, input])];
+
+        let courses = await Course.find({
             isPublished: true,
             $or: searchTerms.map(term => ({
                 $or: [
                     { title: { $regex: term, $options: 'i' } },
-                    { category: { $regex: term, $options: 'i' } }
+                    { category: { $regex: term, $options: 'i' } },
+                    { description: { $regex: term, $options: 'i' } }
                 ]
             }))
-        });
+        }).populate("creator", "name photoUrl");
+
+        // If no direct keyword match, show top published courses so user always sees recommendations
+        if (!courses || courses.length === 0) {
+            courses = await Course.find({ isPublished: true }).limit(6).populate("creator", "name photoUrl");
+        }
 
         return res.status(200).json({
-            message: aiData?.message || "Here are some courses for you!",
+            message: aiData?.message || `Here are the top courses matching "${input}" for you!`,
             courses: courses
         });
 
     } catch (error) {
         console.error("AI Search Fallback:", error);
         const { input } = req.body;
-        const directCourses = await Course.find({
+        let fallbackCourses = await Course.find({
             isPublished: true,
             $or: [
-                { title: { $regex: input, $options: 'i' } },
-                { category: { $regex: input, $options: 'i' } }
+                { title: { $regex: input || '', $options: 'i' } },
+                { category: { $regex: input || '', $options: 'i' } }
             ]
+        }).populate("creator", "name photoUrl");
+
+        if (!fallbackCourses || fallbackCourses.length === 0) {
+            fallbackCourses = await Course.find({ isPublished: true }).limit(6).populate("creator", "name photoUrl");
+        }
+
+        return res.status(200).json({
+            message: `I found these courses for you!`,
+            courses: fallbackCourses
         });
-        return res.status(200).json({ message: "I've found these courses for you!", courses: directCourses });
     }
 };
 

@@ -49,7 +49,7 @@ function Nav() {
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
           scrolled
             ? "bg-white/95 backdrop-blur-md py-3 border-b border-[#EEEEF2] shadow-[0_4px_20px_rgba(0,0,0,0.03)]"
-            : "py-5 bg-transparent"
+            : "bg-white/95 backdrop-blur-md py-4 border-b border-[#EEEEF2] shadow-xs"
         }`}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">

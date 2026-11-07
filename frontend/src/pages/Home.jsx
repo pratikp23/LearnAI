@@ -86,9 +86,10 @@ function Home() {
 
   return (
     <div className="w-full overflow-hidden bg-[#FAFAFC]">
+      <Nav />
+
       {/* Hero Section */}
-      <div className="w-full min-h-screen relative flex flex-col items-center justify-start pt-24 pb-12 overflow-hidden">
-        <Nav />
+      <div className="w-full min-h-screen relative flex flex-col items-center justify-start pt-28 pb-12 overflow-hidden">
 
         {/* Background Image with Clean Light Overlay */}
         <div className="absolute top-0 left-0 w-full h-full z-[-1]">
@@ -100,8 +101,12 @@ function Home() {
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/60 via-white/90 to-[#FAFAFC]"></div>
         </div>
 
-        {/* Selective Decorative Dot-Grid Background */}
-        <DotGridBackground />
+        {/* Selective Decorative Dot-Grid Background (Strictly below navbar, zero overlap) */}
+        <div className="absolute top-[76px] md:top-[84px] inset-x-0 bottom-0 pointer-events-none z-0 overflow-hidden">
+          <DotGridBackground 
+            mask="linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 55%, rgba(255,255,255,0.2) 85%, transparent 100%)"
+          />
+        </div>
 
         {/* Real Live Enrollment Notification (Bottom Left Corner) */}
         {realEnrollments.length > 0 && activeEnrollment ? (

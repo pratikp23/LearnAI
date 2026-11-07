@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import Nav from "../components/Nav";
@@ -36,31 +36,69 @@ const InterviewSimulator = () => {
     }
   };
 
+  const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch (e) {}
+      }
+    };
+  }, []);
+
   const handleVoiceInput = () => {
+    if (listening && recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
+      setListening(false);
+      return;
+    }
+
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       toast.error("Speech recognition is not supported in your browser.");
       return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    setListening(true);
-    recognition.start();
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      
+      recognition.onstart = () => {
+        setListening(true);
+      };
 
-    recognition.onresult = (e) => {
-      const transcript = e.results[0][0].transcript.trim();
-      setUserAnswer((prev) => (prev ? `${prev} ${transcript}` : transcript));
-    };
+      recognition.onresult = (e) => {
+        const transcript = e.results[0]?.[0]?.transcript?.trim();
+        if (transcript) {
+          setUserAnswer((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        }
+      };
 
-    recognition.onerror = (event) => {
+      recognition.onerror = (event) => {
+        setListening(false);
+        if (event.error === 'not-allowed') {
+          toast.error("Microphone access denied. Please allow microphone permission.");
+        } else if (event.error === 'no-speech') {
+          toast.info("No speech detected. Please speak clearly into your mic.");
+        }
+      };
+
+      recognition.onend = () => {
+        setListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      console.error("Voice input error:", err);
       setListening(false);
-      if (event.error === 'not-allowed') toast.error("Microphone access denied.");
-    };
-
-    recognition.onend = () => {
-      setListening(false);
-    };
+    }
   };
 
   const submitAnswer = async () => {

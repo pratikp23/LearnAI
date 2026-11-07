@@ -23,7 +23,7 @@ function DotGridBackground({
   return (
     <svg
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 h-full w-full select-none z-0 overflow-hidden ${className}`}
+      className={`pointer-events-none absolute inset-0 w-full h-full select-none z-0 overflow-hidden ${className}`}
       style={{
         maskImage: mask,
         WebkitMaskImage: mask,
