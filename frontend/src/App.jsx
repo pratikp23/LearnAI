@@ -36,13 +36,12 @@ import MistakeEngine from './pages/MistakeEngine'
 import ResumeAnalyzer from './pages/ResumeAnalyzer'
 import getAllReviews from './customHooks/getAllReviews'
 
-// export const serverUrl = import.meta.env.DEV
-//   ? "http://localhost:5000"
-//   : "https://learning-management-system-96e4.onrender.com";
-
-export const serverUrl = import.meta.env.DEV
-  ? "http://localhost:5000"
-    : "https://learning-management-system-backend-z7kv.onrender.com";
+export const serverUrl =
+  import.meta.env.VITE_SERVER_URL ||
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV
+    ? "http://localhost:5000"
+    : "https://learning-management-system-backend-z7kv.onrender.com");
 
 function App() {
 

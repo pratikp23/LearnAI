@@ -18,28 +18,40 @@ let app = express()
 
 // ---- CORS MUST BE THE FIRST MIDDLEWARE ----
 const allowedOrigins = [
+  "https://learning-management-system-five-azure.vercel.app",
   "https://learning-management-system-nine-bay.vercel.app",
   "http://localhost:3000",
-  "http://localhost:5173"
-];
+  "http://localhost:5173",
+  process.env.FRONTEND_URL
+].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     
-    const isAllowed = 
+    let isAllowed = 
       process.env.NODE_ENV !== "production" || 
       allowedOrigins.includes(origin) ||
       origin.endsWith(".vercel.app") ||
-      /^https?:\/\/localhost:\d+$/.test(origin);
+      /^https?:\/\/localhost(:\d+)?$/.test(origin);
+
+    if (!isAllowed) {
+      try {
+        const hostname = new URL(origin).hostname;
+        if (hostname.endsWith(".vercel.app")) {
+          isAllowed = true;
+        }
+      } catch (e) {}
+    }
 
     if (isAllowed) {
       return callback(null, true);
     }
-    return callback(new Error("Not allowed by CORS"), false);
+    return callback(null, false);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
   optionsSuccessStatus: 200,
 };
 

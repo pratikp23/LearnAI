@@ -6,6 +6,17 @@ import User from "../models/userModel.js"
 import Otp from "../models/otpModel.js"
 import sendMail, { sendMagicLinkMail, sendSignupOtpMail } from "../configs/Mail.js"
 
+const sanitizeUser = (user, token) => {
+    const userObj = user.toObject ? user.toObject() : { ...(user._doc || user) };
+    delete userObj.password;
+    delete userObj.resetOtp;
+    delete userObj.otpExpires;
+    if (token) {
+        userObj.token = token;
+    }
+    return userObj;
+};
+
 
 
 /**
@@ -55,7 +66,7 @@ export const signUp=async (req,res)=>{
              sameSite:"none",
              maxAge: 7 * 24 * 60 * 60 * 1000
          })
-         return res.status(201).json(user)
+         return res.status(201).json(sanitizeUser(user, token))
  
     } catch (error) {
          console.log("signUp error:", error)
@@ -91,7 +102,7 @@ export const login=async(req,res)=>{
             sameSite:"none",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).json(user)
+        return res.status(200).json(sanitizeUser(user, token))
 
     } catch (error) {
         console.log("login error:", error)
@@ -133,7 +144,7 @@ export const googleSignup = async (req,res) => {
             sameSite:"none",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).json(user)
+        return res.status(200).json(sanitizeUser(user, token))
 
 
     } catch (error) {
@@ -242,7 +253,7 @@ export const sendMagicLink = async (req, res) => {
         
         const magicToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" })
         
-        let frontendOrigin = "https://learning-management-system-nine-bay.vercel.app"
+        let frontendOrigin = process.env.FRONTEND_URL || "https://learning-management-system-five-azure.vercel.app"
         const referer = req.headers.referer || req.headers.origin
         if (referer) {
             try {
@@ -285,7 +296,7 @@ export const loginMagic = async (req, res) => {
             sameSite: "none",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).json(user)
+        return res.status(200).json(sanitizeUser(user, authToken))
     } catch (error) {
         console.log("loginMagic error:", error)
         return res.status(500).json({ message: `loginMagic Error ${error}` })

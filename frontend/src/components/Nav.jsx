@@ -33,12 +33,15 @@ function Nav() {
         withCredentials: true,
       });
       console.log(result.data);
+      localStorage.removeItem("token");
       await dispatch(setUserData(null));
       toast.success("LogOut Successfully");
       setShowPro(false);
       navigate("/");
     } catch (error) {
       console.log(error);
+      localStorage.removeItem("token");
+      await dispatch(setUserData(null));
       toast.error(error?.response?.data?.message || error.message || "Logout failed");
     }
   };

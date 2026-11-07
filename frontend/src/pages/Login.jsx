@@ -36,6 +36,9 @@ function Login() {
         { withCredentials: true }
       );
 
+      if (result.data?.token) {
+        localStorage.setItem("token", result.data.token);
+      }
       dispatch(setUserData(result.data));
       const dest = location.state?.from?.pathname || "/";
       navigate(dest);
@@ -64,6 +67,9 @@ function Login() {
         { withCredentials: true }
       );
 
+      if (result.data?.token) {
+        localStorage.setItem("token", result.data.token);
+      }
       dispatch(setUserData(result.data));
       const dest = location.state?.from?.pathname || "/";
       navigate(dest);
@@ -71,7 +77,11 @@ function Login() {
       toast.success("Login Successfully");
     } catch (error) {
       console.log(error);
-      toast.error(error?.response?.data?.message || error.message || "Google login failed");
+      if (error?.code === "auth/unauthorized-domain") {
+        toast.error("Firebase Auth: Please authorize your deployed domain in Firebase Console -> Authentication -> Settings -> Authorized Domains");
+      } else {
+        toast.error(error?.response?.data?.message || error.message || "Google login failed");
+      }
     }
   };
 

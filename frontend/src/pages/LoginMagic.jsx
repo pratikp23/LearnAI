@@ -31,6 +31,9 @@ function LoginMagic() {
           { withCredentials: true }
         );
 
+        if (result.data?.token) {
+          localStorage.setItem("token", result.data.token);
+        }
         dispatch(setUserData(result.data));
         toast.success("Logged in successfully using Magic Link!");
         navigate("/");
