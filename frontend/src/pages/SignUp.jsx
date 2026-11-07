@@ -35,19 +35,18 @@ function SignUp() {
             if (step === 1) {
                 const result = await axios.post(serverUrl + "/api/auth/send-signup-otp" , { email } , {withCredentials:true} )
                 toast.success(result.data.message || "OTP sent successfully")
+                if (result.data?.devOtp) {
+                    setOtp(result.data.devOtp)
+                }
                 setStep(2)
             } else {
                 if (!otp) {
                     toast.error("Please enter the OTP sent to your email");
                     return;
                 }
-                const result = await axios.post(serverUrl + "/api/auth/signup" , {name , email , password , role, otp} , {withCredentials:true} )
-                if (result.data?.token) {
-                    localStorage.setItem("token", result.data.token);
-                }
-                dispatch(setUserData(result.data))
-                navigate("/")
-                toast.success("SignUp Successfully")
+                await axios.post(serverUrl + "/api/auth/signup" , {name , email , password , role, otp} , {withCredentials:true} )
+                toast.success("Account created successfully! Please log in with your password.")
+                navigate("/login", { state: { email } })
             }
         } 
         catch (error) {

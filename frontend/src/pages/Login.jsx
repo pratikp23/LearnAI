@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/logo.jpg";
 import google from "../assets/google.png";
 
@@ -18,15 +18,21 @@ import DotGridBackground from "../components/DotGridBackground";
 import { getErrorMessage } from "../utils/errorHandler";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState(location.state?.email || "");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (location.state?.email) {
+      setEmail(location.state.email);
+    }
+  }, [location.state?.email]);
 
   const handleLogin = async () => {
     setLoading(true);

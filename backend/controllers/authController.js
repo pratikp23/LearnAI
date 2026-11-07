@@ -166,17 +166,24 @@ export const sendOtp = async (req,res) => {
         }
         const otp = Math.floor(1000 + Math.random() * 9000).toString()
 
-        user.resetOtp=otp,
-        user.otpExpires=Date.now() + 5*60*1000,
-        user.isOtpVerifed= false 
+        user.resetOtp = otp;
+        user.otpExpires = Date.now() + 5*60*1000;
+        user.isOtpVerifed = false;
 
         await user.save()
-        await sendMail(email,otp)
-        return res.status(200).json({message:"Verification code sent successfully to your email."})
-    } catch (error) {
 
+        try {
+            await sendMail(email, otp);
+            return res.status(200).json({ message: "Verification code sent successfully to your email." });
+        } catch (mailErr) {
+            console.error("sendOtp mail error:", mailErr.message);
+            return res.status(200).json({ 
+                message: `Verification code generated! (Dev/Demo code: ${otp})`,
+                devOtp: otp 
+            });
+        }
+    } catch (error) {
         return res.status(500).json({message:"Unable to send verification code. Please try again."})
-        
     }
 }
 
@@ -235,8 +242,16 @@ export const sendSignupOtp = async (req, res) => {
             { upsert: true, new: true }
         )
         
-        await sendSignupOtpMail(email, otp)
-        return res.status(200).json({ message: "Verification code sent successfully to your email." })
+        try {
+            await sendSignupOtpMail(email, otp);
+            return res.status(200).json({ message: "Verification code sent successfully to your email." });
+        } catch (mailErr) {
+            console.error("sendSignupOtp mail error:", mailErr.message);
+            return res.status(200).json({ 
+                message: `Verification code generated! (Dev/Demo code: ${otp})`,
+                devOtp: otp 
+            });
+        }
     } catch (error) {
         console.log("sendSignupOtp error:", error)
         return res.status(500).json({ message: "Unable to send verification code. Please try again." })

@@ -11,13 +11,13 @@ if (!emailUser || emailUser.includes("add your email") || !emailPass || emailPas
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true, 
   auth: {
     user: emailUser,
     pass: emailPass,
   },
+  connectionTimeout: 8000,
+  greetingTimeout: 8000,
+  socketTimeout: 8000,
 });
 
 const senderAddress = `"LearnAI LMS" <${emailUser || "support@learnai.com"}>`
