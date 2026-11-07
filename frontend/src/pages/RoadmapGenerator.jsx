@@ -5,6 +5,7 @@ import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { toast } from "react-toastify";
 import { FiMap, FiTarget, FiZap } from "react-icons/fi";
+import DotGridBackground from "../components/DotGridBackground";
 
 const RoadmapGenerator = () => {
   const [topic, setTopic] = useState("");
@@ -18,21 +19,24 @@ const RoadmapGenerator = () => {
     setLoading(true);
     try {
       const { data } = await axios.post(`${serverUrl}/api/ai/generate-roadmap`, { topic });
-      setRoadmap(data.roadmap);
+      const resolvedRoadmap = data.roadmap || data;
+      setRoadmap(resolvedRoadmap);
+      toast.success("Roadmap generated successfully!");
     } catch (error) {
-      toast.error("Failed to generate roadmap");
+      toast.error(error?.response?.data?.message || "Failed to generate roadmap. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFC] text-[#171717]">
+    <div className="min-h-screen bg-[#FAFAFC] text-[#171717] flex flex-col justify-between">
       <Nav />
       
       {/* Hero Section */}
-      <div className="pt-32 pb-12 px-6">
-        <div className="container mx-auto text-center max-w-4xl">
+      <div className="pt-32 pb-12 px-6 relative overflow-hidden flex-1">
+        <DotGridBackground />
+        <div className="container mx-auto text-center max-w-4xl relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F5F0FF] border border-[#DDD6FE] text-xs font-black uppercase tracking-wider text-[#5B21B6] mb-4">
             🗺️ Step-by-Step Curriculum
           </div>
@@ -70,57 +74,57 @@ const RoadmapGenerator = () => {
             </div>
           </form>
         </div>
-      </div>
 
-      {/* Roadmap Content */}
-      <div className="container mx-auto px-6 pb-24">
-        {roadmap ? (
-          <div className="max-w-4xl mx-auto animate-fade-in">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="p-3 bg-[#F5F0FF] rounded-2xl border border-[#DDD6FE] text-[#5B21B6]">
-                <FiMap size={32} />
+        {/* Roadmap Content */}
+        <div className="container mx-auto px-6 pb-12 pt-8 max-w-4xl relative z-10">
+          {roadmap && roadmap.phases ? (
+            <div className="max-w-4xl mx-auto animate-fade-in">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-[#F5F0FF] rounded-2xl border border-[#DDD6FE] text-[#5B21B6]">
+                  <FiMap size={32} />
+                </div>
+                <h2 className="text-3xl font-black text-[#171717]">{roadmap.title}</h2>
               </div>
-              <h2 className="text-3xl font-black text-[#171717]">{roadmap.title}</h2>
-            </div>
 
-            <div className="relative space-y-10">
-              {/* Vertical Line */}
-              <div className="absolute left-6 top-8 bottom-8 w-[2px] bg-[#DDD6FE]"></div>
+              <div className="relative space-y-10">
+                {/* Vertical Line */}
+                <div className="absolute left-6 top-8 bottom-8 w-[2px] bg-[#DDD6FE]"></div>
 
-              {roadmap.phases.map((phase, idx) => (
-                <div key={idx} className="relative pl-16 group">
-                  {/* Phase Marker */}
-                  <div className="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-[#5B21B6] rounded-full flex items-center justify-center text-[#5B21B6] font-black shadow-sm">
-                    {idx + 1}
-                  </div>
+                {roadmap.phases.map((phase, idx) => (
+                  <div key={idx} className="relative pl-16 group">
+                    {/* Phase Marker */}
+                    <div className="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-[#5B21B6] rounded-full flex items-center justify-center text-[#5B21B6] font-black shadow-sm">
+                      {idx + 1}
+                    </div>
 
-                  <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] shadow-sm">
-                    <h3 className="text-2xl font-bold text-[#5B21B6] mb-6 flex items-center gap-3">
-                      <FiTarget className="text-[#FC8019]" />
-                      {phase.name}
-                    </h3>
-                    
-                    <div className="grid gap-4 md:grid-cols-2">
-                      {phase.items.map((item, iIdx) => (
-                        <div key={iIdx} className="bg-[#FAFAFC] p-5 rounded-2xl border border-[#EEEEF2]">
-                          <h4 className="font-bold text-lg text-[#171717] mb-2">{item.title}</h4>
-                          <p className="text-[#666666] text-sm leading-relaxed font-medium">{item.description}</p>
-                        </div>
-                      ))}
+                    <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] shadow-sm">
+                      <h3 className="text-2xl font-bold text-[#5B21B6] mb-6 flex items-center gap-3">
+                        <FiTarget className="text-[#FC8019]" />
+                        {phase.name}
+                      </h3>
+                      
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {phase.items && phase.items.map((item, iIdx) => (
+                          <div key={iIdx} className="bg-[#FAFAFC] p-5 rounded-2xl border border-[#EEEEF2]">
+                            <h4 className="font-bold text-lg text-[#171717] mb-2">{item.title}</h4>
+                            <p className="text-[#666666] text-sm leading-relaxed font-medium">{item.description}</p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ) : (
-          !loading && (
-            <div className="text-center py-20 text-gray-400">
-              <FiTarget size={56} className="mx-auto mb-4 text-[#DDD6FE]" />
-              <p className="text-lg font-medium text-[#666666]">Your learning roadmap will appear here...</p>
-            </div>
-          )
-        )}
+          ) : (
+            !loading && (
+              <div className="text-center py-16 text-gray-400">
+                <FiTarget size={56} className="mx-auto mb-4 text-[#DDD6FE]" />
+                <p className="text-lg font-medium text-[#666666]">Your learning roadmap will appear here...</p>
+              </div>
+            )
+          )}
+        </div>
       </div>
 
       <Footer />

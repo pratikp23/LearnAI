@@ -5,6 +5,7 @@ import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { toast } from "react-toastify";
 import { FiCheckCircle } from "react-icons/fi";
+import DotGridBackground from "../components/DotGridBackground";
 
 const StudyPlanner = () => {
   const [goal, setGoal] = useState("");
@@ -18,20 +19,23 @@ const StudyPlanner = () => {
     setLoading(true);
     try {
       const { data } = await axios.post(`${serverUrl}/api/ai/generate-study-plan`, { goal, days });
-      setPlan(data.plan);
+      const planList = Array.isArray(data) ? data : (data.plan || []);
+      setPlan(planList);
+      toast.success("Study schedule generated!");
     } catch (error) {
-      toast.error("Failed to generate plan");
+      toast.error(error?.response?.data?.message || "Failed to generate plan. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFC] text-[#171717]">
+    <div className="min-h-screen bg-[#FAFAFC] text-[#171717] flex flex-col justify-between">
       <Nav />
       
-      <div className="pt-32 pb-24 px-6">
-        <div className="container mx-auto max-w-4xl">
+      <div className="pt-32 pb-24 px-6 relative overflow-hidden flex-1">
+        <DotGridBackground />
+        <div className="container mx-auto max-w-4xl relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFF3E8] border border-[#FED7AA] text-xs font-black uppercase tracking-wider text-[#FC8019] mb-4">
               📅 Daily Schedule Generator
@@ -56,6 +60,8 @@ const StudyPlanner = () => {
                 <label className="block text-xs font-black text-[#171717] uppercase mb-2.5 tracking-wider">Days to complete</label>
                 <input
                   type="number"
+                  min="1"
+                  max="90"
                   className="w-full bg-[#FAFAFC] border border-[#EEEEF2] focus:border-[#7C3AED] rounded-2xl px-5 py-4 outline-none font-medium shadow-sm text-[#171717]"
                   value={days}
                   onChange={(e) => setDays(e.target.value)}
@@ -71,7 +77,7 @@ const StudyPlanner = () => {
             </button>
           </div>
 
-          {plan && (
+          {plan && Array.isArray(plan) && plan.length > 0 && (
             <div className="space-y-6 animate-fade-in">
               {plan.map((phase, idx) => (
                 <div key={idx} className="relative pl-12 group">
@@ -84,7 +90,7 @@ const StudyPlanner = () => {
                       <span className="text-xs font-black text-[#FC8019] bg-[#FFF3E8] px-3.5 py-1 rounded-full border border-[#FED7AA]">Day {phase.day}</span>
                     </div>
                     <ul className="space-y-3">
-                      {phase.tasks.map((task, tIdx) => (
+                      {phase.tasks && phase.tasks.map((task, tIdx) => (
                         <li key={tIdx} className="flex items-center gap-3 text-[#666666] text-sm font-semibold">
                           <FiCheckCircle className="text-[#16A34A] text-base shrink-0" />
                           <span>{task}</span>

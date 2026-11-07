@@ -1,3 +1,4 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
 import dotenv from "dotenv";
 import Course from "../models/courseModel.js";
@@ -5,83 +6,111 @@ import Mistake from "../models/mistakeModel.js";
 import fs from 'fs';
 dotenv.config();
 
-const GEMINI_MODELS = [
-    "gemini-flash-latest",
-    "gemini-3.8-flash",
-    "gemini-2.5-flash"
-];
+const getApiKey = () => {
+    const rawKey = process.env.GEMINI_API_KEY || "";
+    const cleanKey = rawKey.trim().replace(/^["']|["']$/g, '');
+    if (!cleanKey) {
+        throw new Error("GEMINI_API_KEY is missing. Please set GEMINI_API_KEY in your environment variables.");
+    }
+    return cleanKey;
+};
+
+let cachedModels = null;
+let lastModelFetch = 0;
+
+const getAvailableModels = async (apiKey) => {
+    if (cachedModels && (Date.now() - lastModelFetch < 10 * 60 * 1000)) {
+        return cachedModels;
+    }
+    
+    try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+        const response = await axios.get(url, { timeout: 8000 });
+        if (response.data && response.data.models) {
+            const valid = response.data.models
+                .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"))
+                .map(m => m.name.replace(/^models\//, ''));
+            
+            console.log("Dynamically discovered available Gemini models:", valid);
+            if (valid.length > 0) {
+                const priority = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-pro"];
+                const sorted = [
+                    ...priority.filter(p => valid.includes(p)),
+                    ...valid.filter(v => !priority.includes(v))
+                ];
+                cachedModels = sorted;
+                lastModelFetch = Date.now();
+                return sorted;
+            }
+        }
+    } catch (err) {
+        console.warn("Could not list models dynamically:", err.response?.data?.error?.message || err.message);
+    }
+
+    return ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash", "gemini-pro", "gemini-1.5-pro"];
+};
 
 const callGemini = async (prompt) => {
     return callGeminiMultimodal(prompt);
 };
 
-const callGeminiMultimodal = async (prompt, imagePath = null) => {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        const errMsg = 'GEMINI_API_KEY is missing in environment variables';
-        console.error(errMsg);
-        throw new Error(errMsg);
-    }
+const callGeminiMultimodal = async (prompt, filePath = null) => {
+    const apiKey = getApiKey();
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const availableModels = await getAvailableModels(apiKey);
 
-    const parts = [{ text: prompt }];
-    
-    if (imagePath && fs.existsSync(imagePath)) {
-        const imageBuffer = fs.readFileSync(imagePath);
-        const base64Image = imageBuffer.toString('base64');
-        const mimeType = imagePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
-        
+    const parts = [prompt];
+
+    if (filePath && fs.existsSync(filePath)) {
+        const fileBuffer = fs.readFileSync(filePath);
+        const lower = filePath.toLowerCase();
+        let mimeType = 'image/jpeg';
+        if (lower.endsWith('.png')) mimeType = 'image/png';
+        else if (lower.endsWith('.pdf')) mimeType = 'application/pdf';
+        else if (lower.endsWith('.webp')) mimeType = 'image/webp';
+
         parts.push({
-            inline_data: {
-                mime_type: mimeType,
-                data: base64Image
+            inlineData: {
+                data: fileBuffer.toString('base64'),
+                mimeType: mimeType
             }
         });
     }
 
-    const payload = {
-        contents: [{ parts }],
-        generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
-        }
-    };
-
     let lastError = null;
-    for (const model of GEMINI_MODELS) {
+    for (const modelName of availableModels) {
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-            const response = await axios.post(url, payload, {
-                headers: { "Content-Type": "application/json" }
-            });
-            
-            if (response.data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-                return response.data.candidates[0].content.parts[0].text;
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent(parts);
+            const responseText = result.response.text();
+            if (responseText) {
+                return responseText;
             }
         } catch (error) {
-            lastError = error.response?.data || error.message;
-            console.warn(`Gemini Model ${model} failed, trying next:`, error.response?.status || error.message);
+            lastError = error.message || error;
+            console.warn(`Gemini Model ${modelName} failed, trying next:`, lastError);
         }
     }
 
     console.error("All Gemini Models Failed:", lastError);
-    throw new Error(typeof lastError === 'object' ? JSON.stringify(lastError) : lastError);
+    throw new Error(typeof lastError === 'object' ? JSON.stringify(lastError) : String(lastError));
 };
 
 const parseJsonFromAi = (text) => {
     let cleanText = text.trim();
-    if (cleanText.startsWith("```json")) {
-        cleanText = cleanText.replace(/^```json/, "").replace(/```$/, "").trim();
-    } else if (cleanText.startsWith("```")) {
-        cleanText = cleanText.replace(/^```/, "").replace(/```$/, "").trim();
-    }
+    cleanText = cleanText.replace(/```json/gi, "").replace(/```/g, "").trim();
     
     try {
         return JSON.parse(cleanText);
     } catch (e) {
-        const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) return JSON.parse(jsonMatch[0]);
+        const jsonMatch = cleanText.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
+        if (jsonMatch) {
+            try {
+                return JSON.parse(jsonMatch[0]);
+            } catch (err2) {
+                console.error("JSON parsing fallback failed:", err2.message);
+            }
+        }
         throw new Error("No valid JSON found in AI response");
     }
 };
@@ -123,7 +152,6 @@ export const searchWithAi = async (req, res) => {
             }))
         }).populate("creator", "name photoUrl");
 
-        // If no direct keyword match, show top published courses so user always sees recommendations
         if (!courses || courses.length === 0) {
             courses = await Course.find({ isPublished: true }).limit(6).populate("creator", "name photoUrl");
         }
@@ -175,11 +203,14 @@ export const generateRoadmap = async (req, res) => {
 
         const aiText = await callGemini(prompt);
         const roadmapData = parseJsonFromAi(aiText);
-        return res.status(200).json(roadmapData);
+        return res.status(200).json({
+            ...roadmapData,
+            roadmap: roadmapData
+        });
 
     } catch (error) {
         console.error("AI Roadmap Error:", error);
-        return res.status(500).json({ message: "Failed to generate roadmap. Please check your API key or try again." });
+        return res.status(500).json({ message: "Failed to generate roadmap. Please try again." });
     }
 };
 
@@ -244,7 +275,10 @@ export const generateStudyPlan = async (req, res) => {
 
         const aiText = await callGemini(prompt);
         const data = parseJsonFromAi(aiText);
-        return res.status(200).json(data.plan);
+        const planList = Array.isArray(data) ? data : (data.plan || []);
+        return res.status(200).json({
+            plan: planList
+        });
     } catch (error) {
         console.error("AI Study Plan Error:", error);
         return res.status(500).json({ message: "Failed to generate study plan" });
@@ -286,7 +320,8 @@ export const generateQuiz = async (req, res) => {
             return res.status(400).json({ message: data.error });
         }
 
-        return res.status(200).json(data.quiz);
+        const quizQuestions = data.quiz || (Array.isArray(data) ? data : []);
+        return res.status(200).json(quizQuestions);
     } catch (error) {
         console.error("AI Quiz Error:", error);
         return res.status(500).json({ message: "Failed to generate quiz. Please try a different technical topic." });
@@ -300,7 +335,6 @@ export const trackMistake = async (req, res) => {
 
         if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-        // Check if this exact mistake already exists to increment count
         let mistake = await Mistake.findOne({ userId, question });
 
         if (mistake) {
@@ -348,7 +382,10 @@ export const analyzeMistakes = async (req, res) => {
 
         const aiText = await callGemini(prompt);
         const data = parseJsonFromAi(aiText);
-        return res.status(200).json(data);
+        return res.status(200).json({
+            ...data,
+            analysis: data
+        });
     } catch (error) {
         console.error("Analyze Mistakes Error:", error);
         return res.status(500).json({ message: "Failed to analyze mistakes" });
@@ -361,15 +398,18 @@ export const analyzeResume = async (req, res) => {
         const resumeFile = req.file;
 
         if (!resumeText && !resumeFile) {
-            return res.status(400).json({ message: "Please provide resume text or upload an image." });
+            return res.status(400).json({ message: "Please provide resume text, a PDF, or an image file." });
         }
+
+        const isPdf = resumeFile && resumeFile.path.toLowerCase().endsWith('.pdf');
+        const fileTypeDesc = isPdf ? "a PDF document" : (resumeFile ? "an image" : "plain text");
 
         const prompt = `
         You are an expert Technical Recruiter and ATS (Applicant Tracking System) software.
-        I am providing you with a candidate's resume (as ${resumeFile ? "an image" : "text"})${jobDescription ? " and a target Job Description" : ""}.
+        I am providing you with a candidate's resume (as ${fileTypeDesc})${jobDescription ? " and a target Job Description" : ""}.
         
-        ${resumeText ? `Resume Text:\n"""${resumeText}"""` : "Please analyze the provided resume image."}
-        ${jobDescription ? `\nJob Description:\n"""${jobDescription}"""` : ""}
+        ${resumeText ? `Resume Text:\n"""${resumeText}"""` : `Please analyze the uploaded resume ${isPdf ? "PDF file" : "document"}.`}
+        ${jobDescription ? `\nTarget Job Description:\n"""${jobDescription}"""` : ""}
 
         Task:
         1. Calculate an ATS Match Score from 0 to 100 based on how well the resume matches the job description (or general tech industry standards if no JD is provided).
@@ -388,9 +428,8 @@ export const analyzeResume = async (req, res) => {
 
         const aiText = await callGeminiMultimodal(prompt, resumeFile?.path);
         
-        // Clean up uploaded file if it exists
         if (resumeFile && fs.existsSync(resumeFile.path)) {
-            fs.unlinkSync(resumeFile.path);
+            try { fs.unlinkSync(resumeFile.path); } catch (e) {}
         }
 
         const data = parseJsonFromAi(aiText);
@@ -398,11 +437,38 @@ export const analyzeResume = async (req, res) => {
     } catch (error) {
         console.error("AI Resume Analyzer Error:", error);
         
-        // Cleanup on error
         if (req.file && fs.existsSync(req.file.path)) {
-            fs.unlinkSync(req.file.path);
+            try { fs.unlinkSync(req.file.path); } catch (e) {}
         }
         
-        return res.status(500).json({ message: "Failed to analyze resume" });
+        return res.status(500).json({ message: error.message ? `Resume analysis failed: ${error.message}` : "Failed to analyze resume" });
+    }
+};
+
+export const askAiAssistant = async (req, res) => {
+    try {
+        const { query } = req.body;
+        if (!query || !query.trim()) {
+            return res.status(400).json({ message: "Please enter a question or topic." });
+        }
+
+        const prompt = `
+        You are the LearnAI Intelligent Learning Assistant.
+        A student or developer is asking you this question:
+        "${query.trim()}"
+
+        Task:
+        1. Provide a comprehensive, accurate, and easy-to-understand response.
+        2. Include code examples, key architectural concepts, or step-by-step guidance where helpful.
+        3. Add a practical takeaway or pro tip at the end.
+
+        Format your response cleanly in readable Markdown with bold headers and code blocks.
+        `;
+
+        const responseText = await callGemini(prompt);
+        return res.status(200).json({ answer: responseText });
+    } catch (error) {
+        console.error("AI Assistant Error:", error);
+        return res.status(500).json({ message: error.message ? `AI Assistant error: ${error.message}` : "Failed to generate answer" });
     }
 };

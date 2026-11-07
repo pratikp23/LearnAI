@@ -10,7 +10,8 @@ import {
     generateQuiz,
     trackMistake,
     analyzeMistakes,
-    analyzeResume
+    analyzeResume,
+    askAiAssistant
 } from "../controllers/aiController.js"
 
 let aiRouter = express.Router()
@@ -23,6 +24,12 @@ aiRouter.post("/generate-study-plan", generateStudyPlan)
 aiRouter.post("/generate-quiz", generateQuiz)
 aiRouter.post("/track-mistake", isAuth, trackMistake)
 aiRouter.get("/analyze-mistakes", isAuth, analyzeMistakes)
+
+// Support both path names for resume analysis
 aiRouter.post("/resume-analyzer", upload.single('resumeImage'), analyzeResume)
+aiRouter.post("/analyze-resume", upload.single('resumeImage'), analyzeResume)
+
+// Direct AI Assistant query for the AI Hub
+aiRouter.post("/ask", askAiAssistant)
 
 export default aiRouter

@@ -4,6 +4,7 @@ import { serverUrl } from "../App";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { FiTrendingUp, FiTarget, FiBookOpen, FiActivity, FiZap } from "react-icons/fi";
+import DotGridBackground from "../components/DotGridBackground";
 
 const MistakeEngine = () => {
   const [loading, setLoading] = useState(true);
@@ -13,7 +14,7 @@ const MistakeEngine = () => {
     const fetchAnalysis = async () => {
       try {
         const { data } = await axios.get(`${serverUrl}/api/ai/analyze-mistakes`, { withCredentials: true });
-        setAnalysis(data.analysis);
+        setAnalysis(data.analysis || data);
       } catch (error) {
         console.error(error);
       } finally {
@@ -24,11 +25,12 @@ const MistakeEngine = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAFC] text-[#171717]">
+    <div className="min-h-screen bg-[#FAFAFC] text-[#171717] flex flex-col justify-between">
       <Nav />
       
-      <div className="pt-32 pb-24 px-6">
-        <div className="container mx-auto max-w-4xl">
+      <div className="pt-32 pb-24 px-6 relative overflow-hidden flex-1">
+        <DotGridBackground />
+        <div className="container mx-auto max-w-4xl relative z-10">
           <div className="flex items-center gap-4 mb-12">
             <div className="p-4 bg-[#FFF3E8] rounded-2xl border border-[#FED7AA] text-[#FC8019] shadow-sm">
               <FiTrendingUp size={32} />
