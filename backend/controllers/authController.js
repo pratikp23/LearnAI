@@ -85,7 +85,7 @@ export const login=async(req,res)=>{
         let user= await User.findOne({email})
         console.log("User found:", user)
         if(!user){
-            return res.status(400).json({message:"user does not exist"})
+            return res.status(400).json({message:"User not registered, please register first"})
         }
         if(!user.password) {
             return res.status(400).json({message:"This account was created using Google. Please log in with Google."})
@@ -130,9 +130,12 @@ export const logOut = async(req,res)=>{
 
 export const googleSignup = async (req,res) => {
     try {
-        const {name , email , role} = req.body
+        const {name , email , role, isLogin} = req.body
         let user= await User.findOne({email})
         if(!user){
+            if (isLogin) {
+                return res.status(400).json({message:"User not registered, please register first"})
+            }
             user = await User.create({
             name , email ,role
         })
@@ -159,7 +162,7 @@ export const sendOtp = async (req,res) => {
         const {email} = req.body
         const user = await User.findOne({email})
         if(!user){
-            return res.status(404).json({message:"User not found"})
+            return res.status(404).json({message:"User not registered, please register first"})
         }
         const otp = Math.floor(1000 + Math.random() * 9000).toString()
 
@@ -248,7 +251,7 @@ export const sendMagicLink = async (req, res) => {
         }
         const user = await User.findOne({ email })
         if (!user) {
-            return res.status(404).json({ message: "User not found" })
+            return res.status(404).json({ message: "User not registered, please register first" })
         }
         
         const magicToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" })

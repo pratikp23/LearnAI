@@ -63,6 +63,7 @@ function Login() {
           name: user.displayName,
           email: user.email,
           role,
+          isLogin: true,
         },
         { withCredentials: true }
       );
