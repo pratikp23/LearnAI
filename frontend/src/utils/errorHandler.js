@@ -16,6 +16,8 @@ export const getErrorMessage = (error, fallback = "Something went wrong. Please 
         return "Sign-in popup was blocked by your browser. Please allow popups for this site.";
       case "auth/unauthorized-domain":
         return "This website domain is not authorized in Firebase. Please add it to Authorized Domains in Firebase Console.";
+      case "auth/invalid-api-key":
+        return "Google sign-in is unavailable because Firebase is not configured for this deployment. Configure the VITE_FIREBASE_* variables in Vercel and redeploy.";
       case "auth/network-request-failed":
         return "Network connection error during authentication. Please check your internet connection.";
       case "auth/user-disabled":

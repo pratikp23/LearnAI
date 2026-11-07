@@ -10,8 +10,22 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// IMPORTANT: prevent multiple init
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+export const getFirebaseAuth = () => {
+  const requiredConfig = [
+    firebaseConfig.apiKey,
+    firebaseConfig.authDomain,
+    firebaseConfig.projectId,
+    firebaseConfig.appId
+  ];
 
-export const auth = getAuth(app);
+  if (requiredConfig.some(value => typeof value !== "string" || !value.trim())) {
+    const error = new Error("Firebase Google sign-in is not configured for this deployment.");
+    error.code = "auth/invalid-api-key";
+    throw error;
+  }
+
+  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  return getAuth(app);
+};
+
 export const provider = new GoogleAuthProvider();

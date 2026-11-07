@@ -6,7 +6,7 @@ import { serverUrl } from '../App'
 import { MdOutlineRemoveRedEye, MdRemoveRedEye } from "react-icons/md";
 import { useNavigate } from 'react-router-dom'
 import { signInWithPopup } from 'firebase/auth'
-import { auth, provider } from '../utils/Firebase'
+import { getFirebaseAuth, provider } from '../utils/Firebase'
 import { ClipLoader } from 'react-spinners'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
@@ -136,7 +136,7 @@ function SignUp() {
 
     const googleSignUp = async () => {
         try {
-            const response = await signInWithPopup(auth,provider)
+            const response = await signInWithPopup(getFirebaseAuth(),provider)
             let user = response.user
             let name = user.displayName;
             let email = user.email

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import logo from "../assets/logo.jpg";
 import google from "../assets/google.png";
 
-import { auth, provider } from "../utils/Firebase";
+import { getFirebaseAuth, provider } from "../utils/Firebase";
 import axios from "axios";
 import { serverUrl } from "../App";
 
@@ -61,7 +61,7 @@ function Login() {
 
   const googleLogin = async () => {
     try {
-      const response = await signInWithPopup(auth, provider);
+      const response = await signInWithPopup(getFirebaseAuth(), provider);
       const user = response.user;
 
       const result = await axios.post(
