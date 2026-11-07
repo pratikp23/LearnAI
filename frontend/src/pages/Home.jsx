@@ -68,7 +68,7 @@ function Home() {
         </div>
 
         {/* Selective Decorative Dot-Grid Background */}
-        <DotGridBackground className="text-[#7C3AED]/22" />
+        <DotGridBackground />
 
         {/* Hero Content */}
         <div className="flex flex-col items-center justify-center text-center mt-[10vh] px-6 animate-slide-up z-10 w-full max-w-5xl">

@@ -78,7 +78,7 @@ function ForgotPassword() {
 
   return (
      <div className="min-h-screen flex items-center justify-center p-4 bg-[#FAFAFC] relative overflow-hidden">
-     <DotGridBackground className="text-[#7C3AED]/20" />
+     <DotGridBackground />
      { step==1 && <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full border border-[#EEEEF2] animate-slide-up relative z-10">
         <h2 className="text-2xl font-black mb-2 text-center text-[#171717]">
           Forgot Your Password?

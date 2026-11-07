@@ -64,7 +64,7 @@ const AIHub = () => {
       <Nav />
       
       <div className="pt-32 pb-24 px-6 relative overflow-hidden">
-        <DotGridBackground className="text-[#7C3AED]/20" />
+        <DotGridBackground />
         <div className="container mx-auto max-w-7xl relative z-10">
           <div className="max-w-3xl mb-14">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F5F0FF] border border-[#DDD6FE] text-xs font-black uppercase tracking-wider text-[#5B21B6] mb-4">

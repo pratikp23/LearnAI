@@ -2,17 +2,18 @@ import React, { useId } from 'react';
 
 /**
  * Reusable decorative dot-grid background component.
- * Faithfully implements the subtle SVG dotted-grid pattern with:
- * - 20px evenly spaced dots with 1px radius
- * - Subtle purple/lavender tint matching the Zepto/Swiggy palette
- * - Smooth vertical fade from top to bottom
+ * Features:
+ * - Crisp, clearly visible dots (default 2px radius / 4px diameter)
+ * - 24px clean grid spacing
+ * - Rich vibrant purple/lavender tint matching the theme (text-[#7C3AED]/45)
+ * - Smooth fade-out mask towards the bottom
  * - Absolutely positioned with pointer-events-none and z-0
  */
 function DotGridBackground({
-  className = "text-[#7C3AED]/18",
-  spacing = 20,
-  dotRadius = 1,
-  mask = "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.45) 45%, transparent 85%)",
+  className = "text-[#7C3AED]/45",
+  spacing = 24,
+  dotRadius = 2,
+  mask = "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 55%, rgba(255,255,255,0.25) 85%, transparent 100%)",
   style = {}
 }) {
   const reactId = useId();
@@ -36,7 +37,7 @@ function DotGridBackground({
           height={spacing}
           patternUnits="userSpaceOnUse"
         >
-          <circle cx={1} cy={1} r={dotRadius} fill="currentColor" />
+          <circle cx={spacing / 2} cy={spacing / 2} r={dotRadius} fill="currentColor" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${patternId})`} />

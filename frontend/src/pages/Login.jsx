@@ -77,7 +77,7 @@ function Login() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#FAFAFC] relative overflow-hidden">
-      <DotGridBackground className="text-[#7C3AED]/20" />
+      <DotGridBackground />
       <form
         className="w-[95%] md:w-[840px] min-h-[580px] bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl flex overflow-hidden border border-[#EEEEF2] animate-slide-up relative z-10"
         onSubmit={(e) => e.preventDefault()}

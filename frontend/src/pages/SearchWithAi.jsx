@@ -88,7 +88,7 @@ function SearchWithAi() {
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex flex-col items-center bg-[#FAFAFC] relative overflow-hidden">
-      <DotGridBackground className="text-[#7C3AED]/20" />
+      <DotGridBackground />
       
       {/* Header & Back Button */}
       <div className="max-w-4xl w-full mb-12 animate-fade-in flex items-center justify-between">
