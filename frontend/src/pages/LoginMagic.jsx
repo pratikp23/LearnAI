@@ -48,14 +48,14 @@ function LoginMagic() {
   }, [token, dispatch, navigate]);
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 font-['Outfit']">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4 border border-[var(--glass-border)] animate-slide-up">
-        <h1 className="text-2xl font-extrabold text-[var(--dark-brown)]">Magic Login</h1>
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#FAFAFC]">
+      <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4 border border-[#EEEEF2] animate-slide-up">
+        <h1 className="text-2xl font-black text-[#171717]">Magic Login</h1>
         
         {!error ? (
           <>
-            <ClipLoader size={50} color="#3E5F44" />
-            <p className="text-[var(--body-text)] font-medium">Verifying your secure login link... Please wait.</p>
+            <ClipLoader size={50} color="#5B21B6" />
+            <p className="text-[#666666] font-medium">Verifying your secure login link... Please wait.</p>
           </>
         ) : (
           <>

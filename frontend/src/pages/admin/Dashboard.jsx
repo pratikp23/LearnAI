@@ -31,54 +31,54 @@ function Dashboard() {
   })) || [];
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 md:px-8 text-[var(--body-text)] font-['Outfit']">
+    <div className="min-h-screen pt-24 pb-12 px-4 md:px-8 bg-[#FAFAFC] text-[#171717]">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <FaArrowLeftLong
-            className="text-2xl text-[var(--dark-brown)] hover:text-[var(--deep-green)] cursor-pointer transition-colors"
+            className="text-2xl text-[#171717] hover:text-[#5B21B6] cursor-pointer transition-colors"
             onClick={() => navigate("/")}
           />
-          <h1 className="text-3xl font-extrabold text-[var(--dark-brown)] tracking-tight">Instructor Dashboard</h1>
+          <h1 className="text-3xl font-black text-[#171717] tracking-tight">Instructor Dashboard</h1>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="glass-card p-6 rounded-2xl flex items-center gap-5 border border-[var(--glass-border)] shadow-md">
-            <div className="w-14 h-14 bg-[var(--neon-blue)]/15 rounded-2xl flex items-center justify-center text-[var(--deep-green)] border border-[var(--neon-blue)]/30">
+          <div className="bg-white p-6 rounded-2xl flex items-center gap-5 border border-[#EEEEF2] shadow-sm">
+            <div className="w-14 h-14 bg-[#F5F0FF] rounded-2xl flex items-center justify-center text-[#5B21B6] border border-[#DDD6FE]">
               <FaWallet size={24} />
             </div>
             <div>
-              <p className="text-xs text-[var(--accent-color)] uppercase tracking-wider font-bold">Total Revenue</p>
-              <h3 className="text-2xl font-black text-[var(--deep-green)]">₹{totalEarnings.toLocaleString()}</h3>
+              <p className="text-xs text-[#666666] uppercase tracking-wider font-bold">Total Revenue</p>
+              <h3 className="text-2xl font-black text-[#5B21B6]">₹{totalEarnings.toLocaleString()}</h3>
             </div>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl flex items-center gap-5 border border-[var(--glass-border)] shadow-md">
-            <div className="w-14 h-14 bg-blue-500/15 rounded-2xl flex items-center justify-center text-blue-700 border border-blue-500/30">
+          <div className="bg-white p-6 rounded-2xl flex items-center gap-5 border border-[#EEEEF2] shadow-sm">
+            <div className="w-14 h-14 bg-[#FFF3E8] rounded-2xl flex items-center justify-center text-[#FC8019] border border-[#FED7AA]">
               <FaUsers size={24} />
             </div>
             <div>
-              <p className="text-xs text-[var(--accent-color)] uppercase tracking-wider font-bold">Total Students</p>
-              <h3 className="text-2xl font-black text-[var(--dark-brown)]">{totalStudents}</h3>
+              <p className="text-xs text-[#666666] uppercase tracking-wider font-bold">Total Students</p>
+              <h3 className="text-2xl font-black text-[#171717]">{totalStudents}</h3>
             </div>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl flex items-center gap-5 border border-[var(--glass-border)] shadow-md">
-            <div className="w-14 h-14 bg-amber-500/15 rounded-2xl flex items-center justify-center text-amber-700 border border-amber-500/30">
+          <div className="bg-white p-6 rounded-2xl flex items-center gap-5 border border-[#EEEEF2] shadow-sm">
+            <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-[#16A34A] border border-emerald-200">
               <FaChartLine size={24} />
             </div>
             <div>
-              <p className="text-xs text-[var(--accent-color)] uppercase tracking-wider font-bold">Active Courses</p>
-              <h3 className="text-2xl font-black text-[var(--dark-brown)]">{creatorCourseData?.length || 0}</h3>
+              <p className="text-xs text-[#666666] uppercase tracking-wider font-bold">Active Courses</p>
+              <h3 className="text-2xl font-black text-[#171717]">{creatorCourseData?.length || 0}</h3>
             </div>
           </div>
         </div>
 
         {/* Profile Summary & Action */}
-        <div className="glass-card p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8 mb-10 border border-[var(--glass-border)] shadow-xl">
+        <div className="bg-white p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8 mb-10 border border-[#EEEEF2] shadow-[0_8px_30px_rgba(91,33,182,0.06)]">
           <div className="flex items-center gap-6">
             <div className="relative">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-3 border-[var(--neon-blue)] p-0.5 bg-white shadow-md">
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-3 border-[#7C3AED] p-0.5 bg-white shadow-md">
                 {userData?.photoUrl ? (
                   <img
                     src={userData.photoUrl}
@@ -87,18 +87,18 @@ function Dashboard() {
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : null}
-                <div className={`w-full h-full bg-[#3E5F44] rounded-full flex items-center justify-center text-white font-bold text-2xl ${userData?.photoUrl ? 'hidden' : 'flex'}`}>
+                <div className={`w-full h-full bg-gradient-to-tr from-[#5B21B6] to-[#7C3AED] rounded-full flex items-center justify-center text-white font-black text-2xl ${userData?.photoUrl ? 'hidden' : 'flex'}`}>
                   {userData?.name ? userData.name.slice(0, 1).toUpperCase() : "E"}
                 </div>
               </div>
             </div>
             <div className="space-y-1">
-              <h2 className="text-2xl font-extrabold text-[var(--dark-brown)]">Welcome back, {userData?.name}!</h2>
-              <p className="text-[var(--body-text)] max-w-md line-clamp-1 opacity-85 text-sm">{userData?.description || "Manage your curriculum and track student success."}</p>
+              <h2 className="text-2xl font-black text-[#171717]">Welcome back, {userData?.name}!</h2>
+              <p className="text-[#666666] max-w-md line-clamp-1 font-medium text-sm">{userData?.description || "Manage your curriculum and track student success."}</p>
             </div>
           </div>
           <button
-            className="w-full md:w-auto px-8 py-4 bg-[#3E5F44] hover:bg-[#2e4733] text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+            className="w-full md:w-auto px-8 py-4 bg-[#5B21B6] hover:bg-[#4C1D95] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(91,33,182,0.25)] cursor-pointer"
             onClick={() => navigate("/courses")}
           >
             <FaPlus /> Create New Course
@@ -108,23 +108,23 @@ function Dashboard() {
         {/* Analytics Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Enrollment Chart */}
-          <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] shadow-md">
+          <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] shadow-sm">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-[var(--dark-brown)]">Student Enrollment</h3>
-              <div className="px-3 py-1 bg-[var(--neon-blue)]/15 text-[var(--deep-green)] text-xs rounded-full border border-[var(--neon-blue)]/30 uppercase tracking-wider font-bold">Real-time</div>
+              <h3 className="text-xl font-bold text-[#171717]">Student Enrollment</h3>
+              <div className="px-3 py-1 bg-[#F5F0FF] text-[#5B21B6] text-xs rounded-full border border-[#DDD6FE] uppercase tracking-wider font-black">Real-time</div>
             </div>
             <div className="h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={enrollData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" vertical={false} />
-                  <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#EEEEF2" vertical={false} />
+                  <XAxis dataKey="name" stroke="#666666" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#666666" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip
-                    contentStyle={{ background: '#ffffff', border: '1px solid #ccc', borderRadius: '12px', color: '#1a1a1a', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                    contentStyle={{ background: '#ffffff', border: '1px solid #EEEEF2', borderRadius: '12px', color: '#171717', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}
                   />
                   <Bar dataKey="enrolled" radius={[6, 6, 0, 0]}>
                     {enrollData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#3E5F44' : '#5F8D4E'} />
+                      <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#5B21B6' : '#FC8019'} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -133,21 +133,21 @@ function Dashboard() {
           </div>
 
           {/* Progress Chart */}
-          <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] shadow-md">
+          <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] shadow-sm">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-[var(--dark-brown)]">Curriculum Depth</h3>
-              <span className="text-xs text-[var(--accent-color)] font-bold uppercase tracking-wider">Lectures per Course</span>
+              <h3 className="text-xl font-bold text-[#171717]">Curriculum Depth</h3>
+              <span className="text-xs text-[#FC8019] font-black uppercase tracking-wider">Lectures per Course</span>
             </div>
             <div className="h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={courseProgressData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" vertical={false} />
-                  <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#EEEEF2" vertical={false} />
+                  <XAxis dataKey="name" stroke="#666666" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#666666" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip
-                    contentStyle={{ background: '#ffffff', border: '1px solid #ccc', borderRadius: '12px', color: '#1a1a1a', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                    contentStyle={{ background: '#ffffff', border: '1px solid #EEEEF2', borderRadius: '12px', color: '#171717', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}
                   />
-                  <Bar dataKey="lectures" fill="#5F8D4E" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="lectures" fill="#FC8019" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import home from "../assets/home3.jpg";
 import Nav from "../components/Nav";
@@ -52,42 +51,42 @@ function Home() {
   }, [text, isDeleting, loopNum, typingSpeed, texts]);
 
   return (
-    <div className="w-full overflow-hidden bg-transparent">
+    <div className="w-full overflow-hidden bg-[#FAFAFC]">
       {/* Hero Section */}
       <div className="w-full min-h-screen relative flex flex-col items-center justify-start pt-24 pb-12">
         <Nav />
 
-        {/* Background Image with Overlay */}
+        {/* Background Image with Clean Light Overlay */}
         <div className="absolute top-0 left-0 w-full h-full z-[-1]">
           <img
             src={home}
-            className="object-cover w-full h-full opacity-60"
+            className="object-cover w-full h-full opacity-20"
             alt="Background"
           />
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-[rgba(15,12,41,0.7)] to-[var(--primary-bg)]"></div>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/60 via-white/90 to-[#FAFAFC]"></div>
         </div>
 
         {/* Hero Content */}
         <div className="flex flex-col items-center justify-center text-center mt-[10vh] px-6 animate-slide-up z-10 w-full max-w-5xl">
 
           {/* Badge */}
-          <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#5F8D4E]/40 bg-white/60 backdrop-blur-sm shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#5F8D4E] animate-pulse inline-block"></span>
-            <span className="text-sm font-semibold tracking-widest uppercase" style={{color: "#3E5F44", letterSpacing: "0.1em"}}>AI-Powered Learning Platform</span>
-          </div>
+          {/* <div className="mb-6 inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#DDD6FE] bg-[#F5F0FF] shadow-sm">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#7C3AED] animate-pulse inline-block"></span>
+            <span className="text-xs font-black tracking-widest uppercase text-[#5B21B6]">AI-Powered Learning Platform</span>
+          </div> */}
 
-          {/* Main Heading — static lines + typewriter on its own line */}
-          <h1 className="font-extrabold leading-tight tracking-tight mb-5" style={{fontSize: "clamp(2.4rem, 7vw, 5.5rem)"}}>
-            <span className="block" style={{color: "#1a1a1a", textShadow: "0 2px 8px rgba(0,0,0,0.08)"}}>
+          {/* Main Heading */}
+          <h1 className="font-black leading-tight tracking-tight mb-5" style={{fontSize: "clamp(2.4rem, 7vw, 5.2rem)"}}>
+            <span className="block text-[#171717]">
               The Smartest Way To
             </span>
-            {/* Typewriter line — whitespace-nowrap prevents text from running/wrapping */}
+            {/* Typewriter line */}
             <span
-              className="block text-gradient mt-1"
+              className="block text-[#5B21B6] mt-1"
               style={{
                 whiteSpace: "nowrap",
                 overflow: "hidden",
-                borderRight: "3px solid #5F8D4E",
+                borderRight: "3px solid #FC8019",
                 minHeight: "1.2em",
                 display: "block",
                 paddingRight: "4px",
@@ -100,38 +99,34 @@ function Home() {
 
           {/* Subtitle */}
           <p
-            className="mb-10 font-light leading-relaxed"
+            className="mb-10 font-medium leading-relaxed"
             style={{
-              color: "#3a3a3a",
+              color: "#666666",
               fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
-              maxWidth: "560px",
+              maxWidth: "580px",
               lineHeight: "1.75"
             }}
           >
-            Unlock your potential with <strong style={{fontWeight: 600, color: "#3E5F44"}}>premium courses</strong> and AI-powered tools built for the future of learning.
+            Unlock your potential with <strong style={{fontWeight: 700, color: "#5B21B6"}}>premium courses</strong> and modern AI-powered mentorship built for fast-moving careers.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mt-2">
+          <div className="flex flex-wrap justify-center items-center gap-4 mt-2">
             <button
-              className="group relative px-8 py-3.5 bg-transparent border-2 border-[var(--neon-blue)] text-white rounded-full text-base font-semibold overflow-hidden transition-all hover:scale-105 btn-glow cursor-pointer"
+              className="px-9 py-4 bg-[#5B21B6] hover:bg-[#4C1D95] text-white rounded-full text-base font-bold flex items-center gap-3 transition-all hover:scale-105 shadow-[0_4px_16px_rgba(91,33,182,0.3)] hover:shadow-[0_8px_24px_rgba(91,33,182,0.4)] cursor-pointer"
               onClick={() => navigate("/allcourses")}
             >
-              <span className="relative z-10 flex items-center gap-2">
-                View All Courses <SiViaplay className="w-5 h-5 group-hover:animate-pulse" />
-              </span>
-              <div className="absolute inset-0 bg-[var(--neon-blue)] opacity-0 group-hover:opacity-10 transition-opacity"></div>
+              <span>View All Courses</span>
+              <SiViaplay className="w-5 h-5 text-[#FC8019]" />
             </button>
 
             <button
-              className="group relative px-8 py-3.5 bg-white text-black rounded-full text-base font-semibold overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] cursor-pointer"
+              className="px-8 py-3.5 bg-white hover:bg-[#FFF3E8] border-2 border-[#FC8019] text-[#FC8019] hover:text-[#E86F07] rounded-full text-base font-bold flex items-center gap-2 transition-all hover:scale-105 shadow-[0_4px_14px_rgba(252,128,25,0.15)] cursor-pointer"
               onClick={() => navigate("/searchwithai")}
             >
-              <span className="relative z-10 flex items-center gap-2">
-                Search with AI
-                <img src={ai} className="w-7 h-7 rounded-full ml-1 hidden lg:block" alt="AI" />
-                <img src={ai1} className="w-7 h-7 rounded-full ml-1 lg:hidden" alt="AI" />
-              </span>
+              <span>Search with AI</span>
+              <img src={ai} className="w-6 h-6 rounded-full ml-1 hidden lg:block" alt="AI" />
+              <img src={ai1} className="w-6 h-6 rounded-full ml-1 lg:hidden" alt="AI" />
             </button>
           </div>
         </div>

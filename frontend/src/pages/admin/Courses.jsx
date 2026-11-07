@@ -30,19 +30,19 @@ function Courses() {
   }, [dispatch])
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 text-[var(--body-text)] font-['Outfit']">
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 bg-[#FAFAFC] text-[#171717]">
       <div className="max-w-7xl mx-auto animate-fade-in">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
           <div className="flex items-center gap-4">
             <FaArrowLeftLong
-              className="text-2xl text-[var(--dark-brown)] hover:text-[var(--deep-green)] cursor-pointer transition-colors"
+              className="text-2xl text-[#171717] hover:text-[#5B21B6] cursor-pointer transition-colors"
               onClick={() => navigate("/dashboard")}
             />
-            <h1 className="text-3xl font-extrabold text-[var(--dark-brown)] tracking-tight">Your Courses</h1>
+            <h1 className="text-3xl font-black text-[#171717] tracking-tight">Your Courses</h1>
           </div>
 
           <button
-            className="w-full sm:w-auto px-6 py-3.5 bg-[#3E5F44] hover:bg-[#2e4733] text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+            className="w-full sm:w-auto px-6 py-3.5 bg-[#5B21B6] hover:bg-[#4C1D95] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(91,33,182,0.25)] cursor-pointer"
             onClick={() => navigate("/createcourses")}
           >
             <FaPlus /> Create Course
@@ -51,56 +51,56 @@ function Courses() {
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <ClipLoader size={40} color="var(--deep-green)" />
+            <ClipLoader size={40} color="#5B21B6" />
           </div>
         ) : (
           <>
             {/* Desktop Table View */}
-            <div className="hidden md:block glass-card rounded-3xl overflow-hidden border border-[var(--glass-border)] shadow-xl">
+            <div className="hidden md:block bg-white rounded-3xl overflow-hidden border border-[#EEEEF2] shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-white/80 border-b border-[var(--glass-border)]">
-                      <th className="py-5 px-6 text-xs uppercase tracking-wider font-bold text-[var(--accent-color)]">Course Detail</th>
-                      <th className="py-5 px-6 text-xs uppercase tracking-wider font-bold text-[var(--accent-color)] text-center">Price</th>
-                      <th className="py-5 px-6 text-xs uppercase tracking-wider font-bold text-[var(--accent-color)] text-center">Status</th>
-                      <th className="py-5 px-6 text-xs uppercase tracking-wider font-bold text-[var(--accent-color)] text-right">Actions</th>
+                    <tr className="bg-[#FAFAFC] border-b border-[#EEEEF2]">
+                      <th className="py-5 px-6 text-xs uppercase tracking-wider font-black text-[#5B21B6]">Course Detail</th>
+                      <th className="py-5 px-6 text-xs uppercase tracking-wider font-black text-[#5B21B6] text-center">Price</th>
+                      <th className="py-5 px-6 text-xs uppercase tracking-wider font-black text-[#5B21B6] text-center">Status</th>
+                      <th className="py-5 px-6 text-xs uppercase tracking-wider font-black text-[#5B21B6] text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[var(--glass-border)]">
+                  <tbody className="divide-y divide-[#EEEEF2]">
                     {creatorCourseData?.map((course, index) => (
-                      <tr key={index} className="group hover:bg-white/60 transition-colors">
+                      <tr key={index} className="group hover:bg-[#FAFAFC] transition-colors">
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-4">
                             <div className="relative flex-shrink-0">
                               <img
                                 src={course?.thumbnail || img1}
                                 alt={course?.title}
-                                className="relative w-20 h-12 object-cover rounded-lg border border-[var(--glass-border)] shadow-sm"
+                                className="relative w-20 h-12 object-cover rounded-xl border border-[#EEEEF2] shadow-sm"
                               />
                             </div>
-                            <span className="font-bold text-[var(--dark-brown)] group-hover:text-[var(--deep-green)] transition-colors line-clamp-1 max-w-[300px]">
+                            <span className="font-bold text-[#171717] group-hover:text-[#5B21B6] transition-colors line-clamp-1 max-w-[300px]">
                               {course?.title}
                             </span>
                           </div>
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <span className="text-[var(--deep-green)] font-extrabold">
+                          <span className="text-[#5B21B6] font-black">
                             {course?.price ? `₹${course?.price}` : <span className="text-gray-400 italic">Unset</span>}
                           </span>
                         </td>
                         <td className="py-4 px-6 text-center">
-                          <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
                             course?.isPublished 
-                              ? "bg-emerald-100 text-emerald-800 border border-emerald-300" 
-                              : "bg-amber-100 text-amber-800 border border-amber-300"
+                              ? "bg-emerald-50 text-[#16A34A] border border-emerald-200" 
+                              : "bg-[#FFF3E8] text-[#FC8019] border border-[#FED7AA]"
                           }`}>
                             {course?.isPublished ? "Published" : "Draft"}
                           </span>
                         </td>
                         <td className="py-4 px-6 text-right">
                           <button
-                            className="p-3 bg-white/80 border border-[var(--glass-border)] rounded-xl text-[var(--dark-brown)] hover:text-white hover:bg-[var(--deep-green)] transition-all active:scale-90 cursor-pointer shadow-sm"
+                            className="p-3 bg-[#F5F0FF] hover:bg-[#5B21B6] text-[#5B21B6] hover:text-white border border-[#DDD6FE] rounded-xl transition-all active:scale-90 cursor-pointer shadow-sm"
                             onClick={() => navigate(`/addcourses/${course?._id}`)}
                             title="Edit Course"
                           >
@@ -113,12 +113,12 @@ function Courses() {
                 </table>
               </div>
               {(!creatorCourseData || creatorCourseData.length === 0) && (
-                <div className="py-20 text-center text-[var(--dark-brown)] font-medium">
+                <div className="py-20 text-center text-[#666666] font-medium">
                   No courses found. Start by creating your first course!
                 </div>
               )}
-              <div className="bg-white/60 py-4 px-6 border-t border-[var(--glass-border)]">
-                <p className="text-xs text-[var(--accent-color)] text-center uppercase tracking-widest font-semibold">
+              <div className="bg-[#FAFAFC] py-4 px-6 border-t border-[#EEEEF2]">
+                <p className="text-xs text-[#666666] text-center uppercase tracking-wider font-bold">
                   A list of your managed courses
                 </p>
               </div>
@@ -127,33 +127,33 @@ function Courses() {
             {/* Mobile Card View */}
             <div className="md:hidden space-y-4">
               {creatorCourseData?.map((course, index) => (
-                <div key={index} className="glass-card p-5 rounded-2xl border border-[var(--glass-border)] flex flex-col gap-4 shadow-md">
+                <div key={index} className="bg-white p-5 rounded-2xl border border-[#EEEEF2] flex flex-col gap-4 shadow-sm">
                   <div className="flex gap-4 items-center">
                     <img
                       src={course?.thumbnail || img1}
                       alt=""
-                      className="w-16 h-16 rounded-xl object-cover border border-[var(--glass-border)] shadow-md"
+                      className="w-16 h-16 rounded-xl object-cover border border-[#EEEEF2] shadow-sm"
                     />
                     <div className="flex-1 min-w-0">
-                      <h2 className="font-bold text-[var(--dark-brown)] truncate text-lg">
+                      <h2 className="font-bold text-[#171717] truncate text-lg">
                         {course?.title}
                       </h2>
-                      <p className="text-[var(--deep-green)] font-extrabold text-sm mt-1">
+                      <p className="text-[#5B21B6] font-black text-sm mt-1">
                         {course?.price ? `₹${course?.price}` : "Price Unset"}
                       </p>
                     </div>
                     <button
-                      className="p-3 bg-white border border-[var(--glass-border)] text-[var(--dark-brown)] hover:text-[var(--deep-green)] rounded-xl active:scale-90 cursor-pointer shadow-sm"
+                      className="p-3 bg-[#F5F0FF] border border-[#DDD6FE] text-[#5B21B6] rounded-xl active:scale-90 cursor-pointer shadow-sm"
                       onClick={() => navigate(`/addcourses/${course?._id}`)}
                     >
                       <FaRegPenToSquare size={18} />
                     </button>
                   </div>
-                  <div className="flex items-center justify-between mt-2 pt-4 border-t border-[var(--glass-border)]">
-                    <span className={`px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                  <div className="flex items-center justify-between mt-2 pt-4 border-t border-[#EEEEF2]">
+                    <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
                       course?.isPublished 
-                        ? "bg-emerald-100 text-emerald-800 border border-emerald-300" 
-                        : "bg-amber-100 text-amber-800 border border-amber-300"
+                        ? "bg-emerald-50 text-[#16A34A] border border-emerald-200" 
+                        : "bg-[#FFF3E8] text-[#FC8019] border border-[#FED7AA]"
                     }`}>
                       {course?.isPublished ? "Published" : "Draft"}
                     </span>
@@ -161,7 +161,7 @@ function Courses() {
                 </div>
               ))}
               {(!creatorCourseData || creatorCourseData.length === 0) && (
-                <p className="text-center text-gray-500 py-10 font-medium">No courses found.</p>
+                <p className="text-center text-[#666666] py-10 font-medium">No courses found.</p>
               )}
             </div>
           </>

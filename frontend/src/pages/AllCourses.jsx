@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaArrowLeftLong, FaFilter, FaMagnifyingGlass, FaRobot } from "react-icons/fa6";
+import { FaArrowLeftLong, FaFilter, FaMagnifyingGlass } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 import aiIcon from "../assets/SearchAi.png";
@@ -60,13 +60,13 @@ function AllCourses() {
   }, [courseData, category, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[var(--primary-bg)] text-white">
+    <div className="min-h-screen bg-[#FAFAFC] text-[#171717]">
       <Nav />
       
       {/* Mobile Toggle */}
       <button
         onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-        className="fixed bottom-6 right-6 z-50 p-4 bg-[var(--neon-blue)] text-black rounded-full shadow-2xl md:hidden"
+        className="fixed bottom-6 right-6 z-50 p-4 bg-[#5B21B6] text-white rounded-full shadow-2xl md:hidden"
       >
         <FaFilter size={20} />
       </button>
@@ -74,37 +74,37 @@ function AllCourses() {
       <div className="flex pt-24">
         {/* Sidebar */}
         <aside className={`
-          fixed top-24 left-0 h-[calc(100vh-6rem)] w-72 bg-black/40 backdrop-blur-xl border-r border-white/5 p-8 transition-transform duration-300 z-40
+          fixed top-24 left-0 h-[calc(100vh-6rem)] w-72 bg-white border-r border-[#EEEEF2] p-8 transition-transform duration-300 z-40 shadow-sm
           ${isSidebarVisible ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
         `}>
-          <div className="flex items-center gap-3 mb-10 text-gray-400 hover:text-white cursor-pointer transition-colors" onClick={() => navigate("/")}>
+          <div className="flex items-center gap-3 mb-8 text-[#666666] hover:text-[#5B21B6] cursor-pointer transition-colors" onClick={() => navigate("/")}>
             <FaArrowLeftLong />
-            <span className="font-bold uppercase tracking-widest text-xs">Back to Home</span>
+            <span className="font-extrabold uppercase tracking-wider text-xs">Back to Home</span>
           </div>
 
           <button 
             onClick={() => navigate("/searchwithai")}
-            className="w-full mb-10 p-4 glass rounded-2xl flex items-center justify-center gap-3 border border-[var(--neon-blue)]/30 hover:border-[var(--neon-blue)] transition-all group"
+            className="w-full mb-8 p-3.5 bg-[#F5F0FF] rounded-2xl flex items-center justify-center gap-3 border border-[#DDD6FE] hover:border-[#7C3AED] transition-all group shadow-sm"
           >
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-[var(--neon-blue)]/50 group-hover:scale-110 transition-transform">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#7C3AED]/40 group-hover:scale-105 transition-transform">
                 <img src={aiIcon} alt="AI" className="w-full h-full object-cover" />
             </div>
-            <span className="font-bold text-sm text-[var(--neon-blue)]">Search with AI</span>
+            <span className="font-bold text-sm text-[#5B21B6]">Search with AI</span>
           </button>
 
-          <h2 className="text-sm font-black uppercase tracking-tighter text-gray-500 mb-6 px-2">Filter Categories</h2>
-          <div className="space-y-3">
+          <h2 className="text-xs font-black uppercase tracking-wider text-[#666666] mb-4 px-2">Filter Categories</h2>
+          <div className="space-y-2.5">
             {categories.map((cat) => (
               <label 
                 key={cat}
                 className={`
                   flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border
-                  ${category.includes(cat) ? 'bg-[var(--neon-blue)]/10 border-[var(--neon-blue)]/30 text-white' : 'hover:bg-white/5 border-transparent text-gray-400'}
+                  ${category.includes(cat) ? 'bg-[#F5F0FF] border-[#DDD6FE] text-[#5B21B6]' : 'hover:bg-gray-50 border-transparent text-[#666666]'}
                 `}
                 onClick={() => toggleCategory(cat)}
               >
-                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${category.includes(cat) ? 'bg-[var(--neon-blue)] border-transparent' : 'border-gray-600'}`}>
-                    {category.includes(cat) && <div className="w-1.5 h-1.5 bg-black rounded-full" />}
+                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${category.includes(cat) ? 'bg-[#5B21B6] border-[#5B21B6]' : 'border-gray-300'}`}>
+                    {category.includes(cat) && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
                 </div>
                 <span className="text-sm font-bold">{cat}</span>
               </label>
@@ -117,18 +117,18 @@ function AllCourses() {
           {/* Header & Search */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-12">
             <div>
-              <h1 className="text-4xl font-black text-white mb-2">Explore Courses</h1>
-              <p className="text-gray-500 font-medium">Discover your next skill from our curated library</p>
+              <h1 className="text-4xl font-black text-[#171717] mb-2">Explore Courses</h1>
+              <p className="text-[#666666] font-medium">Discover your next skill from our curated library</p>
             </div>
             
             <div className="relative group max-w-md w-full">
-              <FaMagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[var(--neon-blue)] transition-colors" />
+              <FaMagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#5B21B6] transition-colors" />
               <input 
                 type="text" 
                 placeholder="Search by title or topic..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-14 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-[var(--neon-blue)]/50 focus:bg-white/10 transition-all text-white placeholder:text-gray-600 font-medium"
+                className="w-full pl-14 pr-6 py-4 bg-white border border-[#EEEEF2] rounded-2xl focus:outline-none focus:border-[#7C3AED] transition-all text-[#171717] placeholder:text-gray-400 font-medium shadow-sm"
               />
             </div>
           </div>
@@ -136,8 +136,8 @@ function AllCourses() {
           {/* Results Grid */}
           {loading ? (
             <div className="flex flex-col items-center justify-center py-40 gap-4">
-                <ClipLoader color="#00F3FF" size={40} />
-                <span className="text-gray-500 font-bold uppercase tracking-widest text-xs">Loading Catalog...</span>
+                <ClipLoader color="#5B21B6" size={40} />
+                <span className="text-[#5B21B6] font-bold uppercase tracking-widest text-xs">Loading Catalog...</span>
             </div>
           ) : filterCourses.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-fade-in">
@@ -154,12 +154,12 @@ function AllCourses() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-40 glass rounded-[3rem] border border-white/5">
-              <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-700">
+            <div className="text-center py-40 bg-white rounded-3xl border border-[#EEEEF2] shadow-sm">
+              <div className="w-20 h-20 bg-[#F5F0FF] rounded-full flex items-center justify-center mx-auto mb-6 text-[#5B21B6]">
                 <FaMagnifyingGlass size={30} />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">No Courses Found</h2>
-              <p className="text-gray-500">Try adjusting your filters or search query</p>
+              <h2 className="text-2xl font-bold text-[#171717] mb-2">No Courses Found</h2>
+              <p className="text-[#666666] font-medium">Try adjusting your filters or search query</p>
             </div>
           )}
         </main>
@@ -169,4 +169,3 @@ function AllCourses() {
 }
 
 export default AllCourses;
-

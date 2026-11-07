@@ -64,17 +64,17 @@ function ResumeAnalyzer() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex justify-center text-[var(--body-text)] font-['Outfit']">
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex justify-center bg-[#FAFAFC] text-[#171717]">
       <div className="max-w-7xl w-full animate-fade-in flex flex-col lg:flex-row gap-8">
         
         {/* Left Side: Inputs */}
         <div className="lg:w-1/2 space-y-6">
-          <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] shadow-xl">
-            <h1 className="text-3xl font-extrabold text-[var(--dark-brown)] mb-2 flex items-center gap-3">
-              <FaFileAlt className="text-[var(--deep-green)]" />
+          <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] shadow-[0_6px_25px_rgba(91,33,182,0.06)]">
+            <h1 className="text-3xl font-black text-[#171717] mb-2 flex items-center gap-3">
+              <FaFileAlt className="text-[#5B21B6]" />
               AI Resume Analyzer
             </h1>
-            <p className="text-[var(--body-text)] mb-8 text-sm opacity-85">
+            <p className="text-[#666666] mb-8 text-sm font-medium">
               Upload an image of your resume or paste the text to get an ATS match score and actionable feedback.
             </p>
 
@@ -82,19 +82,19 @@ function ResumeAnalyzer() {
               {/* Image Upload Area */}
               {!resumeText && (
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold text-[var(--dark-brown)] mb-2 uppercase tracking-widest">
+                  <label className="block text-xs font-black text-[#171717] mb-2 uppercase tracking-wider">
                     Upload Resume Image
                   </label>
                   {!imagePreview ? (
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[var(--glass-border)] rounded-2xl cursor-pointer hover:border-[var(--neon-blue)] transition-all bg-white/70 hover:bg-white group">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#EEEEF2] rounded-2xl cursor-pointer hover:border-[#7C3AED] transition-all bg-[#FAFAFC] hover:bg-white group">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <FaImage className="text-3xl text-gray-400 group-hover:text-[var(--deep-green)] transition-colors mb-2" />
+                        <FaImage className="text-3xl text-gray-400 group-hover:text-[#5B21B6] transition-colors mb-2" />
                         <p className="text-sm text-gray-600 font-medium">Click to upload (JPG, PNG)</p>
                       </div>
                       <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                     </label>
                   ) : (
-                    <div className="relative rounded-2xl overflow-hidden border border-[var(--neon-blue)]/50 group">
+                    <div className="relative rounded-2xl overflow-hidden border border-[#7C3AED] group">
                       <img src={imagePreview} alt="Preview" className="w-full h-32 object-cover" />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <button onClick={removeImage} className="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition-colors">
@@ -110,15 +110,15 @@ function ResumeAnalyzer() {
               {!resumeImage && (
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="block text-xs font-bold text-[var(--dark-brown)] uppercase tracking-widest">
+                    <label className="block text-xs font-black text-[#171717] uppercase tracking-wider">
                       Paste Resume Text
                     </label>
                     {resumeText && (
-                      <button onClick={() => setResumeText('')} className="text-xs text-red-600 hover:text-red-700 font-bold uppercase tracking-wider">Clear</button>
+                      <button onClick={() => setResumeText('')} className="text-xs text-[#DC2626] hover:text-red-700 font-bold uppercase tracking-wider">Clear</button>
                     )}
                   </div>
                   <textarea
-                    className="w-full bg-white/90 border border-[var(--glass-border)] rounded-2xl p-4 text-[#1a1a1a] placeholder-gray-400 focus:outline-none focus:border-[var(--neon-blue)] transition-all h-64 custom-scrollbar shadow-sm font-medium"
+                    className="w-full bg-[#FAFAFC] border border-[#EEEEF2] rounded-2xl p-4 text-[#171717] placeholder-gray-400 focus:outline-none focus:border-[#7C3AED] transition-all h-64 shadow-sm font-medium"
                     placeholder="Or paste your entire resume content here..."
                     value={resumeText}
                     onChange={(e) => {
@@ -130,12 +130,12 @@ function ResumeAnalyzer() {
               )}
 
               <div>
-                <label className="block text-xs font-bold text-[var(--dark-brown)] mb-2 uppercase tracking-widest flex items-center gap-2">
-                  <FaBriefcase className="text-[var(--deep-green)]" />
+                <label className="block text-xs font-black text-[#171717] mb-2 uppercase tracking-wider flex items-center gap-2">
+                  <FaBriefcase className="text-[#5B21B6]" />
                   Target Job Description (Optional)
                 </label>
                 <textarea
-                  className="w-full bg-white/90 border border-[var(--glass-border)] rounded-2xl p-4 text-[#1a1a1a] placeholder-gray-400 focus:outline-none focus:border-[var(--neon-blue)] transition-all h-32 custom-scrollbar shadow-sm font-medium"
+                  className="w-full bg-[#FAFAFC] border border-[#EEEEF2] rounded-2xl p-4 text-[#171717] placeholder-gray-400 focus:outline-none focus:border-[#7C3AED] transition-all h-32 shadow-sm font-medium"
                   placeholder="Paste the job description you are applying for..."
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
@@ -145,7 +145,7 @@ function ResumeAnalyzer() {
               <button
                 onClick={handleAnalyze}
                 disabled={loading}
-                className="w-full bg-[#3E5F44] hover:bg-[#2e4733] text-white font-bold py-4 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-[#5B21B6] hover:bg-[#4C1D95] text-white font-bold py-4 rounded-2xl transition-all shadow-[0_4px_16px_rgba(91,33,182,0.25)] flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -163,30 +163,30 @@ function ResumeAnalyzer() {
         {/* Right Side: Results */}
         <div className="lg:w-1/2 space-y-6">
           {!result && !loading && (
-            <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] h-full flex flex-col items-center justify-center text-center text-gray-500 border-dashed border-2">
-              <FaFileAlt className="text-6xl mb-4 opacity-30 text-[var(--deep-green)]" />
-              <p className="text-xl font-bold text-[var(--dark-brown)]">Awaiting Resume</p>
-              <p className="text-sm mt-2">Your analysis results will appear here</p>
+            <div className="bg-white p-8 rounded-3xl border-2 border-dashed border-[#EEEEF2] h-full flex flex-col items-center justify-center text-center text-gray-400 shadow-sm">
+              <FaFileAlt className="text-6xl mb-4 text-[#DDD6FE]" />
+              <p className="text-xl font-bold text-[#171717]">Awaiting Resume</p>
+              <p className="text-sm mt-2 text-[#666666]">Your analysis results will appear here</p>
             </div>
           )}
 
           {loading && (
-            <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] h-full flex flex-col items-center justify-center shadow-lg">
-              <FaSpinner className="animate-spin text-[var(--deep-green)] text-5xl mb-4" />
-              <p className="text-[var(--dark-brown)] font-bold animate-pulse text-lg">Our AI is reviewing your resume...</p>
+            <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] h-full flex flex-col items-center justify-center shadow-md">
+              <FaSpinner className="animate-spin text-[#5B21B6] text-5xl mb-4" />
+              <p className="text-[#171717] font-bold animate-pulse text-lg">Our AI is reviewing your resume...</p>
             </div>
           )}
 
           {result && !loading && (
-            <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] space-y-8 animate-fade-in relative overflow-hidden h-fit shadow-xl">
+            <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] space-y-8 animate-fade-in relative overflow-hidden h-fit shadow-md">
               
               {/* Score Section */}
-              <div className="text-center pb-8 border-b border-[var(--glass-border)] relative z-10">
-                <h2 className="text-xs font-bold text-[var(--accent-color)] uppercase tracking-wider mb-4">ATS Match Score</h2>
-                <div className="inline-flex items-center justify-center w-32 h-32 rounded-full border-8 border-white bg-white/60 relative shadow-inner">
+              <div className="text-center pb-8 border-b border-[#EEEEF2] relative z-10">
+                <h2 className="text-xs font-black text-[#5B21B6] uppercase tracking-wider mb-4">ATS Match Score</h2>
+                <div className="inline-flex items-center justify-center w-32 h-32 rounded-full border-8 border-[#F5F0FF] bg-white relative shadow-sm">
                   <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                     <circle
-                      className="text-gray-200 stroke-current"
+                      className="text-gray-100 stroke-current"
                       strokeWidth="8"
                       cx="50"
                       cy="50"
@@ -194,7 +194,7 @@ function ResumeAnalyzer() {
                       fill="transparent"
                     />
                     <circle
-                      className={`${result.score >= 80 ? 'text-[var(--deep-green)]' : result.score >= 50 ? 'text-amber-500' : 'text-red-500'} stroke-current transition-all duration-1000 ease-out`}
+                      className={`${result.score >= 80 ? 'text-[#16A34A]' : result.score >= 50 ? 'text-[#FC8019]' : 'text-[#DC2626]'} stroke-current transition-all duration-1000 ease-out`}
                       strokeWidth="8"
                       strokeLinecap="round"
                       cx="50"
@@ -206,7 +206,7 @@ function ResumeAnalyzer() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center flex-col">
-                    <span className="text-4xl font-extrabold text-[var(--dark-brown)]">{result.score}</span>
+                    <span className="text-4xl font-black text-[#171717]">{result.score}</span>
                     <span className="text-xs text-gray-500 font-bold">/ 100</span>
                   </div>
                 </div>

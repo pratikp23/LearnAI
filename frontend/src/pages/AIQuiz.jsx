@@ -4,7 +4,7 @@ import { serverUrl } from "../App";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { toast } from "react-toastify";
-import { FiHelpCircle, FiCheck, FiX, FiArrowRight, FiRotateCcw, FiZap, FiClock } from "react-icons/fi";
+import { FiCheck, FiX, FiArrowRight, FiRotateCcw, FiZap, FiClock } from "react-icons/fi";
 
 const AIQuiz = () => {
   const [topic, setTopic] = useState("");
@@ -28,18 +28,15 @@ const AIQuiz = () => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (isTimedMode && timeLeft === 0 && selectedOption === null) {
-      // Time's up!
       handleTimeUp();
     }
     return () => clearInterval(timer);
   }, [timerActive, timeLeft, selectedOption, isTimedMode]);
 
   const handleTimeUp = () => {
-    setSelectedOption(-1); // Special value for time up
+    setSelectedOption(-1);
     toast.warning("Time is up!");
     setExplanation(questions[currentIndex].explanation);
-    
-    // Track mistake (time out)
     trackMistakeOnServer(-1);
   };
 
@@ -108,48 +105,51 @@ const AIQuiz = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--primary-bg)] text-[var(--body-text)] font-['Outfit']">
+    <div className="min-h-screen bg-[#FAFAFC] text-[#171717]">
       <Nav />
       
       <div className="pt-32 pb-24 px-6">
         <div className="container mx-auto max-w-3xl">
           {!questions.length ? (
             <div className="text-center animate-fade-in">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--dark-brown)] mb-3">Technical Quiz Generator</h1>
-              <p className="text-[var(--body-text)] text-lg mb-10 opacity-85">Test your skills in Programming, IT, and Computer Science.</p>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F5F0FF] border border-[#DDD6FE] text-xs font-black uppercase tracking-wider text-[#5B21B6] mb-4">
+                ⚡ Instant Assessment
+              </div>
+              <h1 className="text-4xl md:text-5xl font-black text-[#171717] mb-3">Technical Quiz Generator</h1>
+              <p className="text-[#666666] text-base md:text-lg mb-10 font-medium">Test your knowledge across programming, system design, and AI.</p>
               
-              <form onSubmit={startQuiz} className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] max-w-xl mx-auto shadow-xl">
+              <form onSubmit={startQuiz} className="bg-white p-8 rounded-3xl border border-[#EEEEF2] max-w-xl mx-auto shadow-[0_6px_25px_rgba(91,33,182,0.06)]">
                 <input
                   type="text"
-                  placeholder="Enter technical topic (e.g. React, Python, Cloud...)"
-                  className="w-full input-dark rounded-2xl px-6 py-4 outline-none mb-6 font-medium shadow-sm"
+                  placeholder="Enter topic (e.g. React, Python, Cloud...)"
+                  className="w-full bg-[#FAFAFC] border border-[#EEEEF2] focus:border-[#7C3AED] rounded-2xl px-6 py-4 outline-none mb-6 font-medium shadow-sm text-[#171717]"
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                 />
                 
                 <div className="mb-8 space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-white/80 rounded-2xl border border-[var(--glass-border)] shadow-sm">
+                  <div className="flex items-center justify-between p-4 bg-[#FAFAFC] rounded-2xl border border-[#EEEEF2]">
                     <div className="flex items-center gap-3">
-                      <FiClock className={isTimedMode ? "text-[var(--deep-green)]" : "text-gray-400"} />
-                      <span className="font-bold text-[var(--dark-brown)]">Timed Challenge</span>
+                      <FiClock className={isTimedMode ? "text-[#5B21B6]" : "text-gray-400"} />
+                      <span className="font-bold text-[#171717]">Timed Challenge</span>
                     </div>
                     <button
                       type="button"
                       onClick={() => setIsTimedMode(!isTimedMode)}
-                      className={`w-14 h-8 rounded-full transition-all relative ${isTimedMode ? 'bg-[var(--deep-green)]' : 'bg-gray-300'}`}
+                      className={`w-14 h-8 rounded-full transition-all relative ${isTimedMode ? 'bg-[#5B21B6]' : 'bg-gray-300'}`}
                     >
                       <div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all shadow-md ${isTimedMode ? 'left-7' : 'left-1'}`}></div>
                     </button>
                   </div>
 
                   {isTimedMode && (
-                    <div className="flex items-center justify-between p-4 bg-white/80 rounded-2xl border border-[var(--glass-border)] animate-fade-in shadow-sm">
-                      <span className="text-sm font-bold text-[var(--dark-brown)] uppercase tracking-wider">Seconds per question</span>
+                    <div className="flex items-center justify-between p-4 bg-[#FAFAFC] rounded-2xl border border-[#EEEEF2] animate-fade-in">
+                      <span className="text-sm font-bold text-[#171717] uppercase tracking-wider">Seconds per question</span>
                       <input
                         type="number"
                         min="5"
                         max="120"
-                        className="w-20 bg-white border border-[var(--glass-border)] rounded-xl px-3 py-2 text-center font-bold text-[#1a1a1a] focus:border-[var(--neon-blue)] outline-none shadow-sm"
+                        className="w-20 bg-white border border-[#EEEEF2] rounded-xl px-3 py-2 text-center font-bold text-[#171717] focus:border-[#7C3AED] outline-none shadow-sm"
                         value={customTime}
                         onChange={(e) => setCustomTime(parseInt(e.target.value) || 30)}
                       />
@@ -159,7 +159,7 @@ const AIQuiz = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#3E5F44] hover:bg-[#2e4733] text-white py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all hover:scale-[1.02] shadow-lg cursor-pointer"
+                  className="w-full bg-[#5B21B6] hover:bg-[#4C1D95] text-white py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all hover:scale-[1.01] shadow-[0_4px_16px_rgba(91,33,182,0.25)] cursor-pointer"
                 >
                   {loading ? <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><FiZap /> Generate Quiz</>}
                 </button>
@@ -168,33 +168,33 @@ const AIQuiz = () => {
           ) : !showResult ? (
             <div className="animate-fade-in">
               <div className="flex items-center justify-between mb-8">
-                <span className="text-[var(--deep-green)] font-extrabold uppercase tracking-wider text-sm">Question {currentIndex + 1} / {questions.length}</span>
+                <span className="text-[#5B21B6] font-black uppercase tracking-wider text-sm">Question {currentIndex + 1} / {questions.length}</span>
                 <div className="flex items-center gap-4">
                     {isTimedMode && (
-                        <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${timeLeft < 10 ? 'border-red-500 text-red-500 animate-pulse' : 'border-[var(--deep-green)] text-[var(--deep-green)]'} font-bold transition-all bg-white shadow-sm`}>
+                        <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${timeLeft < 10 ? 'border-red-500 text-red-500 animate-pulse' : 'border-[#5B21B6] text-[#5B21B6]'} font-bold transition-all bg-white shadow-sm`}>
                             {timeLeft}
                         </div>
                     )}
-                    <span className="text-[var(--dark-brown)] font-bold">Score: {score}</span>
+                    <span className="text-[#171717] font-bold">Score: {score}</span>
                 </div>
               </div>
 
-              <div className="glass-card p-10 rounded-[35px] border border-[var(--glass-border)] relative overflow-hidden shadow-xl">
-                <h2 className="text-2xl font-bold text-[var(--dark-brown)] mb-8 leading-tight">{questions[currentIndex].question}</h2>
+              <div className="bg-white p-10 rounded-[2rem] border border-[#EEEEF2] relative overflow-hidden shadow-md">
+                <h2 className="text-2xl font-bold text-[#171717] mb-8 leading-tight">{questions[currentIndex].question}</h2>
                 
-                <div className="space-y-4">
+                <div className="space-y-3.5">
                   {questions[currentIndex].options.map((option, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleOptionSelect(idx)}
                       className={`w-full text-left p-5 rounded-2xl border-2 font-medium transition-all flex items-center justify-between cursor-pointer shadow-sm ${
                         selectedOption === null 
-                          ? "bg-white/90 border-[var(--glass-border)] text-[#1a1a1a] hover:bg-white hover:border-[var(--neon-blue)]" 
+                          ? "bg-white border-[#EEEEF2] text-[#171717] hover:bg-[#F5F0FF] hover:border-[#DDD6FE]" 
                           : idx === questions[currentIndex].correctAnswerIndex 
                             ? "bg-emerald-50 border-emerald-500 text-emerald-800 font-bold" 
                             : selectedOption === idx 
                               ? "bg-red-50 border-red-500 text-red-800 font-bold" 
-                              : "bg-white/50 border-[var(--glass-border)] text-gray-400 opacity-60"
+                              : "bg-gray-50 border-[#EEEEF2] text-gray-400 opacity-60"
                       }`}
                     >
                       <span className="text-base">{option}</span>
@@ -205,9 +205,9 @@ const AIQuiz = () => {
                 </div>
 
                 {explanation && (
-                  <div className="mt-8 p-6 bg-white/90 rounded-2xl border border-[var(--glass-border)] animate-slide-up shadow-sm">
-                    <p className="text-xs text-[var(--accent-color)] mb-2 font-bold uppercase tracking-widest">Explanation</p>
-                    <p className="text-[var(--body-text)]">{explanation}</p>
+                  <div className="mt-8 p-6 bg-[#FAFAFC] rounded-2xl border border-[#EEEEF2] animate-slide-up">
+                    <p className="text-xs text-[#5B21B6] mb-2 font-black uppercase tracking-wider">Explanation</p>
+                    <p className="text-[#666666] font-medium leading-relaxed">{explanation}</p>
                   </div>
                 )}
 
@@ -215,7 +215,7 @@ const AIQuiz = () => {
                   <div className="flex justify-end mt-8">
                     <button
                       onClick={nextQuestion}
-                      className="bg-[#3E5F44] hover:bg-[#2e4733] text-white px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 hover:scale-105 transition-all shadow-md cursor-pointer"
+                      className="bg-[#FC8019] hover:bg-[#E86F07] text-white px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 hover:scale-105 transition-all shadow-md cursor-pointer"
                     >
                       {currentIndex === questions.length - 1 ? "Show Results" : "Next Question"} <FiArrowRight />
                     </button>
@@ -225,16 +225,16 @@ const AIQuiz = () => {
             </div>
           ) : (
             <div className="text-center animate-fade-in">
-              <div className="w-20 h-20 bg-green-100 text-green-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md border-2 border-green-500">
+              <div className="w-20 h-20 bg-emerald-100 text-[#16A34A] rounded-full flex items-center justify-center mx-auto mb-6 shadow-md border-2 border-[#16A34A]">
                 <FiCheck size={40} />
               </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--dark-brown)] mb-3">Quiz Completed!</h1>
-              <p className="text-[var(--body-text)] text-xl mb-8 opacity-85">You scored {score} out of {questions.length}</p>
+              <h1 className="text-4xl md:text-5xl font-black text-[#171717] mb-3">Quiz Completed!</h1>
+              <p className="text-[#666666] text-xl mb-8 font-medium">You scored {score} out of {questions.length}</p>
               
               <div className="flex justify-center gap-4">
                 <button
                   onClick={() => setQuestions([])}
-                  className="bg-[#3E5F44] hover:bg-[#2e4733] text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 transition-all shadow-lg cursor-pointer"
+                  className="bg-[#5B21B6] hover:bg-[#4C1D95] text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 transition-all shadow-md cursor-pointer"
                 >
                   <FiRotateCcw /> Try Again
                 </button>

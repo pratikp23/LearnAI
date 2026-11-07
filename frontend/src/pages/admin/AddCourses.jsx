@@ -109,57 +109,57 @@ function AddCourses() {
     }
 
     return (
-        <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8">
+        <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 bg-[#FAFAFC] text-[#171717]">
             <div className="max-w-5xl mx-auto animate-fade-in">
                 {/* Header Section */}
-                <div className="glass-card p-8 rounded-3xl mb-10 flex flex-col md:flex-row items-center justify-between gap-6 border border-[#EADBC8] shadow-sm">
+                <div className="bg-white p-8 rounded-3xl mb-10 flex flex-col md:flex-row items-center justify-between gap-6 border border-[#EEEEF2] shadow-sm">
                     <div className="flex items-center gap-6">
                         <FaArrowLeftLong
-                            className="text-2xl text-[#8B6B4A] hover:text-[var(--deep-green)] cursor-pointer transition-colors"
+                            className="text-2xl text-[#171717] hover:text-[#5B21B6] cursor-pointer transition-colors"
                             onClick={() => navigate("/courses")}
                         />
                         <div>
-                            <h2 className="text-2xl font-bold text-[var(--dark-brown)] tracking-tight">Course Management</h2>
-                            <p className="text-[#665a4e] text-sm mt-1">Refine your curriculum and publishing settings.</p>
+                            <h2 className="text-2xl font-black text-[#171717] tracking-tight">Course Management</h2>
+                            <p className="text-[#666666] text-sm mt-1 font-medium">Refine your curriculum and publishing settings.</p>
                         </div>
                     </div>
                     <button
-                        className="w-full md:w-auto px-6 py-3 bg-[var(--deep-green)] text-white font-extrabold rounded-xl hover:bg-[var(--neon-blue)] transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                        className="w-full md:w-auto px-6 py-3.5 bg-[#5B21B6] hover:bg-[#4C1D95] text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(91,33,182,0.25)] cursor-pointer"
                         onClick={() => navigate(`/createlecture/${selectedCourse?._id}`)}
                     >
-                        <FaCirclePlay /> Manage Lectures
+                        <FaCirclePlay className="text-[#FC8019]" /> Manage Lectures
                     </button>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     {/* Left Column: Main Info */}
                     <div className="lg:col-span-2 space-y-8">
-                        <div className="glass-card p-8 rounded-3xl border border-[#EADBC8] shadow-sm">
+                        <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] shadow-sm">
                             <div className="flex items-center gap-3 mb-8">
-                                <FaCircleInfo className="text-[var(--deep-green)]" />
-                                <h3 className="text-xl font-bold text-[var(--dark-brown)] uppercase tracking-wider">Basic Information</h3>
+                                <FaCircleInfo className="text-[#5B21B6]" />
+                                <h3 className="text-xl font-bold text-[#171717] uppercase tracking-wider">Basic Information</h3>
                             </div>
                             
                             <form className="space-y-6" onSubmit={editCourseHandler}>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-[#8B6B4A] uppercase tracking-widest ml-1">Title</label>
-                                    <input type="text" className="w-full px-5 py-4 input-dark rounded-xl font-medium" placeholder="Course Title" onChange={(e) => setTitle(e.target.value)} value={title} required />
+                                    <label className="text-xs font-black text-[#171717] uppercase tracking-wider ml-1">Title</label>
+                                    <input type="text" className="w-full px-5 py-3.5 bg-[#FAFAFC] border border-[#EEEEF2] focus:border-[#7C3AED] rounded-xl font-medium text-[#171717] outline-none transition-all shadow-sm" placeholder="Course Title" onChange={(e) => setTitle(e.target.value)} value={title} required />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-[#8B6B4A] uppercase tracking-widest ml-1">Subtitle</label>
-                                    <input type="text" className="w-full px-5 py-4 input-dark rounded-xl font-medium" placeholder="Hook your students with a great subtitle" onChange={(e) => setSubTitle(e.target.value)} value={subTitle} />
+                                    <label className="text-xs font-black text-[#171717] uppercase tracking-wider ml-1">Subtitle</label>
+                                    <input type="text" className="w-full px-5 py-3.5 bg-[#FAFAFC] border border-[#EEEEF2] focus:border-[#7C3AED] rounded-xl font-medium text-[#171717] outline-none transition-all shadow-sm" placeholder="Hook your students with a great subtitle" onChange={(e) => setSubTitle(e.target.value)} value={subTitle} />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-[#8B6B4A] uppercase tracking-widest ml-1">Detailed Description</label>
-                                    <textarea className="w-full px-5 py-4 input-dark rounded-xl h-40 resize-none font-medium" placeholder="What will students learn in this course?" onChange={(e) => setDescription(e.target.value)} value={description}></textarea>
+                                    <label className="text-xs font-black text-[#171717] uppercase tracking-wider ml-1">Detailed Description</label>
+                                    <textarea className="w-full px-5 py-3.5 bg-[#FAFAFC] border border-[#EEEEF2] focus:border-[#7C3AED] rounded-xl h-40 resize-none font-medium text-[#171717] outline-none transition-all shadow-sm" placeholder="What will students learn in this course?" onChange={(e) => setDescription(e.target.value)} value={description}></textarea>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-[#8B6B4A] uppercase tracking-widest ml-1">Category</label>
-                                        <select className="w-full px-5 py-4 input-dark rounded-xl font-medium appearance-none cursor-pointer" onChange={(e) => setCategory(e.target.value)} value={category} required>
+                                        <label className="text-xs font-black text-[#171717] uppercase tracking-wider ml-1">Category</label>
+                                        <select className="w-full px-5 py-3.5 bg-[#FAFAFC] border border-[#EEEEF2] focus:border-[#7C3AED] rounded-xl font-medium appearance-none cursor-pointer text-[#171717] outline-none shadow-sm" onChange={(e) => setCategory(e.target.value)} value={category} required>
                                             <option value="">Select Category</option>
                                             <option value="App Development">App Development</option>
                                             <option value="AI/ML">AI/ML</option>
@@ -173,8 +173,8 @@ function AddCourses() {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-[#8B6B4A] uppercase tracking-widest ml-1">Level</label>
-                                        <select className="w-full px-5 py-4 input-dark rounded-xl font-medium appearance-none cursor-pointer" onChange={(e) => setLevel(e.target.value)} value={level} required>
+                                        <label className="text-xs font-black text-[#171717] uppercase tracking-wider ml-1">Level</label>
+                                        <select className="w-full px-5 py-3.5 bg-[#FAFAFC] border border-[#EEEEF2] focus:border-[#7C3AED] rounded-xl font-medium appearance-none cursor-pointer text-[#171717] outline-none shadow-sm" onChange={(e) => setLevel(e.target.value)} value={level} required>
                                             <option value="">Select Level</option>
                                             <option value="Beginner">Beginner</option>
                                             <option value="Intermediate">Intermediate</option>
@@ -182,14 +182,14 @@ function AddCourses() {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-[#8B6B4A] uppercase tracking-widest ml-1">Price (INR)</label>
-                                        <input type="number" className="w-full px-5 py-4 input-dark rounded-xl font-bold text-[var(--deep-green)]" placeholder="₹ 0.00" onChange={(e) => setPrice(e.target.value)} value={price} required />
+                                        <label className="text-xs font-black text-[#171717] uppercase tracking-wider ml-1">Price (INR)</label>
+                                        <input type="number" className="w-full px-5 py-3.5 bg-[#FAFAFC] border border-[#EEEEF2] focus:border-[#7C3AED] rounded-xl font-black text-[#5B21B6] outline-none transition-all shadow-sm" placeholder="₹ 0.00" onChange={(e) => setPrice(e.target.value)} value={price} required />
                                     </div>
                                 </div>
 
                                 <div className="pt-8 flex items-center gap-4">
-                                    <button type="button" className="px-8 py-4 bg-white/70 hover:bg-white text-[var(--dark-brown)] border border-[#EADBC8] font-bold rounded-xl transition-all cursor-pointer" onClick={() => navigate("/courses")}>Cancel</button>
-                                    <button type="submit" className="flex-1 py-4 bg-[var(--deep-green)] hover:bg-[var(--neon-blue)] text-white font-extrabold text-lg rounded-xl shadow-md transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center" disabled={loading}>
+                                    <button type="button" className="px-8 py-4 bg-white hover:bg-gray-50 text-[#171717] border border-[#EEEEF2] font-bold rounded-xl transition-all cursor-pointer shadow-sm" onClick={() => navigate("/courses")}>Cancel</button>
+                                    <button type="submit" className="flex-1 py-4 bg-[#5B21B6] hover:bg-[#4C1D95] text-white font-black text-lg rounded-xl shadow-[0_4px_16px_rgba(91,33,182,0.25)] hover:shadow-[0_6px_22px_rgba(91,33,182,0.35)] transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center" disabled={loading}>
                                         {loading ? <ClipLoader size={24} color="white" /> : "Save Course Details"}
                                     </button>
                                 </div>
@@ -200,24 +200,24 @@ function AddCourses() {
                     {/* Right Column: Media & Publish */}
                     <div className="space-y-8">
                         {/* Thumbnail Upload */}
-                        <div className="glass-card p-8 rounded-3xl border border-[#EADBC8] shadow-sm">
-                            <h3 className="text-lg font-bold text-[var(--dark-brown)] mb-6 uppercase tracking-wider text-center">Course Thumbnail</h3>
+                        <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] shadow-sm">
+                            <h3 className="text-lg font-bold text-[#171717] mb-6 uppercase tracking-wider text-center">Course Thumbnail</h3>
                             <div className="relative group cursor-pointer" onClick={() => thumb.current.click()}>
-                                <div className="relative aspect-video rounded-2xl overflow-hidden border-2 border-[#EADBC8] group-hover:border-[var(--deep-green)] transition-all shadow-sm">
+                                <div className="relative aspect-video rounded-2xl overflow-hidden border-2 border-[#EEEEF2] group-hover:border-[#7C3AED] transition-all shadow-sm">
                                     <img src={frontendImage} alt="Thumbnail" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
                                         <FaCloudArrowUp size={30} className="mb-2" />
                                         <span className="text-xs font-bold uppercase tracking-widest">Update Image</span>
                                     </div>
                                 </div>
                                 <input type="file" ref={thumb} hidden onChange={handleThumbnail} accept='image/*' />
                             </div>
-                            <p className="text-[11px] text-[#8B6B4A] mt-4 text-center uppercase tracking-widest font-semibold">Recommended: 1280x720 (PNG/JPG)</p>
+                            <p className="text-[11px] text-[#666666] mt-4 text-center uppercase tracking-wider font-semibold">Recommended: 1280x720 (PNG/JPG)</p>
                         </div>
 
                         {/* Status & Delete */}
-                        <div className="glass-card p-8 rounded-3xl border border-[#EADBC8] shadow-sm space-y-6">
-                            <h3 className="text-lg font-bold text-[var(--dark-brown)] uppercase tracking-wider text-center">Publishing</h3>
+                        <div className="bg-white p-8 rounded-3xl border border-[#EEEEF2] shadow-sm space-y-6">
+                            <h3 className="text-lg font-bold text-[#171717] uppercase tracking-wider text-center">Publishing</h3>
                             
                             <div className="flex flex-col gap-4">
                                 {!isPublished ? (
@@ -229,7 +229,7 @@ function AddCourses() {
                                     </button>
                                 ) : (
                                     <button 
-                                        className="w-full py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2"
+                                        className="w-full py-4 bg-[#FC8019] hover:bg-[#E86F07] text-white rounded-xl font-bold transition-all shadow-sm cursor-pointer flex items-center justify-center gap-2"
                                         onClick={() => setIsPublished(false)}
                                     >
                                         Hide from Public (Draft)

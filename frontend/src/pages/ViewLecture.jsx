@@ -40,25 +40,25 @@ function ViewLecture() {
   }, [selectedCourse]);
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex justify-center text-[var(--body-text)] font-['Outfit']">
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex justify-center bg-[#FAFAFC] text-[#171717]">
       <div className="max-w-7xl w-full animate-fade-in flex flex-col lg:flex-row gap-8">
         
         {/* Left - Video Player & Info */}
         <div className="lg:w-2/3 space-y-6">
-          <div className="glass-card p-5 rounded-3xl border border-[var(--glass-border)] flex items-center justify-between shadow-md">
+          <div className="bg-white p-5 rounded-2xl border border-[#EEEEF2] flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-4">
               <FaArrowLeftLong 
-                className="text-xl text-[var(--dark-brown)] hover:text-[var(--deep-green)] cursor-pointer transition-colors" 
+                className="text-xl text-[#171717] hover:text-[#5B21B6] cursor-pointer transition-colors" 
                 onClick={() => navigate(`/viewcourse/${courseId}`)} 
               />
               <div>
-                <h1 className="text-xl font-bold text-[var(--dark-brown)] line-clamp-1">{selectedCourse?.title}</h1>
-                <p className="text-xs text-[var(--accent-color)] font-bold uppercase tracking-wider">{selectedCourse?.category} • {selectedCourse?.level}</p>
+                <h1 className="text-xl font-bold text-[#171717] line-clamp-1">{selectedCourse?.title}</h1>
+                <p className="text-xs text-[#666666] font-bold uppercase tracking-wider">{selectedCourse?.category} • {selectedCourse?.level}</p>
               </div>
             </div>
           </div>
 
-          <div className="glass-card overflow-hidden rounded-[2rem] border border-[var(--glass-border)] shadow-xl bg-white">
+          <div className="overflow-hidden rounded-[2rem] border border-[#EEEEF2] shadow-md bg-white">
             <div className="aspect-video w-full bg-black flex items-center justify-center relative">
               {selectedLecture?.videoUrl ? (
                 selectedLecture.videoUrl.includes("youtube.com") || selectedLecture.videoUrl.includes("youtu.be") ? (
@@ -87,9 +87,9 @@ function ViewLecture() {
               )}
             </div>
             <div className="p-8">
-              <h2 className="text-2xl font-bold text-[var(--dark-brown)] mb-2">{selectedLecture?.lectureTitle || "Welcome to the Course"}</h2>
-              <div className="h-1 w-16 bg-[var(--deep-green)] rounded-full mb-4"></div>
-              <p className="text-[var(--body-text)] text-sm leading-relaxed opacity-85">
+              <h2 className="text-2xl font-bold text-[#171717] mb-2">{selectedLecture?.lectureTitle || "Welcome to the Course"}</h2>
+              <div className="h-1 w-16 bg-[#5B21B6] rounded-full mb-4"></div>
+              <p className="text-[#666666] text-sm leading-relaxed font-medium">
                 Enjoy your learning journey. This lecture covers key concepts in {selectedCourse?.title}. 
                 Make sure to take notes and practice the concepts demonstrated in the video.
               </p>
@@ -101,14 +101,14 @@ function ViewLecture() {
         <div className="lg:w-1/3 space-y-8">
           
           {/* Lecture List */}
-          <div className="glass-card p-6 rounded-[2rem] border border-[var(--glass-border)] h-fit shadow-md">
-            <h2 className="text-xl font-bold text-[var(--dark-brown)] mb-6 flex items-center justify-between">
+          <div className="bg-white p-6 rounded-[2rem] border border-[#EEEEF2] h-fit shadow-sm">
+            <h2 className="text-xl font-bold text-[#171717] mb-6 flex items-center justify-between">
               Curriculum
-              <span className="text-xs text-[var(--deep-green)] font-bold uppercase tracking-wider px-3 py-1 bg-[var(--neon-blue)]/15 rounded-md border border-[var(--neon-blue)]/30">
+              <span className="text-xs text-[#5B21B6] font-black uppercase tracking-wider px-3 py-1 bg-[#F5F0FF] rounded-full border border-[#DDD6FE]">
                 {selectedCourse?.lectures?.length || 0} Modules
               </span>
             </h2>
-            <div className="space-y-3 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
+            <div className="space-y-3 overflow-y-auto max-h-[500px] pr-2">
               {selectedCourse?.lectures?.length > 0 ? (
                 selectedCourse.lectures.map((lecture, index) => (
                   <button
@@ -116,32 +116,32 @@ function ViewLecture() {
                     onClick={() => setSelectedLecture(lecture)}
                     className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all group cursor-pointer ${
                       selectedLecture?._id === lecture._id
-                        ? 'bg-[var(--deep-green)] text-white border-[var(--deep-green)] shadow-md'
-                        : 'bg-white/80 border-[var(--glass-border)] text-[var(--body-text)] hover:bg-white hover:border-[var(--neon-blue)]'
+                        ? 'bg-[#5B21B6] text-white border-[#5B21B6] shadow-sm'
+                        : 'bg-white border-[#EEEEF2] text-[#171717] hover:bg-[#F5F0FF] hover:border-[#DDD6FE]'
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <span className={`text-xs font-extrabold ${selectedLecture?._id === lecture._id ? 'text-white' : 'text-[var(--accent-color)]'}`}>
+                      <span className={`text-xs font-black ${selectedLecture?._id === lecture._id ? 'text-white' : 'text-[#5B21B6]'}`}>
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <h4 className={`text-sm font-bold truncate max-w-[170px] ${selectedLecture?._id === lecture._id ? 'text-white' : 'text-[var(--dark-brown)]'}`}>
+                      <h4 className={`text-sm font-bold truncate max-w-[170px] ${selectedLecture?._id === lecture._id ? 'text-white' : 'text-[#171717]'}`}>
                         {lecture.lectureTitle}
                       </h4>
                     </div>
-                    <FaPlay size={12} className={selectedLecture?._id === lecture._id ? 'text-white' : 'text-[var(--deep-green)]'} />
+                    <FaPlay size={12} className={selectedLecture?._id === lecture._id ? 'text-white' : 'text-[#FC8019]'} />
                   </button>
                 ))
               ) : (
-                <p className="text-gray-500 italic text-center py-10 font-medium">No lectures available.</p>
+                <p className="text-gray-400 italic text-center py-10 font-medium">No lectures available.</p>
               )}
             </div>
           </div>
 
           {/* Instructor Card */}
-          <div className="glass-card p-6 rounded-[2rem] border border-[var(--glass-border)] shadow-md">
-            <h3 className="text-xs font-bold text-[var(--accent-color)] uppercase tracking-wider mb-4">Course Instructor</h3>
+          <div className="bg-white p-6 rounded-[2rem] border border-[#EEEEF2] shadow-sm">
+            <h3 className="text-xs font-black text-[#5B21B6] uppercase tracking-wider mb-4">Course Instructor</h3>
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-[var(--neon-blue)] shadow-sm shrink-0">
+              <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-[#7C3AED] shadow-sm shrink-0">
                 {creatorData?.photoUrl ? (
                   <img
                     src={creatorData.photoUrl}
@@ -150,13 +150,13 @@ function ViewLecture() {
                     className="w-full h-full object-cover"
                   />
                 ) : null}
-                <div className={`w-full h-full bg-[#3E5F44] flex items-center justify-center text-white font-bold text-xl ${creatorData?.photoUrl ? 'hidden' : 'flex'}`}>
+                <div className={`w-full h-full bg-gradient-to-tr from-[#5B21B6] to-[#7C3AED] flex items-center justify-center text-white font-bold text-xl ${creatorData?.photoUrl ? 'hidden' : 'flex'}`}>
                   {creatorData?.name ? creatorData.name.slice(0, 1).toUpperCase() : "I"}
                 </div>
               </div>
               <div className="overflow-hidden">
-                <h4 className="text-[var(--dark-brown)] font-bold text-base truncate">{creatorData?.name || "LearnAI Mentor"}</h4>
-                <p className="text-xs text-[var(--accent-color)] font-semibold truncate">
+                <h4 className="text-[#171717] font-bold text-base truncate">{creatorData?.name || "LearnAI Mentor"}</h4>
+                <p className="text-xs text-[#666666] font-medium truncate">
                   {creatorData?.description || 'Subject Matter Expert'}
                 </p>
               </div>
