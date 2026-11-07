@@ -30,22 +30,22 @@ export const signUp=async (req,res)=>{
          console.log("signUp body:", req.body)
          let {name,email,password,role,otp}= req.body
          if (!otp) {
-             return res.status(400).json({message:"OTP is required for verification"})
+             return res.status(400).json({message:"A verification code is required to complete registration."})
          }
          let otpRecord = await Otp.findOne({email})
          if (!otpRecord || otpRecord.otp !== otp) {
-             return res.status(400).json({message:"Invalid or expired OTP"})
+             return res.status(400).json({message:"Invalid or expired verification code. Please try again."})
          }
          
          let existUser= await User.findOne({email})
          if(existUser){
-             return res.status(400).json({message:"email already exist"})
+             return res.status(400).json({message:"An account with this email address already exists. Please log in instead."})
          }
          if(!validator.isEmail(email)){
-             return res.status(400).json({message:"Please enter valid Email"})
+             return res.status(400).json({message:"Please enter a valid email address."})
          }
          if(password.length < 8){
-             return res.status(400).json({message:"Please enter a Strong Password"})
+             return res.status(400).json({message:"Password must be at least 8 characters long."})
          }
          
          let hashPassword = await bcrypt.hash(password,10)
@@ -70,7 +70,7 @@ export const signUp=async (req,res)=>{
  
     } catch (error) {
          console.log("signUp error:", error)
-         return res.status(500).json({message:`signUp Error ${error}`})
+         return res.status(500).json({message:"Unable to complete registration at this time. Please try again."})
     }
 }
 
@@ -93,7 +93,7 @@ export const login=async(req,res)=>{
         let isMatch =await bcrypt.compare(password, user.password)
          console.log("Password match:", isMatch)
         if(!isMatch){
-            return res.status(400).json({message:"incorrect Password"})
+            return res.status(400).json({message:"Incorrect password. Please verify your credentials and try again."})
         }
         let token =await genToken(user._id)
         res.cookie("token",token,{
@@ -106,7 +106,7 @@ export const login=async(req,res)=>{
 
     } catch (error) {
         console.log("login error:", error)
-        return res.status(500).json({message:`login Error ${error}`})
+        return res.status(500).json({message:"Unable to log in at this time. Please try again."})
     }
 }
 
@@ -121,9 +121,9 @@ export const logOut = async(req,res)=>{
             sameSite: "none",
             path: "/"
         })
-        return res.status(200).json({message:"logOut Successfully"})
+        return res.status(200).json({message:"Logged out successfully"})
     } catch (error) {
-        return res.status(500).json({message:`logout Error ${error}`})
+        return res.status(500).json({message:"Unable to complete logout. Please try again."})
     }
 }
 
@@ -152,7 +152,7 @@ export const googleSignup = async (req,res) => {
 
     } catch (error) {
         console.log(error)
-         return res.status(500).json({message:`googleSignup  ${error}`})
+         return res.status(500).json({message:"Google authentication encountered an issue. Please try again."})
     }
     
 }
@@ -172,10 +172,10 @@ export const sendOtp = async (req,res) => {
 
         await user.save()
         await sendMail(email,otp)
-        return res.status(200).json({message:"Email Successfully send"})
+        return res.status(200).json({message:"Verification code sent successfully to your email."})
     } catch (error) {
 
-        return res.status(500).json({message:`send otp error ${error}`})
+        return res.status(500).json({message:"Unable to send verification code. Please try again."})
         
     }
 }
@@ -185,17 +185,17 @@ export const verifyOtp = async (req,res) => {
         const {email,otp} = req.body
         const user = await User.findOne({email})
         if(!user || user.resetOtp!=otp || user.otpExpires<Date.now() ){
-            return res.status(400).json({message:"Invalid OTP"})
+            return res.status(400).json({message:"Invalid or expired verification code. Please try again."})
         }
         user.isOtpVerifed=true
         user.resetOtp=undefined
         user.otpExpires=undefined
         await user.save()
-        return res.status(200).json({message:"OTP varified "})
+        return res.status(200).json({message:"Verification code verified successfully."})
 
 
     } catch (error) {
-         return res.status(500).json({message:`Varify otp error ${error}`})
+         return res.status(500).json({message:"Unable to verify code. Please try again."})
     }
 }
 
@@ -204,16 +204,16 @@ export const resetPassword = async (req,res) => {
         const {email ,password } =  req.body
          const user = await User.findOne({email})
         if(!user || !user.isOtpVerifed ){
-            return res.status(404).json({message:"OTP verfication required"})
+            return res.status(404).json({message:"Verification code must be verified before resetting password."})
         }
 
         const hashPassword = await bcrypt.hash(password,10)
         user.password = hashPassword
         user.isOtpVerifed=false
         await user.save()
-        return res.status(200).json({message:"Password Reset Successfully"})
+        return res.status(200).json({message:"Password reset successfully. You can now log in."})
     } catch (error) {
-        return res.status(500).json({message:`Reset Password error ${error}`})
+        return res.status(500).json({message:"Unable to reset password. Please try again."})
     }
 }
 
@@ -221,11 +221,11 @@ export const sendSignupOtp = async (req, res) => {
     try {
         const { email } = req.body
         if (!email || !validator.isEmail(email)) {
-            return res.status(400).json({ message: "Please enter a valid email" })
+            return res.status(400).json({ message: "Please enter a valid email address." })
         }
         const existUser = await User.findOne({ email })
         if (existUser) {
-            return res.status(400).json({ message: "email already exist" })
+            return res.status(400).json({ message: "An account with this email address already exists. Please log in instead." })
         }
         const otp = Math.floor(1000 + Math.random() * 9000).toString()
         
@@ -235,11 +235,11 @@ export const sendSignupOtp = async (req, res) => {
             { upsert: true, new: true }
         )
         
-        await sendSignupOtpMail(email, otp)  // Use signup-specific email subject
-        return res.status(200).json({ message: "Verification OTP sent successfully" })
+        await sendSignupOtpMail(email, otp)
+        return res.status(200).json({ message: "Verification code sent successfully to your email." })
     } catch (error) {
         console.log("sendSignupOtp error:", error)
-        return res.status(500).json({ message: `sendSignupOtp Error ${error}` })
+        return res.status(500).json({ message: "Unable to send verification code. Please try again." })
     }
 }
 
@@ -247,7 +247,7 @@ export const sendMagicLink = async (req, res) => {
     try {
         const { email } = req.body
         if (!email || !validator.isEmail(email)) {
-            return res.status(400).json({ message: "Please enter a valid email" })
+            return res.status(400).json({ message: "Please enter a valid email address." })
         }
         const user = await User.findOne({ email })
         if (!user) {
@@ -270,10 +270,10 @@ export const sendMagicLink = async (req, res) => {
         const magicLink = `${frontendOrigin}/login-magic?token=${magicToken}`
         
         await sendMagicLinkMail(email, magicLink)
-        return res.status(200).json({ message: "Magic link sent to your email" })
+        return res.status(200).json({ message: "A secure sign-in link has been sent to your email." })
     } catch (error) {
         console.log("sendMagicLink error:", error)
-        return res.status(500).json({ message: `sendMagicLink Error ${error}` })
+        return res.status(500).json({ message: "Unable to send login link. Please try again." })
     }
 }
 
@@ -281,15 +281,15 @@ export const loginMagic = async (req, res) => {
     try {
         const { token } = req.body
         if (!token) {
-            return res.status(400).json({ message: "Token is required" })
+            return res.status(400).json({ message: "Login token is missing or invalid." })
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         if (!decoded || !decoded.userId) {
-            return res.status(400).json({ message: "Invalid or expired token" })
+            return res.status(400).json({ message: "This login link is invalid or has expired. Please request a new one." })
         }
         const user = await User.findById(decoded.userId)
         if (!user) {
-            return res.status(404).json({ message: "User not found" })
+            return res.status(404).json({ message: "User account not found." })
         }
         
         const authToken = await genToken(user._id)
@@ -302,6 +302,6 @@ export const loginMagic = async (req, res) => {
         return res.status(200).json(sanitizeUser(user, authToken))
     } catch (error) {
         console.log("loginMagic error:", error)
-        return res.status(500).json({ message: `loginMagic Error ${error}` })
+        return res.status(500).json({ message: "This login link is invalid or has expired. Please request a new one." })
     }
 }

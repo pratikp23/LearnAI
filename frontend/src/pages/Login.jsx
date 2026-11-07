@@ -15,6 +15,7 @@ import { ClipLoader } from "react-spinners";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 import DotGridBackground from "../components/DotGridBackground";
+import { getErrorMessage } from "../utils/errorHandler";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -46,7 +47,7 @@ function Login() {
       toast.success("Login Successfully");
     } catch (error) {
       console.log(error);
-      toast.error(error?.response?.data?.message || error.message || "Login failed");
+      toast.error(getErrorMessage(error, "Login failed. Please check your credentials and try again."));
     } finally {
       setLoading(false);
     }
@@ -78,11 +79,7 @@ function Login() {
       toast.success("Login Successfully");
     } catch (error) {
       console.log(error);
-      if (error?.code === "auth/unauthorized-domain") {
-        toast.error("Firebase Auth: Please authorize your deployed domain in Firebase Console -> Authentication -> Settings -> Authorized Domains");
-      } else {
-        toast.error(error?.response?.data?.message || error.message || "Google login failed");
-      }
+      toast.error(getErrorMessage(error, "Google sign-in failed. Please try again."));
     }
   };
 

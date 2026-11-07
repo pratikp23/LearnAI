@@ -19,7 +19,8 @@ export const createCourse = async (req,res) => {
         
         return res.status(201).json(course)
     } catch (error) {
-         return res.status(500).json({message:`Failed to create course ${error}`})
+        console.error("createCourse error:", error);
+        return res.status(500).json({message:"Failed to create course. Please try again."})
     }
     
 }
@@ -35,7 +36,8 @@ export const getPublishedCourses = async (req,res) => {
         return res.status(200).json(courses)
         
     } catch (error) {
-          return res.status(500).json({message:`Failed to get All  courses ${error}`})
+        console.error("getPublishedCourses error:", error);
+        return res.status(500).json({message:"Failed to retrieve courses. Please refresh the page."})
     }
 }
 
@@ -51,7 +53,8 @@ export const getCreatorCourses = async (req,res) => {
         return res.status(200).json(courses)
         
     } catch (error) {
-        return res.status(500).json({message:`Failed to get creator courses ${error}`})
+        console.error("getCreatorCourses error:", error);
+        return res.status(500).json({message:"Failed to retrieve your courses. Please try again."})
     }
 }
 
@@ -72,7 +75,8 @@ export const editCourse = async (req,res) => {
         course = await Course.findByIdAndUpdate(courseId , updateData , {new:true})
         return res.status(201).json(course)
     } catch (error) {
-        return res.status(500).json({message:`Failed to update course ${error}`})
+        console.error("editCourse error:", error);
+        return res.status(500).json({message:"Failed to update course. Please try again."})
     }
 }
 
@@ -87,7 +91,8 @@ export const getCourseById = async (req,res) => {
          return res.status(200).json(course)
         
     } catch (error) {
-        return res.status(500).json({message:`Failed to get course ${error}`})
+        console.error("getCourseById error:", error);
+        return res.status(500).json({message:"Failed to retrieve course details. Please try again."})
     }
 }
 export const removeCourse = async (req, res) => {
@@ -100,10 +105,10 @@ export const removeCourse = async (req, res) => {
     }
 
     await course.deleteOne();
-    return res.status(200).json({ message: "Course Removed Successfully" });
+    return res.status(200).json({ message: "Course removed successfully" });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({message:`Failed to remove course ${error}`})
+    console.error("removeCourse error:", error);
+    return res.status(500).json({message:"Failed to remove course. Please try again."})
   }
 };
 
@@ -130,7 +135,8 @@ export const createLecture = async (req,res) => {
         return res.status(201).json({lecture,course})
         
     } catch (error) {
-        return res.status(500).json({message:`Failed to Create Lecture ${error}`})
+        console.error("createLecture error:", error);
+        return res.status(500).json({message:"Failed to create lecture. Please try again."})
     }
     
 }
@@ -146,7 +152,8 @@ export const getCourseLecture = async (req,res) => {
         await course.save()
         return res.status(200).json(course)
     } catch (error) {
-        return res.status(500).json({message:`Failed to get Lectures ${error}`})
+        console.error("getCourseLecture error:", error);
+        return res.status(500).json({message:"Failed to retrieve lectures. Please try again."})
     }
 }
 
@@ -171,7 +178,8 @@ export const editLecture = async (req,res) => {
          await lecture.save()
         return res.status(200).json(lecture)
     } catch (error) {
-        return res.status(500).json({message:`Failed to edit Lectures ${error}`})
+        console.error("editLecture error:", error);
+        return res.status(500).json({message:"Failed to update lecture. Please try again."})
     }
     
 }
@@ -189,11 +197,12 @@ export const removeLecture = async (req,res) => {
             {lectures: lectureId},
             {$pull:{lectures: lectureId}}
         )
-        return res.status(200).json({message:"Lecture Remove Successfully"})
+        return res.status(200).json({message:"Lecture removed successfully"})
         }
     
      catch (error) {
-        return res.status(500).json({message:`Failed to remove Lectures ${error}`})
+        console.error("removeLecture error:", error);
+        return res.status(500).json({message:"Failed to remove lecture. Please try again."})
     }
 }
 

@@ -10,6 +10,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/userSlice";
+import { getErrorMessage } from "../utils/errorHandler";
 
 function Nav() {
   let [showHam, setShowHam] = useState(false);
@@ -42,7 +43,7 @@ function Nav() {
       console.log(error);
       localStorage.removeItem("token");
       await dispatch(setUserData(null));
-      toast.error(error?.response?.data?.message || error.message || "Logout failed");
+      toast.error(getErrorMessage(error, "Unable to log out completely. Your local session has been cleared."));
     }
   };
 

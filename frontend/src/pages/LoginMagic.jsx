@@ -7,6 +7,7 @@ import { setUserData } from "../redux/userSlice";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import DotGridBackground from "../components/DotGridBackground";
+import { getErrorMessage } from "../utils/errorHandler";
 
 function LoginMagic() {
   const [searchParams] = useSearchParams();
@@ -39,7 +40,7 @@ function LoginMagic() {
         navigate("/");
       } catch (err) {
         console.error("Magic login error:", err);
-        const errMsg = err?.response?.data?.message || err.message || "Failed to log in via magic link.";
+        const errMsg = getErrorMessage(err, "This login link is invalid or has expired. Please request a new one.");
         setError(errMsg);
         toast.error(errMsg);
         setTimeout(() => {

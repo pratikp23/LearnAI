@@ -6,6 +6,7 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from './redux/store.js'
+import { getErrorMessage } from './utils/errorHandler.js'
 
 // Automatically include credentials and Bearer token for seamless cross-domain auth
 axios.defaults.withCredentials = true;
@@ -28,6 +29,11 @@ axios.interceptors.response.use(
     if (error?.response?.status === 401) {
       localStorage.removeItem("token");
     }
+    const friendly = getErrorMessage(error);
+    if (error?.response?.data && typeof error.response.data === "object") {
+      error.response.data.message = friendly;
+    }
+    error.friendlyMessage = friendly;
     return Promise.reject(error);
   }
 );

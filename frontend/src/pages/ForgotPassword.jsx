@@ -5,6 +5,7 @@ import { ClipLoader } from 'react-spinners'
 import { serverUrl } from '../App'
 import { toast } from 'react-toastify'
 import DotGridBackground from '../components/DotGridBackground'
+import { getErrorMessage } from '../utils/errorHandler'
 
 function ForgotPassword() {
     let navigate = useNavigate()
@@ -24,7 +25,7 @@ function ForgotPassword() {
       setLoading(false)
     } catch (error) {
       console.log(error)
-      toast.error(error?.response?.data?.message || error.message || "Failed to send OTP")
+      toast.error(getErrorMessage(error, "Failed to send verification code. Please try again."))
       setLoading(false)
     }
    }
@@ -38,7 +39,7 @@ function ForgotPassword() {
       setStep(3)
     } catch (error) {
       console.log(error)
-      toast.error(error?.response?.data?.message || error.message || "Failed to verify OTP")
+      toast.error(getErrorMessage(error, "Invalid or expired verification code. Please try again."))
       setLoading(false)
     }
    }
@@ -48,7 +49,7 @@ function ForgotPassword() {
     try {
       if(newpassword !== conPassword){
         setLoading(false)
-        return toast.error("password does not match")
+        return toast.error("Passwords do not match. Please re-enter.")
       }
       const result = await axios.post(`${serverUrl}/api/auth/resetpassword` , {email,password:newpassword} , {withCredentials:true})
       toast.success(result.data.message)
@@ -56,21 +57,21 @@ function ForgotPassword() {
       navigate("/login")
     } catch (error) {
       console.log(error)
-      toast.error(error?.response?.data?.message || error.message || "Failed to reset password")
+      toast.error(getErrorMessage(error, "Failed to reset password. Please try again."))
       setLoading(false)
     }
    }
 
    const handleSendMagicLink = async () => {
        if (!email) {
-           return toast.error("Please enter your email first");
+           return toast.error("Please enter your email address first.");
        }
        setLoading(true);
        try {
            const res = await axios.post(`${serverUrl}/api/auth/send-magic-link`, { email });
            toast.success(res.data.message || "Magic Link sent! Please check your email inbox.");
        } catch (err) {
-           toast.error(err?.response?.data?.message || err.message || "Failed to send Magic Link");
+           toast.error(getErrorMessage(err, "Failed to send magic link. Please try again."));
        } finally {
            setLoading(false);
        }

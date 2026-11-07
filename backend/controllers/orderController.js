@@ -31,8 +31,8 @@ export const createOrder = async (req, res) => {
     const order = await razorpayInstance.orders.create(options);
     return res.status(200).json(order);
   } catch (err) {
-    console.log(err)
-    return res.status(500).json({ message: `Order creation failed: ${err.message}` });
+    console.error("createOrder error:", err);
+    return res.status(500).json({ message: "Unable to initialize payment. Please try again." });
   }
 };
 
@@ -59,11 +59,11 @@ export const verifyPayment = async (req, res) => {
 
       return res.status(200).json({ message: "Payment verified and enrollment successful" });
     } else {
-      return res.status(400).json({ message: "Payment verification failed (invalid signature)" });
+      return res.status(400).json({ message: "Payment verification failed. Please try again." });
     }
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: `Internal server error during payment verification: ${error.message}` });
+    console.error("verifyPayment error:", error);
+    return res.status(500).json({ message: "Payment verification failed. If your account was charged, please contact support." });
   }
 };
 
