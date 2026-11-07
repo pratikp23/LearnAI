@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { ClipLoader } from 'react-spinners'
 import { serverUrl } from '../App'
 import { toast } from 'react-toastify'
+import DotGridBackground from '../components/DotGridBackground'
 
 function ForgotPassword() {
     let navigate = useNavigate()
@@ -76,8 +77,9 @@ function ForgotPassword() {
    };
 
   return (
-     <div className="min-h-screen flex items-center justify-center p-4 bg-[#FAFAFC]">
-     { step==1 && <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full border border-[#EEEEF2] animate-slide-up">
+     <div className="min-h-screen flex items-center justify-center p-4 bg-[#FAFAFC] relative overflow-hidden">
+     <DotGridBackground className="text-[#7C3AED]/20" />
+     { step==1 && <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full border border-[#EEEEF2] animate-slide-up relative z-10">
         <h2 className="text-2xl font-black mb-2 text-center text-[#171717]">
           Forgot Your Password?
         </h2>
@@ -128,7 +130,7 @@ function ForgotPassword() {
         </div>
       </div>}
 
-      {step==2 && <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full border border-[#EEEEF2] animate-slide-up">
+      {step==2 && <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full border border-[#EEEEF2] animate-slide-up relative z-10">
         <h2 className="text-2xl font-black text-center text-[#171717] mb-2">
           Enter OTP
         </h2>
@@ -162,7 +164,7 @@ function ForgotPassword() {
         </div>
       </div>}
 
-      {step==3 && <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full border border-[#EEEEF2] animate-slide-up">
+      {step==3 && <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full border border-[#EEEEF2] animate-slide-up relative z-10">
         <h2 className="text-2xl font-black text-center text-[#171717] mb-2">
           Reset Your Password
         </h2>

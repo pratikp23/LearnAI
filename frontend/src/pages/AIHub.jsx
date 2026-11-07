@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { FiMap, FiTerminal, FiCalendar, FiMessageSquare, FiTrendingUp, FiCpu } from "react-icons/fi";
+import DotGridBackground from "../components/DotGridBackground";
 
 const AIHub = () => {
   const navigate = useNavigate();
@@ -62,8 +63,9 @@ const AIHub = () => {
     <div className="min-h-screen bg-[#FAFAFC] text-[#171717]">
       <Nav />
       
-      <div className="pt-32 pb-24 px-6">
-        <div className="container mx-auto max-w-7xl">
+      <div className="pt-32 pb-24 px-6 relative overflow-hidden">
+        <DotGridBackground className="text-[#7C3AED]/20" />
+        <div className="container mx-auto max-w-7xl relative z-10">
           <div className="max-w-3xl mb-14">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F5F0FF] border border-[#DDD6FE] text-xs font-black uppercase tracking-wider text-[#5B21B6] mb-4">
               ✨ AI Learning Suite

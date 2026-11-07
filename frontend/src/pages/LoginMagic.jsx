@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "../redux/userSlice";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import DotGridBackground from "../components/DotGridBackground";
 
 function LoginMagic() {
   const [searchParams] = useSearchParams();
@@ -48,8 +49,9 @@ function LoginMagic() {
   }, [token, dispatch, navigate]);
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#FAFAFC]">
-      <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4 border border-[#EEEEF2] animate-slide-up">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#FAFAFC] relative overflow-hidden">
+      <DotGridBackground className="text-[#7C3AED]/20" />
+      <div className="bg-white shadow-[0_12px_45px_rgba(91,33,182,0.08)] rounded-3xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4 border border-[#EEEEF2] animate-slide-up relative z-10">
         <h1 className="text-2xl font-black text-[#171717]">Magic Login</h1>
         
         {!error ? (

@@ -11,6 +11,7 @@ import ai1 from "../assets/SearchAi.png";
 import ReviewPage from "../components/ReviewPage";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import DotGridBackground from "../components/DotGridBackground";
 
 function Home() {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ function Home() {
   return (
     <div className="w-full overflow-hidden bg-[#FAFAFC]">
       {/* Hero Section */}
-      <div className="w-full min-h-screen relative flex flex-col items-center justify-start pt-24 pb-12">
+      <div className="w-full min-h-screen relative flex flex-col items-center justify-start pt-24 pb-12 overflow-hidden">
         <Nav />
 
         {/* Background Image with Clean Light Overlay */}
@@ -65,6 +66,9 @@ function Home() {
           />
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/60 via-white/90 to-[#FAFAFC]"></div>
         </div>
+
+        {/* Selective Decorative Dot-Grid Background */}
+        <DotGridBackground className="text-[#7C3AED]/22" />
 
         {/* Hero Content */}
         <div className="flex flex-col items-center justify-center text-center mt-[10vh] px-6 animate-slide-up z-10 w-full max-w-5xl">

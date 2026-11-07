@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import start from "../assets/start.mp3"
 import { FaArrowLeftLong, FaMagnifyingGlass } from "react-icons/fa6";
 import { ClipLoader } from 'react-spinners';
+import DotGridBackground from '../components/DotGridBackground';
 
 function SearchWithAi() {
   const [input, setInput] = useState('');
@@ -86,7 +87,8 @@ function SearchWithAi() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex flex-col items-center bg-[#FAFAFC]">
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex flex-col items-center bg-[#FAFAFC] relative overflow-hidden">
+      <DotGridBackground className="text-[#7C3AED]/20" />
       
       {/* Header & Back Button */}
       <div className="max-w-4xl w-full mb-12 animate-fade-in flex items-center justify-between">
