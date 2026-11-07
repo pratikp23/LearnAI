@@ -25,6 +25,8 @@ function ExploreCourses() {
     <div className='w-full py-16 px-6 flex flex-col lg:flex-row items-center justify-center gap-12 bg-transparent'>
       {/* Text Section */}
       <div className='w-full lg:w-[400px] flex flex-col items-start gap-4'>
+      
+
         <h2 className='text-4xl md:text-5xl font-black text-[#171717] leading-tight'>
           Explore <br />
           <span className="text-[#5B21B6]">Our Courses</span>

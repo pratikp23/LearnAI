@@ -11,10 +11,14 @@ import ai1 from "../assets/SearchAi.png";
 import ReviewPage from "../components/ReviewPage";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import DotGridBackground from "../components/DotGridBackground";
+import HowItWorks from "../components/HowItWorks";
 
 function Home() {
   const navigate = useNavigate();
+  const { courseData } = useSelector((state) => state.course || { courseData: [] });
+
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
@@ -26,6 +30,35 @@ function Home() {
     "LEARN WITHOUT LIMITS",
     "BUILD YOUR DREAM CAREER"
   ];
+
+  // Extract REAL enrolled students from actual courseData in the database
+  const realEnrollments = [];
+  courseData?.forEach((course) => {
+    const students = course?.enrolledStudents || [];
+    students.forEach((student) => {
+      const studentName = typeof student === 'object' && student?.name ? student.name : 'Student';
+      const studentPhoto = typeof student === 'object' && student?.photoUrl ? student.photoUrl : '';
+      realEnrollments.push({
+        userName: studentName,
+        userPhoto: studentPhoto,
+        courseTitle: course.title,
+        courseId: course._id
+      });
+    });
+  });
+
+  const [currentEnrollmentIndex, setCurrentEnrollmentIndex] = useState(0);
+
+  useEffect(() => {
+    if (realEnrollments.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentEnrollmentIndex((prev) => (prev + 1) % realEnrollments.length);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [realEnrollments.length]);
+
+  const activeEnrollment = realEnrollments[currentEnrollmentIndex];
 
   useEffect(() => {
     const handleType = () => {
@@ -70,14 +103,46 @@ function Home() {
         {/* Selective Decorative Dot-Grid Background */}
         <DotGridBackground />
 
+        {/* Real Live Enrollment Notification (Bottom Left Corner) */}
+        {realEnrollments.length > 0 && activeEnrollment ? (
+          <div 
+            onClick={() => navigate(`/viewcourse/${activeEnrollment.courseId}`)}
+            className="absolute bottom-6 left-4 sm:left-8 z-20 bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl border border-[#EEEEF2] shadow-[0_10px_30px_rgba(91,33,182,0.1)] flex items-center gap-3 cursor-pointer hover:border-[#7C3AED]/40 hover:scale-105 transition-all max-w-[340px] sm:max-w-[420px]"
+            title="Click to view course"
+          >
+            <div className="w-10 h-10 rounded-full bg-[#F5F0FF] border border-[#DDD6FE] flex items-center justify-center shrink-0 overflow-hidden text-[#5B21B6] font-bold text-xs shadow-xs">
+              {activeEnrollment.userPhoto ? (
+                <img src={activeEnrollment.userPhoto} alt={activeEnrollment.userName} className="w-full h-full object-cover" />
+              ) : (
+                activeEnrollment.userName.slice(0, 2).toUpperCase()
+              )}
+            </div>
+            <div className="text-left overflow-hidden">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse"></span>
+                <p className="text-xs font-black text-[#171717] truncate">
+                  {activeEnrollment.userName} <span className="font-semibold text-[#666666]">enrolled in</span>
+                </p>
+              </div>
+              <p className="text-xs font-bold text-[#5B21B6] truncate">
+                {activeEnrollment.courseTitle}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div 
+            onClick={() => navigate("/allcourses")}
+            className="absolute bottom-6 left-4 sm:left-8 z-20 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-[#EEEEF2] shadow-[0_8px_25px_rgba(0,0,0,0.04)] flex items-center gap-2.5 cursor-pointer hover:border-[#7C3AED]/30 transition-all"
+          >
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FC8019] animate-pulse"></span>
+            <p className="text-xs font-bold text-[#171717]">
+              {courseData?.length || 0} live courses available <span className="text-[#666666] font-medium">— Explore and enroll</span>
+            </p>
+          </div>
+        )}
+
         {/* Hero Content */}
         <div className="flex flex-col items-center justify-center text-center mt-[10vh] px-6 animate-slide-up z-10 w-full max-w-5xl">
-
-          {/* Badge */}
-          {/* <div className="mb-6 inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#DDD6FE] bg-[#F5F0FF] shadow-sm">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#7C3AED] animate-pulse inline-block"></span>
-            <span className="text-xs font-black tracking-widest uppercase text-[#5B21B6]">AI-Powered Learning Platform</span>
-          </div> */}
 
           {/* Main Heading */}
           <h1 className="font-black leading-tight tracking-tight mb-5" style={{fontSize: "clamp(2.4rem, 7vw, 5.2rem)"}}>
@@ -138,9 +203,11 @@ function Home() {
 
       <Logos />
 
-      <div className="relative z-10 space-y-20 pb-20">
+      {/* Main Home Content Sections */}
+      <div className="relative z-10 space-y-16 sm:space-y-24 pb-20">
         <ExploreCourses />
         <Cardspage />
+        <HowItWorks />
         <About />
         <ReviewPage />
       </div>
