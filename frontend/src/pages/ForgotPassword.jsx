@@ -12,6 +12,7 @@ function ForgotPassword() {
     const [step,setStep] = useState(1)
     const [email,setEmail] = useState("")
     const [otp,setOtp] = useState("")
+    const [demoOtp, setDemoOtp] = useState("")
     const [loading,setLoading]= useState(false)
     const [newpassword,setNewPassword]= useState("")
     const [conPassword,setConpassword]= useState("")
@@ -20,6 +21,8 @@ function ForgotPassword() {
     setLoading(true)
     try {
       const result = await axios.post(`${serverUrl}/api/auth/sendotp` , {email} , {withCredentials:true})
+      const code = result.data?.otp || result.data?.devOtp
+      if (code) setDemoOtp(code)
       setStep(2)
       toast.success(result.data.message)
       setLoading(false)
@@ -135,9 +138,27 @@ function ForgotPassword() {
         <h2 className="text-2xl font-black text-center text-[#171717] mb-2">
           Enter OTP
         </h2>
-        <p className="text-xs text-[#666666] text-center font-medium mb-6">
+        <p className="text-xs text-[#666666] text-center font-medium mb-4">
           Please enter the 4-digit code sent to your email
         </p>
+
+        {demoOtp && (
+          <div className="w-full bg-[#F5F0FF] border border-[#DDD6FE] rounded-2xl p-3 text-center mb-4">
+            <div className="flex items-center justify-center gap-2 text-xs text-[#5B21B6] font-bold">
+              <span>Demo OTP:</span>
+              <span className="font-mono text-lg font-black tracking-widest bg-white px-2.5 py-0.5 rounded-lg border border-[#DDD6FE]">
+                {demoOtp}
+              </span>
+              <button
+                type="button"
+                onClick={() => setOtp(demoOtp)}
+                className="text-xs text-[#5B21B6] hover:underline font-extrabold ml-1 cursor-pointer bg-white px-2 py-1 rounded-md border border-[#DDD6FE] shadow-sm"
+              >
+                Auto-Fill
+              </button>
+            </div>
+          </div>
+        )}
 
           <form className="space-y-4" onSubmit={(e)=>e.preventDefault()}>
             <div className="flex flex-col gap-1.5 text-center">

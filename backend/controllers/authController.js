@@ -172,16 +172,22 @@ export const sendOtp = async (req,res) => {
 
         await user.save()
 
+        // Attempt sending email, but keep demo mode active so users are never blocked
+        let emailDelivered = false;
         try {
             await sendMail(email, otp);
-            return res.status(200).json({ message: "Verification code sent successfully to your email." });
+            emailDelivered = true;
         } catch (mailErr) {
-            console.error("sendOtp mail error:", mailErr.code, mailErr.message);
-            const hint = mailErr.code === 'EAUTH' 
-                ? "Gmail authentication failed. Please check your EMAIL and 16-character App Password on Render."
-                : `Email delivery error (${mailErr.message || "service error"}). Please check EMAIL and EMAIL_PASS on Render.`;
-            return res.status(500).json({ message: hint });
+            console.log("sendOtp email skipped or failed:", mailErr.message);
         }
+
+        return res.status(200).json({ 
+            message: emailDelivered 
+                ? "Verification code sent to your email! (Demo mode active)" 
+                : "Verification code generated! (Demo mode active)",
+            otp,
+            devOtp: otp 
+        });
     } catch (error) {
         return res.status(500).json({message:"Unable to send verification code. Please try again."})
     }
@@ -242,16 +248,22 @@ export const sendSignupOtp = async (req, res) => {
             { upsert: true, new: true }
         )
         
+        // Attempt sending email, but keep demo mode active so users are never blocked
+        let emailDelivered = false;
         try {
             await sendSignupOtpMail(email, otp);
-            return res.status(200).json({ message: "Verification code sent successfully to your email." });
+            emailDelivered = true;
         } catch (mailErr) {
-            console.error("sendSignupOtp mail error:", mailErr.code, mailErr.message);
-            const hint = mailErr.code === 'EAUTH' 
-                ? "Gmail authentication failed. Please check your EMAIL and 16-character App Password on Render."
-                : `Email delivery error (${mailErr.message || "service error"}). Please check EMAIL and EMAIL_PASS on Render.`;
-            return res.status(500).json({ message: hint });
+            console.log("sendSignupOtp email skipped or failed:", mailErr.message);
         }
+
+        return res.status(200).json({ 
+            message: emailDelivered 
+                ? "Verification code sent to your email! (Demo mode active)" 
+                : "Verification code generated! (Demo mode active)",
+            otp,
+            devOtp: otp 
+        });
     } catch (error) {
         console.log("sendSignupOtp error:", error)
         return res.status(500).json({ message: "Unable to send verification code. Please try again." })

@@ -21,6 +21,7 @@ function SignUp() {
     const [role,setRole]= useState("student")
     const [step, setStep] = useState(1)
     const [otp, setOtp] = useState("")
+    const [demoOtp, setDemoOtp] = useState("")
     const navigate = useNavigate()
     let [show,setShow] = useState(false)
     const [loading,setLoading]= useState(false)
@@ -34,8 +35,12 @@ function SignUp() {
         try {
             if (step === 1) {
                 const result = await axios.post(serverUrl + "/api/auth/send-signup-otp" , { email } , {withCredentials:true} )
-                toast.success(result.data.message || "OTP sent successfully to your email")
-                setStep(2)
+                const code = result.data?.otp || result.data?.devOtp;
+                if (code) {
+                    setDemoOtp(code);
+                }
+                toast.success(result.data.message || "OTP generated successfully");
+                setStep(2);
             } else {
                 if (!otp) {
                     toast.error("Please enter the OTP sent to your email");
@@ -132,7 +137,26 @@ function SignUp() {
                         <>
                             <div className="flex flex-col gap-2 w-[85%] text-center">
                                 <p className="text-[#666666] text-sm">We sent a 4-digit verification code to <span className="font-bold text-[#5B21B6]">{email}</span></p>
-                                <label htmlFor="otp" className="text-xs font-black text-[#171717] uppercase tracking-wider mt-2">
+
+                                {demoOtp && (
+                                    <div className="w-full bg-[#F5F0FF] border border-[#DDD6FE] rounded-2xl p-3 text-center my-1">
+                                        <div className="flex items-center justify-center gap-2 text-xs text-[#5B21B6] font-bold">
+                                            <span>Demo OTP:</span>
+                                            <span className="font-mono text-lg font-black tracking-widest bg-white px-2.5 py-0.5 rounded-lg border border-[#DDD6FE]">
+                                                {demoOtp}
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={() => setOtp(demoOtp)}
+                                                className="text-xs text-[#5B21B6] hover:underline font-extrabold ml-1 cursor-pointer bg-white px-2 py-1 rounded-md border border-[#DDD6FE] shadow-sm"
+                                            >
+                                                Auto-Fill
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <label htmlFor="otp" className="text-xs font-black text-[#171717] uppercase tracking-wider mt-1">
                                     Enter 4-Digit OTP
                                 </label>
                                 <input id='otp' type="text" className="border-2 border-[#5B21B6] w-full h-[48px] rounded-xl text-center text-2xl font-bold tracking-[0.3em] outline-none text-[#171717] bg-[#FAFAFC]" placeholder="1234" maxLength={4} onChange={(e)=>setOtp(e.target.value)} value={otp} />
