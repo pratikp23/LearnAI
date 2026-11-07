@@ -48,20 +48,20 @@ function LoginMagic() {
   }, [token, dispatch, navigate]);
 
   return (
-    <div className="bg-purple-50 w-[100vw] h-[100vh] flex items-center justify-center flex-col gap-4 text-black">
-      <div className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">Magic Login</h1>
+    <div className="min-h-screen w-full flex items-center justify-center p-4 font-['Outfit']">
+      <div className="bg-white shadow-2xl rounded-3xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4 border border-[var(--glass-border)] animate-slide-up">
+        <h1 className="text-2xl font-extrabold text-[var(--dark-brown)]">Magic Login</h1>
         
         {!error ? (
           <>
-            <ClipLoader size={50} color="#8b5cf6" />
-            <p className="text-gray-500 font-medium">Verifying your secure login link... Please wait.</p>
+            <ClipLoader size={50} color="#3E5F44" />
+            <p className="text-[var(--body-text)] font-medium">Verifying your secure login link... Please wait.</p>
           </>
         ) : (
           <>
-            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500 text-2xl font-bold">!</div>
-            <p className="text-red-500 font-medium">{error}</p>
-            <p className="text-gray-400 text-sm">Redirecting to the login page...</p>
+            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600 text-2xl font-bold">!</div>
+            <p className="text-red-600 font-medium">{error}</p>
+            <p className="text-gray-500 text-sm">Redirecting to the login page...</p>
           </>
         )}
       </div>

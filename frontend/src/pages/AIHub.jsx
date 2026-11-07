@@ -59,16 +59,16 @@ const AIHub = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--primary-bg)] text-white font-['Outfit'] ai-hub-page">
+    <div className="min-h-screen bg-[var(--primary-bg)] text-[var(--body-text)] font-['Outfit']">
       <Nav />
       
       <div className="pt-32 pb-24 px-6">
         <div className="container mx-auto">
-          <div className="max-w-3xl mb-16">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[var(--neon-blue)] to-[var(--neon-purple)] bg-clip-text text-transparent">
+          <div className="max-w-3xl mb-14">
+            <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-[var(--dark-brown)]">
               Student AI Hub
             </h1>
-            <p className="text-gray-400 text-xl">
+            <p className="text-[var(--body-text)] text-lg opacity-85">
               Supercharge your learning journey with our suite of AI-powered educational tools.
             </p>
           </div>
@@ -78,29 +78,29 @@ const AIHub = () => {
               <div
                 key={idx}
                 onClick={() => tool.status === "Available" && navigate(tool.path)}
-                className={`group relative glass p-8 rounded-3xl border border-white/5 hover:border-white/10 transition-all cursor-pointer overflow-hidden ${tool.status !== "Available" && "opacity-60 grayscale cursor-not-allowed"}`}
+                className={`group relative glass-card p-8 rounded-3xl border border-[var(--glass-border)] hover:border-[var(--neon-blue)]/50 transition-all cursor-pointer overflow-hidden shadow-lg hover:shadow-xl ${tool.status !== "Available" && "opacity-60 grayscale cursor-not-allowed"}`}
               >
                 {/* Background Glow */}
-                <div className={`absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br ${tool.color} blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity`}></div>
+                <div className={`absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br ${tool.color} blur-[80px] opacity-15 group-hover:opacity-30 transition-opacity`}></div>
                 
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white mb-6 shadow-lg shadow-black/20`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-white mb-6 shadow-md`}>
                   {tool.icon}
                 </div>
 
                 <div className="flex items-center gap-3 mb-3">
-                  <h3 className="text-2xl font-bold">{tool.title}</h3>
+                  <h3 className="text-2xl font-bold text-[var(--dark-brown)] group-hover:text-[var(--deep-green)] transition-colors">{tool.title}</h3>
                   {tool.status === "Soon" && (
-                    <span className="text-[10px] uppercase tracking-widest bg-white/10 px-2 py-1 rounded-md font-bold">Coming Soon</span>
+                    <span className="text-[10px] uppercase tracking-widest bg-[var(--secondary-bg)] text-[var(--dark-brown)] px-2.5 py-1 rounded-md font-bold border border-[var(--glass-border)]">Coming Soon</span>
                   )}
                 </div>
                 
-                <p className="text-gray-400 leading-relaxed">
+                <p className="text-[var(--body-text)] leading-relaxed opacity-85 mb-6">
                   {tool.description}
                 </p>
 
-                <div className="mt-8 flex items-center text-sm font-bold group-hover:gap-2 transition-all">
-                  <span className={`bg-gradient-to-r ${tool.color} bg-clip-text text-transparent`}>
-                    {tool.status === "Available" ? "Launch Tool" : "Unlock Soon"}
+                <div className="mt-auto flex items-center text-sm font-bold group-hover:gap-2 transition-all text-[var(--deep-green)]">
+                  <span>
+                    {tool.status === "Available" ? "Launch Tool ?" : "Unlock Soon"}
                   </span>
                   <FiCpu className="opacity-0 group-hover:opacity-100 transition-opacity ml-1" />
                 </div>

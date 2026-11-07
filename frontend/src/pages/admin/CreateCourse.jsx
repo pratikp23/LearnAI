@@ -19,7 +19,7 @@ const CreateCourse = () => {
         }
         setLoading(true)
         try {
-            const result = await axios.post(serverUrl + "/api/course/create", { title, category }, { withCredentials: true })
+            await axios.post(serverUrl + "/api/course/create", { title, category }, { withCredentials: true })
             toast.success("Course Created Successfully")
             navigate("/courses")
             setTitle("")
@@ -31,31 +31,31 @@ const CreateCourse = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-20">
-            <div className="glass-card p-10 max-w-xl w-full relative animate-slide-up rounded-3xl">
+        <div className="min-h-screen flex items-center justify-center px-4 py-20 text-[var(--body-text)] font-['Outfit']">
+            <div className="glass-card p-10 max-w-xl w-full relative animate-slide-up rounded-3xl border border-[var(--glass-border)] shadow-2xl">
                 <FaArrowLeftLong
-                    className="absolute top-8 left-8 text-2xl text-gray-400 hover:text-[var(--neon-blue)] cursor-pointer transition-colors"
+                    className="absolute top-8 left-8 text-2xl text-[var(--dark-brown)] hover:text-[var(--deep-green)] cursor-pointer transition-colors"
                     onClick={() => navigate("/courses")}
                 />
                 
-                <div className="flex flex-col items-center mb-10">
-                    <div className="w-16 h-16 bg-[var(--neon-blue)]/10 rounded-2xl flex items-center justify-center text-[var(--neon-blue)] mb-4 border border-[var(--neon-blue)]/20 shadow-[0_0_15px_rgba(0,243,255,0.1)]">
+                <div className="flex flex-col items-center mb-8">
+                    <div className="w-16 h-16 bg-[var(--neon-blue)]/15 rounded-2xl flex items-center justify-center text-[var(--deep-green)] mb-4 border border-[var(--neon-blue)]/30 shadow-md">
                         <FaBookMedical size={30} />
                     </div>
-                    <h2 className="text-3xl font-bold text-center text-white tracking-tight">Create New Course</h2>
-                    <p className="text-gray-400 text-sm mt-2 text-center">Give your course a compelling title and category to get started.</p>
+                    <h2 className="text-3xl font-extrabold text-center text-[var(--dark-brown)] tracking-tight">Create New Course</h2>
+                    <p className="text-[var(--body-text)] text-sm mt-2 text-center opacity-85">Give your course a compelling title and category to get started.</p>
                 </div>
 
-                <form className="space-y-8" onSubmit={CreateCourseHandler}>
+                <form className="space-y-6" onSubmit={CreateCourseHandler}>
                     {/* Course Title */}
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">
+                        <label className="text-xs font-bold text-[var(--dark-brown)] uppercase tracking-wider ml-1">
                             Course Title
                         </label>
                         <input
                             type="text"
                             placeholder="e.g. Master React and Next.js"
-                            className="w-full px-5 py-4 input-dark rounded-xl font-medium"
+                            className="w-full px-5 py-3.5 input-dark rounded-xl font-medium"
                             onChange={(e) => setTitle(e.target.value)} 
                             value={title}
                             required
@@ -64,11 +64,11 @@ const CreateCourse = () => {
 
                     {/* Category */}
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">
+                        <label className="text-xs font-bold text-[var(--dark-brown)] uppercase tracking-wider ml-1">
                             Category
                         </label>
                         <select
-                            className="w-full px-5 py-4 input-dark rounded-xl font-medium appearance-none cursor-pointer"
+                            className="w-full px-5 py-3.5 input-dark rounded-xl font-medium cursor-pointer"
                             onChange={(e) => setCategory(e.target.value)}
                             value={category}
                             required
@@ -87,15 +87,15 @@ const CreateCourse = () => {
                     </div>
 
                     {/* Submit Button */}
-                    <div className="pt-4">
+                    <div className="pt-2">
                         <button
                             type="submit"
-                            className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--neon-blue)] to-[var(--neon-purple)] text-black font-extrabold text-lg shadow-lg hover:shadow-[0_0_30px_rgba(0,243,255,0.3)] transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-3 disabled:opacity-70" 
+                            className="w-full py-4 rounded-xl bg-[#3E5F44] hover:bg-[#2e4733] text-white font-extrabold text-lg shadow-lg hover:shadow-xl transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-3 disabled:opacity-70" 
                             disabled={loading}
                         >
-                            {loading ? <ClipLoader size={24} color="black" /> : "Initialize Course"}
+                            {loading ? <ClipLoader size={24} color="white" /> : "Initialize Course"}
                         </button>
-                        <p className="text-center text-gray-500 text-xs mt-6 px-4">
+                        <p className="text-center text-[var(--accent-color)] text-xs mt-4 px-4 font-medium">
                             You can add lectures, thumbnails, and pricing in the next step.
                         </p>
                     </div>
@@ -106,4 +106,3 @@ const CreateCourse = () => {
 };
 
 export default CreateCourse;
-

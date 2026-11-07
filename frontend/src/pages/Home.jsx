@@ -68,47 +68,69 @@ function Home() {
         </div>
 
         {/* Hero Content */}
-        <div className="flex flex-col items-center justify-center text-center mt-[10vh] px-4 animate-slide-up z-10 w-full max-w-5xl">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight min-h-[160px] md:min-h-[200px]">
-            <span className="block text-white mb-2" style={{ textShadow: "0 0 40px rgba(0,0,0,0.5)" }}>
-              {loopNum % 2 === 0 ? "GROW YOUR" : "UNLOCK YOUR"}
+        <div className="flex flex-col items-center justify-center text-center mt-[10vh] px-6 animate-slide-up z-10 w-full max-w-5xl">
+
+          {/* Badge */}
+          <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#5F8D4E]/40 bg-white/60 backdrop-blur-sm shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#5F8D4E] animate-pulse inline-block"></span>
+            <span className="text-sm font-semibold tracking-widest uppercase" style={{color: "#3E5F44", letterSpacing: "0.1em"}}>AI-Powered Learning Platform</span>
+          </div>
+
+          {/* Main Heading — static lines + typewriter on its own line */}
+          <h1 className="font-extrabold leading-tight tracking-tight mb-5" style={{fontSize: "clamp(2.4rem, 7vw, 5.5rem)"}}>
+            <span className="block" style={{color: "#1a1a1a", textShadow: "0 2px 8px rgba(0,0,0,0.08)"}}>
+              The Smartest Way To
             </span>
-            <span className="text-gradient drop-shadow-[0_0_25px_rgba(0,243,255,0.6)] border-r-4 border-[var(--neon-blue)] pr-2 animate-pulse">
-              {text}
+            {/* Typewriter line — whitespace-nowrap prevents text from running/wrapping */}
+            <span
+              className="block text-gradient mt-1"
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                borderRight: "3px solid #5F8D4E",
+                minHeight: "1.2em",
+                display: "block",
+                paddingRight: "4px",
+                animation: "blink-cursor 0.75s step-end infinite"
+              }}
+            >
+              {text || "\u00A0"}
             </span>
           </h1>
 
-          <p className="text-gray-300 text-lg md:text-2xl mb-12 max-w-2xl font-light glass p-4 rounded-xl">
-            Unlock your potential with our premium courses and AI-powered learning tools.
+          {/* Subtitle */}
+          <p
+            className="mb-10 font-light leading-relaxed"
+            style={{
+              color: "#3a3a3a",
+              fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
+              maxWidth: "560px",
+              lineHeight: "1.75"
+            }}
+          >
+            Unlock your potential with <strong style={{fontWeight: 600, color: "#3E5F44"}}>premium courses</strong> and AI-powered tools built for the future of learning.
           </p>
 
-          <div className="flex flex-row gap-6 mt-4">
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mt-2">
             <button
-              className="group relative px-8 py-4 bg-transparent border-2 border-[var(--neon-blue)] text-white rounded-full text-lg font-semibold overflow-hidden transition-all hover:scale-105 btn-glow cursor-pointer"
+              className="group relative px-8 py-3.5 bg-transparent border-2 border-[var(--neon-blue)] text-white rounded-full text-base font-semibold overflow-hidden transition-all hover:scale-105 btn-glow cursor-pointer"
               onClick={() => navigate("/allcourses")}
             >
-              <span className="relative z-10 flex items-center gap-3">
-                View All Courses <SiViaplay className="w-6 h-6 group-hover:animate-pulse" />
+              <span className="relative z-10 flex items-center gap-2">
+                View All Courses <SiViaplay className="w-5 h-5 group-hover:animate-pulse" />
               </span>
               <div className="absolute inset-0 bg-[var(--neon-blue)] opacity-0 group-hover:opacity-10 transition-opacity"></div>
             </button>
 
             <button
-              className="group relative px-8 py-4 bg-white text-black rounded-full text-lg font-semibold overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] cursor-pointer"
+              className="group relative px-8 py-3.5 bg-white text-black rounded-full text-base font-semibold overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] cursor-pointer"
               onClick={() => navigate("/searchwithai")}
             >
-              <span className="relative z-10 flex items-center gap-3">
+              <span className="relative z-10 flex items-center gap-2">
                 Search with AI
-                <img
-                  src={ai}
-                  className="w-8 h-8 rounded-full ml-1 hidden lg:block"
-                  alt="AI"
-                />
-                <img
-                  src={ai1}
-                  className="w-8 h-8 rounded-full ml-1 lg:hidden"
-                  alt="AI"
-                />
+                <img src={ai} className="w-7 h-7 rounded-full ml-1 hidden lg:block" alt="AI" />
+                <img src={ai1} className="w-7 h-7 rounded-full ml-1 lg:hidden" alt="AI" />
               </span>
             </button>
           </div>

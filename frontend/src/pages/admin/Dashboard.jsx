@@ -1,114 +1,104 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from "react-redux";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import img from "../../assets/empty.jpg";
-import { useNavigate } from 'react-router-dom';
-import { FaArrowLeftLong, FaUsers, FaChartLine, FaWallet, FaPlus } from "react-icons/fa6";
-import axios from 'axios';
-import { serverUrl } from '../../App';
-import { setCreatorCourseData } from '../../redux/courseSlice';
+import { FaArrowLeftLong, FaPlus, FaUsers, FaWallet, FaChartLine } from "react-icons/fa6";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 
 function Dashboard() {
+  const { userData } = useSelector(state => state.user)
+  const { creatorCourseData } = useSelector(state => state.course)
   const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const { userData } = useSelector((state) => state.user);
-  const { creatorCourseData } = useSelector((state) => state.course);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await axios.get(serverUrl + "/api/course/getcreatorcourses", { withCredentials: true });
-        dispatch(setCreatorCourseData(result.data));
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [dispatch]);
-
-  const courseProgressData = creatorCourseData?.map(course => ({
-    name: course.title.length > 12 ? course.title.slice(0, 10) + "..." : course.title,
-    lectures: course.lectures.length || 0
-  })) || [];
-
-  const enrollData = creatorCourseData?.map(course => ({
-    name: course.title.length > 12 ? course.title.slice(0, 10) + "..." : course.title,
-    enrolled: course.enrolledStudents?.length || 0
-  })) || [];
-
-  const totalEarnings = creatorCourseData?.reduce((sum, course) => {
-    const studentCount = course.enrolledStudents?.length || 0;
-    const courseRevenue = course.price ? course.price * studentCount : 0;
-    return sum + courseRevenue;
+  // Calculate Real Dynamic Earnings and Students
+  const totalStudents = creatorCourseData?.reduce((acc, course) => acc + (course.enrolledStudents?.length || 0), 0) || 0;
+  const totalEarnings = creatorCourseData?.reduce((acc, course) => {
+    return acc + ((course.enrolledStudents?.length || 0) * (course.price || 0));
   }, 0) || 0;
 
-  const totalStudents = creatorCourseData?.reduce((sum, course) => sum + (course.enrolledStudents?.length || 0), 0) || 0;
+  // Prepare chart data for student enrollment per course
+  const enrollData = creatorCourseData?.map(c => ({
+    name: c.title.length > 12 ? c.title.substring(0, 10) + '...' : c.title,
+    enrolled: c.enrolledStudents?.length || 0,
+    fullTitle: c.title
+  })) || [];
+
+  // Prepare chart data for lecture progress / counts
+  const courseProgressData = creatorCourseData?.map(c => ({
+    name: c.title.length > 12 ? c.title.substring(0, 10) + '...' : c.title,
+    lectures: c.lectures?.length || 0,
+    fullTitle: c.title
+  })) || [];
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 md:px-8">
+    <div className="min-h-screen pt-24 pb-12 px-4 md:px-8 text-[var(--body-text)] font-['Outfit']">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <FaArrowLeftLong
-            className="text-2xl text-gray-400 hover:text-[var(--neon-blue)] cursor-pointer transition-colors"
+            className="text-2xl text-[var(--dark-brown)] hover:text-[var(--deep-green)] cursor-pointer transition-colors"
             onClick={() => navigate("/")}
           />
-          <h1 className="text-3xl font-bold text-white tracking-tight">Instructor Dashboard</h1>
+          <h1 className="text-3xl font-extrabold text-[var(--dark-brown)] tracking-tight">Instructor Dashboard</h1>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="glass-card p-6 rounded-2xl flex items-center gap-5">
-            <div className="w-14 h-14 bg-[var(--neon-blue)]/10 rounded-2xl flex items-center justify-center text-[var(--neon-blue)] border border-[var(--neon-blue)]/20">
+          <div className="glass-card p-6 rounded-2xl flex items-center gap-5 border border-[var(--glass-border)] shadow-md">
+            <div className="w-14 h-14 bg-[var(--neon-blue)]/15 rounded-2xl flex items-center justify-center text-[var(--deep-green)] border border-[var(--neon-blue)]/30">
               <FaWallet size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold">Total Revenue</p>
-              <h3 className="text-2xl font-extrabold text-white">₹{totalEarnings.toLocaleString()}</h3>
+              <p className="text-xs text-[var(--accent-color)] uppercase tracking-wider font-bold">Total Revenue</p>
+              <h3 className="text-2xl font-black text-[var(--deep-green)]">₹{totalEarnings.toLocaleString()}</h3>
             </div>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl flex items-center gap-5">
-            <div className="w-14 h-14 bg-[var(--neon-purple)]/10 rounded-2xl flex items-center justify-center text-[var(--neon-purple)] border border-[var(--neon-purple)]/20">
+          <div className="glass-card p-6 rounded-2xl flex items-center gap-5 border border-[var(--glass-border)] shadow-md">
+            <div className="w-14 h-14 bg-blue-500/15 rounded-2xl flex items-center justify-center text-blue-700 border border-blue-500/30">
               <FaUsers size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold">Total Students</p>
-              <h3 className="text-2xl font-extrabold text-white">{totalStudents}</h3>
+              <p className="text-xs text-[var(--accent-color)] uppercase tracking-wider font-bold">Total Students</p>
+              <h3 className="text-2xl font-black text-[var(--dark-brown)]">{totalStudents}</h3>
             </div>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl flex items-center gap-5">
-            <div className="w-14 h-14 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-400 border border-green-500/20">
+          <div className="glass-card p-6 rounded-2xl flex items-center gap-5 border border-[var(--glass-border)] shadow-md">
+            <div className="w-14 h-14 bg-amber-500/15 rounded-2xl flex items-center justify-center text-amber-700 border border-amber-500/30">
               <FaChartLine size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-400 uppercase tracking-widest font-semibold">Active Courses</p>
-              <h3 className="text-2xl font-extrabold text-white">{creatorCourseData?.length || 0}</h3>
+              <p className="text-xs text-[var(--accent-color)] uppercase tracking-wider font-bold">Active Courses</p>
+              <h3 className="text-2xl font-black text-[var(--dark-brown)]">{creatorCourseData?.length || 0}</h3>
             </div>
           </div>
         </div>
 
         {/* Profile Summary & Action */}
-        <div className="glass-card p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
+        <div className="glass-card p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8 mb-10 border border-[var(--glass-border)] shadow-xl">
           <div className="flex items-center gap-6">
             <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-[var(--neon-blue)] to-[var(--neon-purple)] rounded-full blur opacity-30"></div>
-              <img
-                src={userData?.photoUrl || img}
-                alt="Educator"
-                className="relative w-24 h-24 rounded-full object-cover border-2 border-white/10"
-              />
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-3 border-[var(--neon-blue)] p-0.5 bg-white shadow-md">
+                {userData?.photoUrl ? (
+                  <img
+                    src={userData.photoUrl}
+                    alt="Educator"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling.style.display = 'flex'; }}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : null}
+                <div className={`w-full h-full bg-[#3E5F44] rounded-full flex items-center justify-center text-white font-bold text-2xl ${userData?.photoUrl ? 'hidden' : 'flex'}`}>
+                  {userData?.name ? userData.name.slice(0, 1).toUpperCase() : "E"}
+                </div>
+              </div>
             </div>
             <div className="space-y-1">
-              <h2 className="text-2xl font-bold text-white">Welcome back, {userData?.name}!</h2>
-              <p className="text-gray-400 max-w-md line-clamp-1">{userData?.description || "Manage your curriculum and track student success."}</p>
+              <h2 className="text-2xl font-extrabold text-[var(--dark-brown)]">Welcome back, {userData?.name}!</h2>
+              <p className="text-[var(--body-text)] max-w-md line-clamp-1 opacity-85 text-sm">{userData?.description || "Manage your curriculum and track student success."}</p>
             </div>
           </div>
           <button
-            className="w-full md:w-auto px-8 py-4 bg-white text-black font-extrabold rounded-xl hover:bg-[var(--neon-blue)] hover:text-black transition-all flex items-center justify-center gap-2 shadow-xl cursor-pointer"
+            className="w-full md:w-auto px-8 py-4 bg-[#3E5F44] hover:bg-[#2e4733] text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
             onClick={() => navigate("/courses")}
           >
             <FaPlus /> Create New Course
@@ -118,24 +108,23 @@ function Dashboard() {
         {/* Analytics Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Enrollment Chart */}
-          <div className="glass-card p-8 rounded-3xl">
+          <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] shadow-md">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-white">Student Enrollment</h3>
-              <div className="px-3 py-1 bg-[var(--neon-blue)]/10 text-[var(--neon-blue)] text-xs rounded-full border border-[var(--neon-blue)]/20 uppercase tracking-tighter font-bold">Real-time</div>
+              <h3 className="text-xl font-bold text-[var(--dark-brown)]">Student Enrollment</h3>
+              <div className="px-3 py-1 bg-[var(--neon-blue)]/15 text-[var(--deep-green)] text-xs rounded-full border border-[var(--neon-blue)]/30 uppercase tracking-wider font-bold">Real-time</div>
             </div>
             <div className="h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={enrollData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                  <XAxis dataKey="name" stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" vertical={false} />
+                  <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip
-                    contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '12px', color: '#fff' }}
-                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                    contentStyle={{ background: '#ffffff', border: '1px solid #ccc', borderRadius: '12px', color: '#1a1a1a', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                   />
                   <Bar dataKey="enrolled" radius={[6, 6, 0, 0]}>
                     {enrollData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#00f3ff' : '#bc13fe'} />
+                      <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#3E5F44' : '#5F8D4E'} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -144,22 +133,21 @@ function Dashboard() {
           </div>
 
           {/* Progress Chart */}
-          <div className="glass-card p-8 rounded-3xl">
+          <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] shadow-md">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-white">Curriculum Depth</h3>
-              <span className="text-gray-400 text-sm">Lectures per Course</span>
+              <h3 className="text-xl font-bold text-[var(--dark-brown)]">Curriculum Depth</h3>
+              <span className="text-xs text-[var(--accent-color)] font-bold uppercase tracking-wider">Lectures per Course</span>
             </div>
             <div className="h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={courseProgressData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                  <XAxis dataKey="name" stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" vertical={false} />
+                  <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip
-                    contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '12px', color: '#fff' }}
-                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                    contentStyle={{ background: '#ffffff', border: '1px solid #ccc', borderRadius: '12px', color: '#1a1a1a', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                   />
-                  <Bar dataKey="lectures" fill="#bc13fe" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="lectures" fill="#5F8D4E" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -171,4 +159,3 @@ function Dashboard() {
 }
 
 export default Dashboard
-

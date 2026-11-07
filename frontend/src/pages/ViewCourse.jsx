@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { serverUrl } from '../App';
 import { FaArrowLeftLong, FaPlay, FaLock, FaStar, FaCircleCheck } from "react-icons/fa6";
 import img from "../assets/empty.jpg"
-import Card from "../components/Card.jsx"
 import { setSelectedCourseData } from '../redux/courseSlice';
 import { setUserData } from '../redux/userSlice';
 import { toast } from 'react-toastify';
@@ -18,7 +17,6 @@ function ViewCourse() {
     
     const { courseData, selectedCourseData } = useSelector(state => state.course);
     const { userData } = useSelector(state => state.user);
-    const { lectureData } = useSelector(state => state.lecture);
     
     const [creatorData, setCreatorData] = useState(null);
     const [selectedLecture, setSelectedLecture] = useState(null);
@@ -26,7 +24,6 @@ function ViewCourse() {
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
-    const [loading, setLoading] = useState(false);
     const [enrollLoading, setEnrollLoading] = useState(false);
 
     const handleReview = async () => {
@@ -34,7 +31,7 @@ function ViewCourse() {
         if (!comment) return toast.error("Please write a comment");
         
         try {
-            const result = await axios.post(serverUrl + "/api/review/givereview", { rating, comment, courseId }, { withCredentials: true });
+            await axios.post(serverUrl + "/api/review/givereview", { rating, comment, courseId }, { withCredentials: true });
             toast.success("Review submitted!");
             setRating(0);
             setComment("");
@@ -96,12 +93,11 @@ function ViewCourse() {
             const isFree = !selectedCourseData?.price || selectedCourseData?.price === 0;
             const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
             
-            // DEMO MODE: If key is placeholder or missing, use free enrollment path
             const isDemoMode = !razorpayKey || razorpayKey.includes("add your") || razorpayKey === "";
 
             if (isFree || isDemoMode) {
                 if (isDemoMode && !isFree) {
-                    toast.info("Demo Mode: Bypassing payment for testing.");
+                    toast.info("Demo Mode: Enrolling for testing.");
                 }
                 const enrollRes = await axios.post(serverUrl + "/api/payment/enroll-free", { courseId, userId: userData._id }, { withCredentials: true });
                 const updatedUserRes = await axios.get(serverUrl + "/api/user/currentuser", { withCredentials: true });
@@ -115,12 +111,12 @@ function ViewCourse() {
                     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
                     amount: orderRes.data.amount,
                     currency: "INR",
-                    name: "SkillUp Premium",
+                    name: "LearnAI Premium",
                     description: `Enrollment for ${selectedCourseData.title}`,
                     order_id: orderRes.data.id,
                     handler: async function (response) {
                         try {
-                            const verifyRes = await axios.post(serverUrl + "/api/payment/verify-payment", { ...response, courseId, userId: userData._id }, { withCredentials: true });
+                            await axios.post(serverUrl + "/api/payment/verify-payment", { ...response, courseId, userId: userData._id }, { withCredentials: true });
                             const updatedUserRes = await axios.get(serverUrl + "/api/user/currentuser", { withCredentials: true });
                             dispatch(setUserData(updatedUserRes.data));
                             setIsEnrolled(true);
@@ -129,7 +125,7 @@ function ViewCourse() {
                             toast.error("Payment verification failed. Please contact support.");
                         }
                     },
-                    theme: { color: "#00F3FF" }
+                    theme: { color: "#3E5F44" }
                 };
                 
                 if (window.Razorpay) {
@@ -153,11 +149,11 @@ function ViewCourse() {
     };
 
     return (
-        <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex justify-center">
+        <div className="min-h-screen pt-24 pb-12 px-4 sm:px-8 flex justify-center text-[var(--body-text)] font-['Outfit']">
             <div className="max-w-7xl w-full animate-fade-in space-y-10">
                 
                 {/* Hero Section */}
-                <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl">
+                <div className="glass-card rounded-[2.5rem] overflow-hidden border border-[var(--glass-border)] shadow-xl">
                     <div className="flex flex-col lg:flex-row">
                         {/* Course Media */}
                         <div className="lg:w-1/2 relative group">
@@ -166,14 +162,9 @@ function ViewCourse() {
                                 alt="Course" 
                                 className="w-full h-[300px] lg:h-[500px] object-cover"
                             />
-                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20">
-                                    <FaPlay className="text-white text-2xl translate-x-1" />
-                                </div>
-                            </div>
                             <button 
                                 onClick={() => navigate("/")}
-                                className="absolute top-6 left-6 p-3 glass rounded-2xl text-white hover:text-[var(--neon-blue)] transition-all active:scale-90"
+                                className="absolute top-6 left-6 p-3 bg-white/80 hover:bg-white rounded-2xl text-[var(--dark-brown)] hover:text-[var(--deep-green)] transition-all shadow-md active:scale-90"
                             >
                                 <FaArrowLeftLong size={20} />
                             </button>
@@ -182,54 +173,54 @@ function ViewCourse() {
                         {/* Course CTA */}
                         <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
                             <div className="flex items-center gap-2 mb-4">
-                                <span className="px-3 py-1 bg-[var(--neon-blue)]/10 text-[var(--neon-blue)] text-[10px] font-bold uppercase tracking-widest rounded-md border border-[var(--neon-blue)]/20">
+                                <span className="px-3 py-1 bg-[var(--neon-blue)]/15 text-[var(--deep-green)] text-xs font-bold uppercase tracking-wider rounded-md border border-[var(--neon-blue)]/30">
                                     {selectedCourseData?.category}
                                 </span>
-                                <div className="flex items-center gap-1 text-yellow-500 text-sm font-bold">
+                                <div className="flex items-center gap-1 text-amber-500 text-sm font-bold">
                                     <FaStar /> {avgRating} <span className="text-gray-500 font-medium">({selectedCourseData?.reviews?.length || 0} reviews)</span>
                                 </div>
                             </div>
 
-                            <h1 className="text-3xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
+                            <h1 className="text-3xl lg:text-4xl font-extrabold text-[var(--dark-brown)] leading-tight mb-4">
                                 {selectedCourseData?.title}
                             </h1>
-                            <p className="text-gray-400 text-lg mb-8 line-clamp-2">
+                            <p className="text-[var(--body-text)] text-base mb-8 line-clamp-2 opacity-85">
                                 {selectedCourseData?.subTitle}
                             </p>
 
                             <div className="flex items-center gap-6 mb-10">
                                 <div className="flex flex-col">
-                                    <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">Price</span>
+                                    <span className="text-[var(--accent-color)] text-xs font-bold uppercase tracking-wider">Price</span>
                                     <div className="flex items-end gap-2">
-                                        <span className="text-3xl font-black text-white">₹{selectedCourseData?.price || 0}</span>
-                                        <span className="text-gray-500 line-through mb-1">₹599</span>
+                                        <span className="text-3xl font-black text-[var(--deep-green)]">₹{selectedCourseData?.price || 0}</span>
+                                        <span className="text-gray-400 line-through mb-1">₹599</span>
                                     </div>
                                 </div>
-                                <div className="h-10 w-[1px] bg-white/10"></div>
+                                <div className="h-10 w-[1px] bg-[var(--glass-border)]"></div>
                                 <div className="flex flex-col">
-                                    <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">Access</span>
-                                    <span className="text-white font-bold">Lifetime</span>
+                                    <span className="text-[var(--accent-color)] text-xs font-bold uppercase tracking-wider">Access</span>
+                                    <span className="text-[var(--dark-brown)] font-bold">Lifetime</span>
                                 </div>
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-4">
                                 {isEnrolled ? (
                                     <button 
-                                        className="flex-1 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black rounded-2xl shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-3"
+                                        className="flex-1 py-4 bg-[#3E5F44] hover:bg-[#2e4733] text-white font-extrabold rounded-2xl shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-3 text-lg"
                                         onClick={() => navigate(`/viewlecture/${courseId}`)}
                                     >
                                         <FaPlay /> Continue Learning
                                     </button>
                                 ) : (
                                     <button 
-                                        className="flex-1 py-5 bg-white text-black font-black text-xl rounded-2xl shadow-xl hover:bg-[var(--neon-blue)] hover:shadow-[0_0_30px_rgba(0,243,255,0.3)] transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center"
+                                        className="flex-1 py-4 bg-[#3E5F44] hover:bg-[#2e4733] text-white font-extrabold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center"
                                         onClick={handleEnroll}
                                         disabled={enrollLoading}
                                     >
-                                        {enrollLoading ? <ClipLoader size={24} color="black" /> : "Enroll Now"}
+                                        {enrollLoading ? <ClipLoader size={24} color="white" /> : "Enroll Now"}
                                     </button>
                                 )}
-                                <button className="px-10 py-5 glass rounded-2xl text-white font-bold hover:bg-white/10 transition-all">
+                                <button className="px-8 py-4 bg-white/80 border-2 border-[var(--neon-blue)] text-[var(--deep-green)] hover:bg-[var(--neon-blue)] hover:text-white rounded-2xl font-bold transition-all shadow-sm cursor-pointer">
                                     Add to Wishlist
                                 </button>
                             </div>
@@ -244,12 +235,12 @@ function ViewCourse() {
                     <div className="lg:col-span-2 space-y-10">
                         
                         {/* What you'll learn */}
-                        <div className="glass-card p-10 rounded-[2.5rem] border border-white/5">
-                            <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-                                <span className="w-2 h-8 bg-[var(--neon-blue)] rounded-full"></span>
+                        <div className="glass-card p-10 rounded-[2.5rem] border border-[var(--glass-border)] shadow-md">
+                            <h2 className="text-2xl font-bold text-[var(--dark-brown)] mb-8 flex items-center gap-3">
+                                <span className="w-2 h-8 bg-[var(--deep-green)] rounded-full"></span>
                                 What you'll learn
                             </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {[
                                     `Master ${selectedCourseData?.category} concepts`,
                                     "Real-world project implementation",
@@ -258,45 +249,45 @@ function ViewCourse() {
                                     "Advanced techniques & workflows",
                                     "Deployment and production readiness"
                                 ].map((item, i) => (
-                                    <div key={i} className="flex items-start gap-4">
-                                        <FaCircleCheck className="text-[var(--neon-blue)] mt-1 shrink-0" />
-                                        <p className="text-gray-300 font-medium">{item}</p>
+                                    <div key={i} className="flex items-start gap-3 bg-white/60 p-3.5 rounded-xl border border-[var(--glass-border)]">
+                                        <FaCircleCheck className="text-[var(--deep-green)] mt-1 shrink-0" />
+                                        <p className="text-[var(--body-text)] font-semibold text-sm">{item}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
                         {/* Curriculum */}
-                        <div className="glass-card p-10 rounded-[2.5rem] border border-white/5">
-                            <h2 className="text-2xl font-bold text-white mb-2">Course Content</h2>
-                            <p className="text-gray-500 text-sm mb-8 font-medium uppercase tracking-widest">
+                        <div className="glass-card p-10 rounded-[2.5rem] border border-[var(--glass-border)] shadow-md">
+                            <h2 className="text-2xl font-bold text-[var(--dark-brown)] mb-2">Course Content</h2>
+                            <p className="text-[var(--accent-color)] text-xs mb-8 font-bold uppercase tracking-wider">
                                 {selectedCourseData?.lectures?.length || 0} Modules • 12.5 Total Hours
                             </p>
                             
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {selectedCourseData?.lectures?.map((lecture, index) => (
                                     <div 
-                                        key={index}
-                                        className={`p-5 rounded-2xl border transition-all flex items-center justify-between group ${
+                                        key={index} 
+                                        className={`p-5 rounded-2xl border transition-all flex items-center justify-between group shadow-sm ${
                                             lecture.isPreviewFree 
-                                                ? "bg-white/5 border-white/10 hover:border-[var(--neon-blue)]/30 cursor-pointer" 
-                                                : "bg-black/20 border-white/5 opacity-60"
+                                                ? "bg-white/80 border-[var(--glass-border)] hover:border-[var(--neon-blue)] cursor-pointer" 
+                                                : "bg-black/5 border-black/5 opacity-60"
                                         }`}
                                         onClick={() => lecture.isPreviewFree && setSelectedLecture(lecture)}
                                     >
-                                        <div className="flex items-center gap-5">
-                                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-[var(--neon-blue)] transition-colors">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-[var(--neon-blue)]/15 flex items-center justify-center text-[var(--deep-green)]">
                                                 {lecture.isPreviewFree ? <FaPlay size={14} /> : <FaLock size={14} />}
                                             </div>
                                             <div>
-                                                <h4 className="text-white font-bold group-hover:text-[var(--neon-blue)] transition-colors">
+                                                <h4 className="text-[var(--dark-brown)] font-bold group-hover:text-[var(--deep-green)] transition-colors">
                                                     {lecture.lectureTitle}
                                                 </h4>
-                                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Module {index + 1}</span>
+                                                <span className="text-[10px] text-[var(--accent-color)] font-bold uppercase tracking-wider">Module {index + 1}</span>
                                             </div>
                                         </div>
                                         {lecture.isPreviewFree && (
-                                            <span className="text-[10px] font-bold text-[var(--neon-blue)] bg-[var(--neon-blue)]/10 px-3 py-1 rounded-md border border-[var(--neon-blue)]/20 uppercase">
+                                            <span className="text-[11px] font-bold text-[var(--deep-green)] bg-[var(--neon-blue)]/15 px-3 py-1 rounded-md border border-[var(--neon-blue)]/30 uppercase">
                                                 Free Preview
                                             </span>
                                         )}
@@ -305,14 +296,14 @@ function ViewCourse() {
                             </div>
                         </div>
 
-                        {/* Preview Player Modal (Simplified as Section) */}
+                        {/* Preview Player Modal / Section */}
                         {selectedLecture && (
-                            <div className="glass-card p-8 rounded-[2.5rem] border border-[var(--neon-blue)]/30 animate-slide-up">
+                            <div className="glass-card p-8 rounded-[2.5rem] border border-[var(--neon-blue)] shadow-xl animate-slide-up">
                                 <div className="flex items-center justify-between mb-6">
-                                    <h3 className="text-xl font-bold text-white">Previewing: {selectedLecture.lectureTitle}</h3>
-                                    <button onClick={() => setSelectedLecture(null)} className="text-gray-500 hover:text-white font-bold">Close</button>
+                                    <h3 className="text-xl font-bold text-[var(--dark-brown)]">Previewing: {selectedLecture.lectureTitle}</h3>
+                                    <button onClick={() => setSelectedLecture(null)} className="text-[var(--deep-green)] hover:underline font-bold cursor-pointer">Close</button>
                                 </div>
-                                <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl">
+                                <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black border border-black/10 shadow-lg">
                                     {selectedLecture.videoUrl?.includes("youtube.com") || selectedLecture.videoUrl?.includes("youtu.be") ? (
                                         <iframe
                                             src={`https://www.youtube.com/embed/${selectedLecture.videoUrl.split('v=')[1]?.split('&')[0] || selectedLecture.videoUrl.split('/').pop()}`}
@@ -330,22 +321,22 @@ function ViewCourse() {
                         )}
 
                         {/* Reviews */}
-                        <div className="glass-card p-10 rounded-[2.5rem] border border-white/5">
-                            <h2 className="text-2xl font-bold text-white mb-10">Student Reviews</h2>
+                        <div className="glass-card p-10 rounded-[2.5rem] border border-[var(--glass-border)] shadow-md">
+                            <h2 className="text-2xl font-bold text-[var(--dark-brown)] mb-8">Student Reviews</h2>
                             
                             {/* Submit Review */}
                             {!isEnrolled ? (
-                                <div className="p-8 bg-black/40 rounded-3xl text-center border border-white/5 mb-10">
-                                    <p className="text-gray-500 font-medium italic">Enroll in this course to share your feedback!</p>
+                                <div className="p-8 bg-white/70 rounded-3xl text-center border border-[var(--glass-border)] mb-10 shadow-sm">
+                                    <p className="text-[var(--body-text)] font-semibold italic">Enroll in this course to share your feedback!</p>
                                 </div>
                             ) : (
-                                <div className="mb-12 space-y-6">
+                                <div className="mb-10 space-y-4">
                                     <div className="flex gap-2">
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <FaStar 
                                                 key={star}
                                                 onClick={() => setRating(star)} 
-                                                className={`text-2xl cursor-pointer transition-all hover:scale-110 ${star <= rating ? "text-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)]" : "text-gray-700"}`} 
+                                                className={`text-2xl cursor-pointer transition-all hover:scale-110 ${star <= rating ? "text-amber-500" : "text-gray-300"}`} 
                                             />
                                         ))}
                                     </div>
@@ -353,75 +344,80 @@ function ViewCourse() {
                                         value={comment}
                                         onChange={(e) => setComment(e.target.value)}
                                         placeholder="What did you like about this course?"
-                                        className="w-full input-dark rounded-2xl p-6 h-32 resize-none"
+                                        className="w-full input-dark rounded-2xl p-5 h-28 resize-none font-medium shadow-sm"
                                     />
-                                    <button onClick={handleReview} className="px-8 py-4 bg-white text-black font-extrabold rounded-xl hover:bg-[var(--neon-blue)] transition-all shadow-lg active:scale-95">
+                                    <button onClick={handleReview} className="px-8 py-3.5 bg-[#3E5F44] hover:bg-[#2e4733] text-white font-bold rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
                                         Post Review
                                     </button>
                                 </div>
                             )}
 
                             {/* Review List */}
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 {selectedCourseData?.reviews?.length > 0 ? (
                                     selectedCourseData.reviews.map((rev, i) => (
-                                        <div key={i} className="p-6 bg-white/5 rounded-2xl border border-white/5">
-                                            <div className="flex items-center justify-between mb-3">
-                                                <div className="flex gap-1 text-yellow-500 text-xs">
+                                        <div key={i} className="p-5 bg-white/80 rounded-2xl border border-[var(--glass-border)] shadow-sm">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex gap-1 text-amber-500 text-xs">
                                                     {[...Array(rev.rating)].map((_, j) => <FaStar key={j} />)}
                                                 </div>
-                                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">verified student</span>
+                                                <span className="text-[10px] text-[var(--accent-color)] font-bold uppercase tracking-wider">verified student</span>
                                             </div>
-                                            <p className="text-gray-300 font-medium">{rev.comment}</p>
+                                            <p className="text-[var(--body-text)] font-medium text-sm">{rev.comment}</p>
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-center text-gray-600 py-10 font-medium italic">No reviews yet. Be the first to review!</p>
+                                    <p className="text-center text-gray-500 py-8 font-medium italic">No reviews yet. Be the first to review!</p>
                                 )}
                             </div>
                         </div>
                     </div>
 
                     {/* Sidebar */}
-                    <div className="space-y-10">
+                    <div className="space-y-8">
                         {/* Instructor Card */}
-                        <div className="glass-card p-8 rounded-[2.5rem] border border-white/5 text-center">
-                            <h4 className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-6">Course Instructor</h4>
+                        <div className="glass-card p-8 rounded-[2.5rem] border border-[var(--glass-border)] text-center shadow-md">
+                            <h4 className="text-[var(--accent-color)] text-[10px] font-bold uppercase tracking-wider mb-6">Course Instructor</h4>
                             <div className="relative w-24 h-24 mx-auto mb-6">
-                                <img 
-                                    src={creatorData?.photoUrl || img} 
-                                    alt="Instructor" 
-                                    className="w-full h-full rounded-full object-cover border-2 border-[var(--neon-blue)] p-1"
-                                />
-                                <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 rounded-full border-4 border-black"></div>
+                                {creatorData?.photoUrl ? (
+                                    <img 
+                                        src={creatorData.photoUrl} 
+                                        alt="Instructor" 
+                                        onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling.style.display = 'flex'; }}
+                                        className="w-full h-full rounded-full object-cover border-3 border-[var(--neon-blue)] p-1 bg-white shadow-md"
+                                    />
+                                ) : null}
+                                <div className={`w-full h-full bg-[#3E5F44] rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-md ${creatorData?.photoUrl ? 'hidden' : 'flex'}`}>
+                                    {creatorData?.name ? creatorData.name.slice(0, 1).toUpperCase() : "I"}
+                                </div>
                             </div>
-                            <h3 className="text-xl font-bold text-white mb-2">{creatorData?.name || "LearnAI Expert"}</h3>
-                            <p className="text-gray-400 text-sm font-medium mb-6 line-clamp-3">{creatorData?.description || "Experienced educator dedicated to teaching real-world skills."}</p>
-                            <div className="flex flex-col gap-2">
-                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Verified Contact</span>
-                                <span className="text-xs text-[var(--neon-blue)] font-bold truncate">{creatorData?.email}</span>
+                            <h3 className="text-xl font-bold text-[var(--dark-brown)] mb-2">{creatorData?.name || "LearnAI Expert"}</h3>
+                            <p className="text-[var(--body-text)] text-sm font-medium mb-6 line-clamp-3 opacity-85">{creatorData?.description || "Experienced educator dedicated to teaching real-world skills."}</p>
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-[var(--accent-color)] font-bold uppercase tracking-wider">Verified Contact</span>
+                                <span className="text-xs text-[var(--deep-green)] font-bold truncate">{creatorData?.email}</span>
                             </div>
                         </div>
 
                         {/* More Courses by Creator */}
                         {selectedCreatorCourse.length > 0 && (
                             <div>
-                                <h3 className="text-white font-bold mb-6 flex items-center justify-between">
+                                <h3 className="text-[var(--dark-brown)] font-bold mb-4 flex items-center justify-between">
                                     More from {creatorData?.name?.split(' ')[0]}
-                                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">({selectedCreatorCourse.length})</span>
+                                    <span className="text-xs text-[var(--accent-color)] font-bold uppercase tracking-wider">({selectedCreatorCourse.length})</span>
                                 </h3>
-                                <div className="space-y-6">
+                                <div className="space-y-4">
                                     {selectedCreatorCourse.map((item, index) => (
                                         <div 
                                             key={index} 
-                                            className="glass-card p-4 rounded-3xl border border-white/5 hover:border-[var(--neon-blue)]/50 transition-all cursor-pointer group"
+                                            className="glass-card p-4 rounded-2xl border border-[var(--glass-border)] hover:border-[var(--neon-blue)]/50 transition-all cursor-pointer group shadow-sm"
                                             onClick={() => navigate(`/viewcourse/${item._id}`)}
                                         >
                                             <div className="flex gap-4">
-                                                <img src={item.thumbnail} className="w-20 h-20 rounded-2xl object-cover shrink-0" alt="Thumb" />
+                                                <img src={item.thumbnail} className="w-20 h-20 rounded-xl object-cover shrink-0" alt="Thumb" />
                                                 <div className="flex flex-col justify-center overflow-hidden">
-                                                    <h4 className="text-white font-bold text-sm group-hover:text-[var(--neon-blue)] transition-colors truncate">{item.title}</h4>
-                                                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">₹{item.price}</span>
+                                                    <h4 className="text-[var(--dark-brown)] font-bold text-sm group-hover:text-[var(--deep-green)] transition-colors truncate">{item.title}</h4>
+                                                    <span className="text-xs text-[var(--deep-green)] font-extrabold uppercase tracking-wider mt-1">₹{item.price}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -436,5 +432,4 @@ function ViewCourse() {
     )
 }
 
-export default ViewCourse
-ViewCourse
+export default ViewCourse;

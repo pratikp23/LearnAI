@@ -1,22 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
 
+/* ── Design Tokens ─────────────────────────────────────────────────────── */
 :root {
-  --primary-bg: #F5EFE6;
+  --primary-bg:   #F5EFE6;
   --secondary-bg: #EADBC8;
   --accent-color: #8B6B4A;
-  --neon-blue: #5F8D4E;       /* Primary brand green instead of neon blue */
-  --neon-purple: #7A9D54;     /* Sage green instead of neon purple */
-  --deep-green: #3E5F44;
-  --dark-brown: #5C4033;
-  --body-text: #2F2F2F;
-  --glass-bg: rgba(255, 253, 249, 0.7);
-  --glass-border: rgba(95, 141, 78, 0.18);
+  --neon-blue:    #5F8D4E;       /* Brand Primary Green */
+  --neon-purple:  #7A9D54;       /* Brand Sage Green */
+  --deep-green:   #3E5F44;       /* Deep Forest Green */
+  --dark-brown:   #5C4033;       /* Warm Espresso Brown */
+  --body-text:    #2F2F2F;       /* High-contrast dark charcoal */
+  --glass-bg:     rgba(255, 253, 249, 0.88);
+  --glass-border: rgba(95, 141, 78, 0.22);
 }
 
+/* ── Base Reset ────────────────────────────────────────────────────────── */
 * {
-  font-family: 'Outfit', sans-serif !important;
+  font-family: 'Outfit', sans-serif;
   scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
 body {
@@ -28,14 +31,12 @@ body {
   position: relative;
 }
 
-/* Spotlight Lighting Overlay */
+/* ── Spotlight overlay (mouse follow glow) ─────────────────────────────── */
 body::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   pointer-events: none;
   background: radial-gradient(
     circle 450px at var(--mouse-x, 50%) var(--mouse-y, 50%),
@@ -45,146 +46,56 @@ body::before {
   z-index: 9999;
 }
 
-/* Headings Typography */
+/* ── Typography ────────────────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', Georgia, serif !important;
-  color: var(--dark-brown) !important;
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--dark-brown);
 }
 
-/* Code block typography */
 code, pre {
   font-family: 'Fira Code', monospace !important;
 }
 
-/* Smart text contrast translation layer */
-.text-white,
-.text-gray-50,
-.text-gray-100,
-.text-gray-200,
-.text-gray-300,
-.text-gray-400,
-.text-slate-50,
-.text-slate-100,
-.text-slate-200,
-.text-slate-300,
-.text-slate-400,
-.text-zinc-50,
-.text-zinc-100,
-.text-zinc-200,
-.text-zinc-300,
-.text-zinc-400,
-.text-neutral-50,
-.text-neutral-100,
-.text-neutral-200,
-.text-neutral-300,
-.text-neutral-400 {
-  color: var(--body-text) !important;
-}
-
-/* Specific styling hierarchies for secondary text elements */
-.text-gray-500,
-.text-slate-500,
-.text-zinc-500 {
-  color: var(--accent-color) !important; /* Oak brown for secondary labels */
-}
-
-.text-gray-600,
-.text-slate-600,
-.text-zinc-600 {
-  color: var(--neon-purple) !important; /* Sage green for metadata */
-}
-
-/* Headings text color override */
-h1.text-white, h2.text-white, h3.text-white, h4.text-white, h5.text-white, h6.text-white {
-  color: var(--dark-brown) !important;
-}
-
-/* Hover states for links and navigation menu items */
-.hover\:text-white:hover,
-[class*="hover:text-white"]:hover {
-  color: var(--neon-blue) !important;
-}
-
-/* Ensure button / badge / active state text remains white on solid dark elements */
-.bg-black,
-.bg-black *,
-[class*="bg-gradient"],
-[class*="bg-gradient"] *,
-[class*="bg-[var(--deep-green)]"],
-[class*="bg-[var(--deep-green)]"] * {
-  color: #FFFDF9 !important;
-}
-
-/* Base button transition */
-button {
-  transition: all 0.3s ease;
-}
-
-/* Outline / Transparent buttons styling for light background readability */
-button[class*="bg-transparent"],
-button[class*="bg-white/5"],
-button:not([class*="bg-"]):not([class*="bg-gradient"]):not(.bg-white) {
-  background-color: var(--glass-bg) !important;
-  border: 1px solid var(--neon-blue) !important;
-  color: var(--neon-blue) !important;
-}
-
-button[class*="bg-transparent"] *,
-button[class*="bg-white/5"] *,
-button:not([class*="bg-"]):not([class*="bg-gradient"]):not(.bg-white) * {
-  color: var(--neon-blue) !important;
-}
-
-/* Solid buttons styling */
-button[class*="bg-gradient"],
-button.bg-black,
-button[class*="bg-[var(--neon-blue)]"],
-button[class*="bg-[var(--neon-purple)]"] {
-  background-color: var(--neon-blue) !important;
-  border-color: var(--neon-blue) !important;
-  color: #FFFDF9 !important;
-}
-
-/* Universal hover state for buttons */
-button:hover,
-button:hover * {
-  background-color: var(--deep-green) !important;
-  border-color: var(--deep-green) !important;
-  color: #FFFDF9 !important;
-}
-
-
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--primary-bg);
-}
-
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--primary-bg); }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
+  background: linear-gradient(to bottom, var(--neon-blue), var(--deep-green));
   border-radius: 10px;
 }
 
-.text-shadow-xl {
-  text-shadow: 0 0 10px rgba(95, 141, 78, 0.3);
+/* ── Animations ────────────────────────────────────────────────────────── */
+@keyframes gradientBG {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* Glassmorphism Utilities */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes blink-cursor {
+  0%, 100% { border-color: #5F8D4E; }
+  50%       { border-color: transparent; }
+}
+
+.animate-fade-in  { animation: fadeIn 0.5s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+
+/* ── Glassmorphism ─────────────────────────────────────────────────────── */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(95, 141, 78, 0.05);
+  box-shadow: 0 8px 30px 0 rgba(62, 95, 68, 0.07);
 }
 
 .glass-card {
@@ -192,14 +103,56 @@ button:hover * {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 4px 30px rgba(95, 141, 78, 0.03);
+  box-shadow: 0 4px 24px rgba(62, 95, 68, 0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 40px rgba(95, 141, 78, 0.12);
-  border-color: rgba(95, 141, 78, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(62, 95, 68, 0.14);
+  border-color: rgba(95, 141, 78, 0.35);
+}
+
+/* ── Universal Text Contrast on Light/Glass Elements ───────────────────── */
+.glass, .glass-card {
+  color: var(--body-text);
+}
+
+.glass h1, .glass h2, .glass h3, .glass h4, .glass h5, .glass h6,
+.glass-card h1, .glass-card h2, .glass-card h3, .glass-card h4, .glass-card h5, .glass-card h6 {
+  color: var(--dark-brown) !important;
+}
+
+/* Fix elements that had text-white or text-gray-300 / text-gray-400 inside glass cards */
+.glass-card .text-white:not(button):not(button *):not(.badge-solid *):not([class*="bg-red"]):not([class*="bg-green"]):not([class*="bg-blue"]):not([class*="bg-black"]):not([class*="bg-[#3"]):not([class*="bg-[#5"]),
+.glass .text-white:not(button):not(button *):not(.badge-solid *):not([class*="bg-red"]):not([class*="bg-green"]):not([class*="bg-blue"]):not([class*="bg-black"]):not([class*="bg-[#3"]):not([class*="bg-[#5"]) {
+  color: #1a1a1a !important;
+}
+
+.glass-card .text-gray-200,
+.glass .text-gray-200 {
+  color: #2F2F2F !important;
+}
+
+.glass-card .text-gray-300,
+.glass .text-gray-300 {
+  color: #3F3F3F !important;
+}
+
+.glass-card .text-gray-400,
+.glass .text-gray-400 {
+  color: #555555 !important;
+}
+
+/* ── Text utilities ────────────────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, var(--deep-green), var(--dark-brown));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  font-weight: 700;
+  display: inline-block;
 }
 
 .neon-border {
@@ -212,227 +165,296 @@ button:hover * {
   box-shadow: 0 0 10px rgba(122, 157, 84, 0.2);
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.8s ease-out forwards;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
-
-.text-gradient {
-  background: linear-gradient(to right, var(--deep-green), var(--accent-color));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 700;
+/* ── Button System ─────────────────────────────────────────────────────── */
+button {
+  transition: all 0.25s ease;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif !important;
 }
 
 .btn-glow {
   position: relative;
   overflow: hidden;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
 }
 
 .btn-glow:hover {
-  box-shadow: 0 0 20px rgba(95, 141, 78, 0.4);
-  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(62, 95, 68, 0.3);
+  transform: translateY(-1px);
 }
 
-/* Universal Inputs overrides */
+/* Primary Brand Button */
+.btn-primary,
+button.btn-primary {
+  background: linear-gradient(135deg, var(--deep-green), var(--neon-blue)) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: none !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(62, 95, 68, 0.25) !important;
+}
+
+.btn-primary:hover,
+button.btn-primary:hover {
+  background: linear-gradient(135deg, #2f4a34, #4e7340) !important;
+  box-shadow: 0 6px 20px rgba(62, 95, 68, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+/* Secondary / Outline Brand Button */
+.btn-secondary,
+button.btn-secondary {
+  background: rgba(255, 253, 249, 0.9) !important;
+  color: var(--deep-green) !important;
+  border: 2px solid var(--neon-blue) !important;
+  font-weight: 600 !important;
+}
+
+.btn-secondary:hover,
+button.btn-secondary:hover {
+  background: var(--neon-blue) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(95, 141, 78, 0.3) !important;
+}
+
+/* Catch-all for buttons styled with gradient or brand colors to ensure high visibility */
+button[class*="from-[var(--neon-blue)]"],
+button[class*="from-blue-"],
+button[class*="from-green-"] {
+  background: linear-gradient(135deg, var(--deep-green), var(--neon-blue)) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 16px rgba(62, 95, 68, 0.25) !important;
+}
+
+button[class*="from-[var(--neon-blue)]"]:hover,
+button[class*="from-blue-"]:hover,
+button[class*="from-green-"]:hover {
+  background: linear-gradient(135deg, #2e4733, #4e7340) !important;
+  box-shadow: 0 6px 22px rgba(62, 95, 68, 0.35) !important;
+}
+
+/* Buttons with white text on transparent backgrounds */
+button[class*="border-[var(--neon-blue)]"][class*="text-white"][class*="bg-transparent"],
+button[class*="border-2"][class*="border-[var(--neon-blue)]"][class*="text-white"] {
+  background: var(--deep-green) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: var(--deep-green) !important;
+  box-shadow: 0 4px 14px rgba(62, 95, 68, 0.25) !important;
+}
+
+/* ── Mic Button Styling ─────────────────────────────────────────────────── */
+.mic-btn {
+  background: linear-gradient(135deg, var(--deep-green), var(--neon-blue)) !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 16px rgba(62, 95, 68, 0.35) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer;
+}
+
+.mic-btn:hover {
+  background: linear-gradient(135deg, #2e4733, #4e7340) !important;
+  transform: scale(1.08);
+  box-shadow: 0 6px 22px rgba(62, 95, 68, 0.45) !important;
+}
+
+.mic-btn-active {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border: 2px solid #fca5a5 !important;
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.65) !important;
+  animation: pulseMic 1.2s infinite ease-in-out !important;
+  cursor: pointer;
+}
+
+@keyframes pulseMic {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.12); }
+}
+
+/* ── Profile Avatars ───────────────────────────────────────────────────── */
+.avatar-container {
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 2px solid var(--neon-blue);
+  background-color: var(--secondary-bg);
+  box-shadow: 0 2px 10px rgba(62, 95, 68, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-initial {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--deep-green), var(--neon-blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  letter-spacing: 0;
+  font-family: 'Outfit', sans-serif !important;
+}
+
+/* ── Navbar — dedicated classes ────────────────────────────────────────── */
+.nav-link {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: #1a1a1a !important;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-bottom-color 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  color: var(--deep-green) !important;
+  border-bottom-color: var(--deep-green);
+}
+
+.nav-login-btn {
+  padding: 8px 22px;
+  border: 2px solid var(--deep-green);
+  color: var(--deep-green) !important;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 15px;
+  background: rgba(255, 253, 249, 0.7);
+  transition: all 0.25s ease;
+}
+
+.nav-login-btn:hover {
+  background: var(--deep-green) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(62, 95, 68, 0.3);
+}
+
+/* Dropdown menu items */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2F2F2F !important;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(95, 141, 78, 0.12);
+  color: var(--deep-green) !important;
+}
+
+.dropdown-item.danger {
+  color: #dc2626 !important;
+}
+
+.dropdown-item.danger:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c !important;
+}
+
+/* ── Inputs & Textareas ────────────────────────────────────────────────── */
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="search"],
+input[type="number"],
 textarea,
 .input-dark {
-  background: var(--glass-bg) !important;
-  border: 1px solid var(--glass-border) !important;
-  color: var(--body-text) !important;
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1.5px solid rgba(95, 141, 78, 0.25) !important;
+  color: #1a1a1a !important;
+  -webkit-text-fill-color: #1a1a1a !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 15px;
+  transition: all 0.25s ease;
 }
 
 input:focus,
 textarea:focus,
 .input-dark:focus {
   border-color: var(--neon-blue) !important;
-  box-shadow: 0 0 10px rgba(95, 141, 78, 0.15) !important;
+  box-shadow: 0 0 12px rgba(95, 141, 78, 0.2) !important;
   outline: none;
-  background: rgba(255, 253, 249, 0.85) !important;
+  background: #ffffff !important;
 }
 
 input::placeholder,
-textarea::placeholder,
-.input-dark::placeholder {
-  color: var(--accent-color) !important;
-  opacity: 0.6;
+textarea::placeholder {
+  color: #777777 !important;
+  -webkit-text-fill-color: #777777 !important;
+  opacity: 0.85;
 }
 
-/* Home Page Background Overlay overrides - transparent since mask handles the fade */
-[class*="via-[rgba(15,12,41,0.7)]"] {
-  background-image: none !important;
+select {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+  border: 1.5px solid rgba(95, 141, 78, 0.25) !important;
 }
 
-/* Soften the hero background image for light theme with smooth mask fade */
-.min-h-screen img.opacity-60 {
-  opacity: 0.35 !important;
-  filter: none !important;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%) !important;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%) !important;
+select option {
+  background-color: var(--secondary-bg);
+  color: #1a1a1a;
 }
 
-
-
-
-
-
-
-
-/* Glow overrides */
-[class*="drop-shadow-[0_0_25px_rgba(0,243,255,0.6)]"] {
-  filter: drop-shadow(0 0 25px rgba(95, 141, 78, 0.4)) !important;
-}
-
-[class*="hover:shadow-[0_0_30px_rgba(0,243,255,0.4)]"]:hover {
-  box-shadow: 0 0 30px rgba(95, 141, 78, 0.3) !important;
-}
-
-[class*="hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]"]:hover {
-  box-shadow: 0 0 30px rgba(139, 107, 74, 0.25) !important;
-}
-
-/* Section headings text-gradient override (light brown to chocolate) */
-.bg-gradient-to-r[class*="from-white"],
-.bg-gradient-to-r[class*="via-white"],
-.bg-gradient-to-r[class*="to-white"],
-.bg-gradient-to-r[class*="from-[var(--neon-blue)]"][class*="via-white"],
-[class*="bg-gradient-to-r"][class*="from-white"],
-[class*="bg-gradient-to-r"][class*="via-white"],
-[class*="bg-gradient-to-r"][class*="from-[var(--neon-blue)]"] {
-  background-image: linear-gradient(to right, #c79f73, #5c4033) !important;
+/* ── Section Headings Text Clip Gradients ───────────────────────────────── */
+h1.bg-clip-text,
+h2.bg-clip-text,
+h3.bg-clip-text,
+span.bg-clip-text {
+  background-image: linear-gradient(135deg, #1a1a1a, var(--deep-green), var(--dark-brown)) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
 }
 
-/* Soften drop shadows on headings */
-[class*="drop-shadow-[0_0_15px_"] {
-  filter: drop-shadow(0 0 15px rgba(139, 107, 74, 0.25)) !important;
+/* ── Hero section ──────────────────────────────────────────────────────── */
+[class*="via-[rgba(15,12,41,0.7)]"] {
+  background-image: none !important;
 }
 
-/* Footer text visibility and hover overrides */
+.min-h-screen img.opacity-60 {
+  opacity: 0.25 !important;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
+  mask-image:         linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
 footer {
   background-color: var(--secondary-bg) !important;
   border-top: 1px solid var(--glass-border) !important;
-}
-
-footer,
-footer :not(:hover) {
-  color: #000000 !important;
-}
-
-footer p {
   color: #2F2F2F !important;
 }
 
-footer h1,
-footer h2,
-footer h3,
-footer h4,
-footer h5,
-footer h6 {
+footer h1, footer h2, footer h3,
+footer h4, footer h5, footer h6 {
   color: var(--dark-brown) !important;
+}
+
+footer p { color: #3a3a3a !important; }
+
+footer li, footer a, footer span {
+  color: #444444;
+  transition: all 0.2s ease;
 }
 
 footer li:hover,
 footer span:hover,
-footer a:hover,
-footer .hover\:text-white:hover {
-  color: #3d2110 !important;
-  text-shadow: none !important;
-}
-
-/* Card Component Price and Rating Readability Overrides */
-.glass-card span.text-white,
-.glass-card [class*="group-hover:text-"],
-.glass-card span.text-gray-200 {
-  color: #3d2110 !important;
-}
-
-.glass-card:hover span.text-white,
-.glass-card:hover [class*="group-hover:text-"],
-.glass-card:hover span.text-gray-200 {
-  color: #3d2110 !important;
-}
-
-/* Rating tag wrapper - make it completely transparent (no bg, no borders) */
-.glass-card div[class*="border-white"] {
-  border: none !important;
-  background-color: transparent !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-
-/* Price and Rating label text */
-.glass-card span.text-gray-500 {
-  color: #5c4033 !important;
-  opacity: 0.8;
-}
-
-/* Ensure text gradients display correctly by forcing inline-block */
-h1[class*="text-transparent"],
-h2[class*="text-transparent"],
-span[class*="text-transparent"],
-[class*="text-transparent"] {
-  display: inline-block !important;
-}
-
-/* Reduce vertical gaps and paddings between landing page sections */
-.space-y-20 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 0 !important;
-}
-
-/* Balance py-20 section paddings for a tighter layout */
-.py-20 {
-  padding-top: 2.5rem !important;
-  padding-bottom: 2.5rem !important;
-}
-
-/* Style dropdown select options for readability */
-select option {
-  background-color: var(--secondary-bg) !important;
-  color: var(--body-text) !important;
-}
-
-/* AI Hub Page Launch Tool visibility overrides */
-.ai-hub-page .glass span[class*="bg-clip-text"] {
-  background-image: none !important;
-  background: none !important;
-  -webkit-text-fill-color: #3d2110 !important;
-  color: #3d2110 !important;
-}
-
-.ai-hub-page .glass .mt-8 svg {
-  color: #3d2110 !important;
-}
-
-.ai-hub-page h3 {
-  color: var(--dark-brown) !important;
-}
-
-.ai-hub-page p.text-gray-400 {
-  color: var(--body-text) !important;
+footer a:hover {
+  color: var(--deep-green) !important;
 }

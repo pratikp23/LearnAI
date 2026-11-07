@@ -28,14 +28,13 @@ function ForgotPassword() {
       toast.error(error?.response?.data?.message || error.message || "Failed to send OTP")
       setLoading(false)
     }
-    
    }
+
     const handleStep2 = async () => {
     setLoading(true)
     try {
       const result = await axios.post(`${serverUrl}/api/auth/verifyotp` , {email,otp} , {withCredentials:true})
       console.log(result)
-      
       toast.success(result.data.message)
       setLoading(false)
       setStep(3)
@@ -44,8 +43,8 @@ function ForgotPassword() {
       toast.error(error?.response?.data?.message || error.message || "Failed to verify OTP")
       setLoading(false)
     }
-    
    }
+
     const handleStep3 = async () => {
     setLoading(true)
     try {
@@ -63,44 +62,43 @@ function ForgotPassword() {
       toast.error(error?.response?.data?.message || error.message || "Failed to reset password")
       setLoading(false)
     }
-    
    }
 
    const handleSendMagicLink = async () => {
        if (!email) {
-           return toast.error("Please enter your email address first");
+           return toast.error("Please enter your email first");
        }
        setLoading(true);
        try {
-           const result = await axios.post(`${serverUrl}/api/auth/send-magic-link`, { email }, { withCredentials: true });
-           toast.success(result.data.message || "Magic login link sent to your email!");
-       } catch (error) {
-           console.log(error);
-           toast.error(error?.response?.data?.message || error.message || "Failed to send magic link");
+           const res = await axios.post(`${serverUrl}/api/auth/send-magic-link`, { email });
+           toast.success(res.data.message || "Magic Link sent! Please check your email inbox.");
+       } catch (err) {
+           toast.error(err?.response?.data?.message || err.message || "Failed to send Magic Link");
        } finally {
            setLoading(false);
        }
    };
 
-
   return (
-     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-     { step==1 && <div className="bg-white shadow-md rounded-xl p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+     <div className="min-h-screen flex items-center justify-center p-4 font-['Outfit']">
+     { step==1 && <div className="bg-white shadow-2xl rounded-3xl p-8 max-w-md w-full border border-[var(--glass-border)] animate-slide-up">
+        <h2 className="text-2xl font-extrabold mb-2 text-center text-[var(--dark-brown)]">
           Forgot Your Password?
         </h2>
+        <p className="text-xs text-[var(--accent-color)] text-center font-semibold mb-6">
+          Enter your email to receive a recovery code
+        </p>
 
-          <form  className="space-y-4" onSubmit={(e)=>e.preventDefault()}>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Enter your email address
+          <form className="space-y-4" onSubmit={(e)=>e.preventDefault()}>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-[var(--dark-brown)] uppercase tracking-wider">
+                Email address
               </label>
               <input
                 type="email"
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[black] text-black"
+                className="w-full px-4 py-2.5 border border-[var(--glass-border)] rounded-xl shadow-sm focus:outline-none focus:border-[var(--neon-blue)] text-[#1a1a1a] font-medium"
                 placeholder="you@example.com"
                 onChange={(e)=>setEmail(e.target.value)}
-
                 value={email}
                 required
               />
@@ -108,55 +106,48 @@ function ForgotPassword() {
 
             <button
               type="submit"
-              className="w-full bg-[black] hover:bg-[#4b4b4b] text-white py-2 px-4 rounded-md font-medium cursor-pointer" disabled={loading} onClick={handleStep1}
+              className="w-full bg-[#3E5F44] hover:bg-[#2e4733] text-white py-3 px-4 rounded-xl font-bold cursor-pointer transition-all shadow-md" disabled={loading} onClick={handleStep1}
             >
-              {loading?<ClipLoader size={30} color='white'/>:"Send OTP"}
+              {loading?<ClipLoader size={20} color='white'/>:"Send Verification OTP"}
             </button>
           </form>
 
           <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-gray-300"></div>
-            <span className="mx-4 text-gray-500 text-sm">OR</span>
-            <div className="flex-grow border-t border-gray-300"></div>
+            <div className="flex-grow border-t border-[var(--glass-border)]"></div>
+            <span className="mx-4 text-gray-400 text-xs font-bold">OR</span>
+            <div className="flex-grow border-t border-[var(--glass-border)]"></div>
           </div>
 
           <button
             type="button"
-            className="w-full border border-black hover:bg-gray-50 text-black py-2 px-4 rounded-md font-medium cursor-pointer flex items-center justify-center gap-2"
+            className="w-full border-2 border-[var(--neon-blue)] hover:bg-[#5F8D4E]/10 text-[var(--deep-green)] py-2.5 px-4 rounded-xl font-bold cursor-pointer flex items-center justify-center gap-2 transition-all shadow-sm"
             disabled={loading}
             onClick={handleSendMagicLink}
           >
-            {loading ? <ClipLoader size={20} color="black" /> : "Email Me a Magic Login Link"}
+            {loading ? <ClipLoader size={20} color="green" /> : "Email Me a Magic Login Link"}
           </button>
-        
 
-        <div className="text-sm text-center mt-4 text-black cursor-pointer" onClick={()=>navigate("/login")} >
-        
-            Back to Login
-        
+        <div className="text-sm text-center mt-5 text-[var(--deep-green)] font-bold cursor-pointer hover:underline" onClick={()=>navigate("/login")} >
+            ← Back to Login
         </div>
       </div>}
 
-
-      {step==2 && <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+      {step==2 && <div className="bg-white shadow-2xl rounded-3xl p-8 max-w-md w-full border border-[var(--glass-border)] animate-slide-up">
+        <h2 className="text-2xl font-extrabold text-center text-[var(--dark-brown)] mb-2">
           Enter OTP
         </h2>
-      
+        <p className="text-xs text-[var(--accent-color)] text-center font-semibold mb-6">
+          Please enter the 4-digit code sent to your email
+        </p>
 
-        {/* OTP Inputs */}
-        
-          <form  className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Please enter the 4-digit code sent to your email.
-              </label>
+          <form className="space-y-4" onSubmit={(e)=>e.preventDefault()}>
+            <div className="flex flex-col gap-1.5 text-center">
               <input
                 type="text"
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[black] text-black"
-                placeholder="Enter Here"
+                className="w-full h-12 text-center text-2xl font-bold tracking-[0.3em] border-2 border-[var(--neon-blue)] rounded-xl outline-none text-[#1a1a1a]"
+                placeholder="1234"
+                maxLength={4}
                 onChange={(e)=>setOtp(e.target.value)}
-
                 value={otp}
                 required
               />
@@ -164,74 +155,60 @@ function ForgotPassword() {
 
             <button
               type="submit"
-              className="w-full bg-[black] hover:bg-[#4b4b4b] text-white py-2 px-4 rounded-md font-medium cursor-pointer" disabled={loading} onClick={handleStep2} 
+              className="w-full bg-[#3E5F44] hover:bg-[#2e4733] text-white py-3 px-4 rounded-xl font-bold cursor-pointer transition-all shadow-md" disabled={loading} onClick={handleStep2} 
             >
-              {loading?<ClipLoader size={30} color='white'/>:"Verify OTP"}
+              {loading?<ClipLoader size={20} color='white'/>:"Verify OTP"}
             </button>
           </form>
-        
 
-        <div className="text-sm text-center mt-4 text-black cursor-pointer" onClick={()=>navigate("/login")} >
-        
-            Back to Login
-        
+        <div className="text-sm text-center mt-5 text-[var(--deep-green)] font-bold cursor-pointer hover:underline" onClick={()=>navigate("/login")} >
+            ← Back to Login
         </div>
-       
-
-      
-
       </div>}
-      {step==3 &&   <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+
+      {step==3 && <div className="bg-white shadow-2xl rounded-3xl p-8 max-w-md w-full border border-[var(--glass-border)] animate-slide-up">
+        <h2 className="text-2xl font-extrabold text-center text-[var(--dark-brown)] mb-2">
           Reset Your Password
         </h2>
-        <p className="text-sm text-gray-500 text-center mb-6">
-          Enter a new password below to regain access to your account.
+        <p className="text-xs text-[var(--accent-color)] text-center font-semibold mb-6">
+          Enter a new password below to regain access to your account
         </p>
 
-        <form className="space-y-5" onSubmit={(e)=>e.preventDefault()}>
-          {/* New Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" >
+        <form className="space-y-4" onSubmit={(e)=>e.preventDefault()}>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-[var(--dark-brown)] uppercase tracking-wider">
               New Password
             </label>
             <input
-              type="text"
+              type="password"
               placeholder="Enter new password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[black] focus:outline-none text-black" onChange={(e)=>setNewPassword(e.target.value)}
-
-                value={newpassword}
+              className="w-full px-4 py-2.5 border border-[var(--glass-border)] rounded-xl focus:border-[var(--neon-blue)] focus:outline-none text-[#1a1a1a] font-medium" onChange={(e)=>setNewPassword(e.target.value)}
+              value={newpassword}
             />
           </div>
 
-          {/* Confirm Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-[var(--dark-brown)] uppercase tracking-wider">
               Confirm Password
             </label>
             <input
-              type="text"
+              type="password"
               placeholder="Re-enter new password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[black] focus:outline-none text-black" onChange={(e)=>setConpassword(e.target.value)}
-
-                value={conPassword}
+              className="w-full px-4 py-2.5 border border-[var(--glass-border)] rounded-xl focus:border-[var(--neon-blue)] focus:outline-none text-[#1a1a1a] font-medium" onChange={(e)=>setConpassword(e.target.value)}
+              value={conPassword}
             />
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[black] hover:bg-[#4b4b4b] text-white py-2 rounded-md font-medium" onClick={handleStep3}
+            className="w-full bg-[#3E5F44] hover:bg-[#2e4733] text-white py-3 rounded-xl font-bold transition-all shadow-md cursor-pointer" onClick={handleStep3}
           >
-            {loading?<ClipLoader size={30} color='white'/>:"Reset Password"}
+            {loading?<ClipLoader size={20} color='white'/>:"Reset Password"}
           </button>
         </form>
 
-        {/* Back to login */}
-        <div className="text-center text-sm mt-4 text-black cursor-pointer" onClick={()=>navigate("/login")}>
-          
-            Back to Login
-          
+        <div className="text-center text-sm mt-5 text-[var(--deep-green)] font-bold cursor-pointer hover:underline" onClick={()=>navigate("/login")}>
+            ← Back to Login
         </div>
       </div>}
     </div>

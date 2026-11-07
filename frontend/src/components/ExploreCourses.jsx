@@ -12,43 +12,45 @@ function ExploreCourses() {
 
   const categories = [
     { name: "Web Development", icon: <TbDeviceDesktopAnalytics className='w-full h-full text-[var(--neon-blue)]' />, color: "border-[var(--neon-blue)]" },
-    { name: "UI/UX Design", icon: <LiaUikit className='w-full h-full text-[#ff0080]' />, color: "border-[#ff0080]" },
-    { name: "App Development", icon: <MdAppShortcut className='w-full h-full text-[#7928ca]' />, color: "border-[#7928ca]" },
-    { name: "Ethical Hacking", icon: <FaHackerrank className='w-full h-full text-[#00dfd8]' />, color: "border-[#00dfd8]" },
-    { name: "AI/ML", icon: <TbBrandOpenai className='w-full h-full text-[#ff4d4d]' />, color: "border-[#ff4d4d]" },
-    { name: "Data Science", icon: <SiGoogledataproc className='w-full h-full text-[#1c7eff]' />, color: "border-[#1c7eff]" },
-    { name: "Data Analytics", icon: <BsClipboardDataFill className='w-full h-full text-[#f5a623]' />, color: "border-[#f5a623]" },
-    { name: "AI Tools", icon: <SiOpenaigym className='w-full h-full text-[#47e6b1]' />, color: "border-[#47e6b1]" },
+    { name: "UI/UX Design", icon: <LiaUikit className='w-full h-full text-[#c026d3]' />, color: "border-[#c026d3]" },
+    { name: "App Development", icon: <MdAppShortcut className='w-full h-full text-[#7c3aed]' />, color: "border-[#7c3aed]" },
+    { name: "Ethical Hacking", icon: <FaHackerrank className='w-full h-full text-[#0d9488]' />, color: "border-[#0d9488]" },
+    { name: "AI/ML", icon: <TbBrandOpenai className='w-full h-full text-[#e11d48]' />, color: "border-[#e11d48]" },
+    { name: "Data Science", icon: <SiGoogledataproc className='w-full h-full text-[#2563eb]' />, color: "border-[#2563eb]" },
+    { name: "Data Analytics", icon: <BsClipboardDataFill className='w-full h-full text-[#d97706]' />, color: "border-[#d97706]" },
+    { name: "AI Tools", icon: <SiOpenaigym className='w-full h-full text-[#059669]' />, color: "border-[#059669]" },
   ]
 
   return (
-    <div className='w-full py-20 px-6 flex flex-col lg:flex-row items-center justify-center gap-12 bg-transparent'>
+    <div className='w-full py-16 px-6 flex flex-col lg:flex-row items-center justify-center gap-12 bg-transparent'>
       {/* Text Section */}
       <div className='w-full lg:w-[400px] flex flex-col items-start gap-4'>
-        <h2 className='text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400'>
-          Explore <br /> Our Courses
+        <h2 className='text-4xl md:text-5xl font-extrabold text-[var(--dark-brown)] leading-tight'>
+          Explore <br />
+          <span className="text-gradient">Our Courses</span>
         </h2>
-        <p className='text-gray-400 text-lg font-light leading-relaxed mb-6'>
+        <p className='text-[var(--body-text)] text-lg leading-relaxed mb-6 opacity-85'>
           Discover a wide range of courses designed to help you master new skills and advance your career. From coding to design, we have something for everyone.
         </p>
         <button
-          className='px-8 py-3 border border-white/20 bg-white/5 hover:bg-white/10 rounded-full text-white text-lg flex items-center gap-3 transition-all duration-300 backdrop-blur-sm shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_32px_rgba(0,243,255,0.2)]'
+          className='px-8 py-3.5 bg-[#3E5F44] hover:bg-[#2e4733] text-white rounded-full text-base font-bold flex items-center gap-3 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer'
           onClick={() => navigate("/allcourses")}
         >
-          Explore Courses <SiViaplay className='w-6 h-6' />
+          <span>Explore Courses</span>
+          <SiViaplay className='w-5 h-5' />
         </button>
       </div>
 
       {/* Categories Grid */}
-      <div className='flex-1 flex flex-wrap justify-center gap-6 max-w-4xl'>
+      <div className='flex-1 flex flex-wrap justify-center gap-5 max-w-4xl'>
         {categories.map((cat, index) => (
-          <div key={index} className='group w-[120px] h-[150px] flex flex-col items-center justify-center gap-4 glass-card rounded-2xl cursor-pointer hover:-translate-y-2'>
-            <div className={`w-[70px] h-[70px] rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.03)] border border-white/10 ${cat.color} shadow-[0_0_15px_rgba(0,0,0,0.2)] group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all`}>
-              <div className="w-[40px] h-[40px]">
+          <div key={index} className='group w-[125px] h-[150px] flex flex-col items-center justify-center gap-3 glass-card rounded-2xl cursor-pointer hover:-translate-y-1.5 transition-all'>
+            <div className={`w-[65px] h-[65px] rounded-xl flex items-center justify-center bg-white/70 border-2 ${cat.color} shadow-sm group-hover:scale-105 transition-all`}>
+              <div className="w-[36px] h-[36px]">
                 {cat.icon}
               </div>
             </div>
-            <span className='text-xs font-medium text-gray-300 text-center px-1 group-hover:text-white transition-colors'>{cat.name}</span>
+            <span className='text-xs font-bold text-[var(--dark-brown)] text-center px-1 group-hover:text-[var(--deep-green)] transition-colors'>{cat.name}</span>
           </div>
         ))}
       </div>

@@ -4,7 +4,8 @@ import { serverUrl } from "../App";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import { toast } from "react-toastify";
-import { FiPlay, FiCheckCircle, FiAward, FiMessageCircle, FiBarChart2, FiCpu } from "react-icons/fi";
+import { FiPlay, FiCheckCircle, FiAward, FiMessageCircle, FiCpu } from "react-icons/fi";
+import { RiMicAiFill } from "react-icons/ri";
 
 const InterviewSimulator = () => {
   const [role, setRole] = useState("");
@@ -15,6 +16,7 @@ const InterviewSimulator = () => {
   const [userAnswer, setUserAnswer] = useState("");
   const [results, setResults] = useState([]);
   const [finished, setFinished] = useState(false);
+  const [listening, setListening] = useState(false);
 
   const startInterview = async (e) => {
     e.preventDefault();
@@ -32,6 +34,33 @@ const InterviewSimulator = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleVoiceInput = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error("Speech recognition is not supported in your browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    setListening(true);
+    recognition.start();
+
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript.trim();
+      setUserAnswer((prev) => (prev ? `${prev} ${transcript}` : transcript));
+    };
+
+    recognition.onerror = (event) => {
+      setListening(false);
+      if (event.error === 'not-allowed') toast.error("Microphone access denied.");
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
   };
 
   const submitAnswer = async () => {
@@ -61,44 +90,42 @@ const InterviewSimulator = () => {
     }
   };
 
-  const calculateOverallScore = () => {
-    if (results.length === 0) return 0;
-    const total = results.reduce((acc, curr) => acc + curr.accuracyScore + curr.confidenceScore + curr.communicationScore, 0);
-    return Math.round(total / (results.length * 3));
-  };
-
   return (
-    <div className="min-h-screen bg-[var(--primary-bg)] text-white font-['Outfit']">
+    <div className="min-h-screen bg-[var(--primary-bg)] text-[var(--body-text)] font-['Outfit']">
       <Nav />
       
       <div className="pt-32 pb-24 px-6">
         <div className="container mx-auto max-w-4xl">
           {!questions.length ? (
             <div className="text-center animate-fade-in">
-              <h1 className="text-5xl font-bold mb-6">AI Interview Simulator</h1>
-              <p className="text-gray-400 text-lg mb-12">Select your target role and let our AI prepare you for the real deal.</p>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--dark-brown)] mb-4">AI Interview Simulator</h1>
+              <p className="text-[var(--body-text)] text-lg mb-10 opacity-85">Select your target role and let our AI prepare you for the real deal.</p>
               
-              <form onSubmit={startInterview} className="glass p-8 rounded-3xl border border-white/5 max-w-xl mx-auto">
+              <form onSubmit={startInterview} className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] max-w-xl mx-auto shadow-xl">
                 <div className="mb-6 text-left">
-                  <label className="block text-sm font-bold text-gray-500 uppercase tracking-widest mb-3">Target Job Role</label>
+                  <label className="block text-xs font-bold text-[var(--dark-brown)] uppercase tracking-widest mb-3">Target Job Role</label>
                   <input
                     type="text"
                     placeholder="e.g. Frontend Developer, Data Scientist..."
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:border-[var(--neon-blue)] outline-none transition-all"
+                    className="w-full input-dark rounded-2xl px-6 py-4 outline-none font-medium shadow-sm"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                   />
                 </div>
                 
                 <div className="mb-8 text-left">
-                  <label className="block text-sm font-bold text-gray-500 uppercase tracking-widest mb-3">Difficulty Level</label>
-                  <div className="grid grid-cols-3 gap-4">
+                  <label className="block text-xs font-bold text-[var(--dark-brown)] uppercase tracking-widest mb-3">Difficulty Level</label>
+                  <div className="grid grid-cols-3 gap-3">
                     {['Beginner', 'Intermediate', 'Advanced'].map((lvl) => (
                       <button
                         key={lvl}
                         type="button"
                         onClick={() => setLevel(lvl)}
-                        className={`py-3 rounded-xl border transition-all ${level === lvl ? "bg-[var(--neon-blue)] text-black border-[var(--neon-blue)]" : "bg-white/5 border-white/10 text-gray-400 hover:border-white/20"}`}
+                        className={`py-3 rounded-xl border-2 font-bold text-sm transition-all cursor-pointer ${
+                          level === lvl 
+                            ? "bg-[var(--deep-green)] text-white border-[var(--deep-green)] shadow-md" 
+                            : "bg-white/80 border-[var(--glass-border)] text-[var(--body-text)] hover:bg-white"
+                        }`}
                       >
                         {lvl}
                       </button>
@@ -109,9 +136,9 @@ const InterviewSimulator = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-[var(--neon-blue)] to-[var(--neon-purple)] text-black py-4 rounded-2xl font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+                  className="w-full bg-[#3E5F44] hover:bg-[#2e4733] text-white py-4 rounded-2xl font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 shadow-lg cursor-pointer"
                 >
-                  {loading ? <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <><FiPlay /> Start Simulation</>}
+                  {loading ? <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><FiPlay /> Start Simulation</>}
                 </button>
               </form>
             </div>
@@ -119,76 +146,91 @@ const InterviewSimulator = () => {
             <div className="animate-fade-in">
               {/* Progress Bar */}
               <div className="flex items-center justify-between mb-8">
-                <span className="text-[var(--neon-blue)] font-bold tracking-widest uppercase text-sm">Question {currentIndex + 1} of {questions.length}</span>
-                <div className="w-64 h-2 bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full bg-[var(--neon-blue)] transition-all duration-500" style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}></div>
+                <span className="text-[var(--deep-green)] font-extrabold tracking-wider uppercase text-sm">Question {currentIndex + 1} of {questions.length}</span>
+                <div className="w-64 h-2.5 bg-black/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-[var(--deep-green)] transition-all duration-500 rounded-full" style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}></div>
                 </div>
               </div>
 
-              <div className="glass p-10 rounded-[40px] border border-white/10 shadow-2xl relative overflow-hidden">
-                <div className="absolute -right-20 -top-20 w-64 h-64 bg-[var(--neon-blue)]/10 blur-[100px]"></div>
+              <div className="glass-card p-10 rounded-[35px] border border-[var(--glass-border)] shadow-xl relative overflow-hidden">
+                <h2 className="text-2xl md:text-3xl font-bold text-[var(--dark-brown)] mb-6 leading-tight">{questions[currentIndex].question}</h2>
                 
-                <h2 className="text-3xl font-bold mb-8 leading-tight">{questions[currentIndex].question}</h2>
-                
-                <textarea
-                  className="w-full bg-white/5 border border-white/10 rounded-3xl p-8 min-h-[250px] focus:border-[var(--neon-purple)] outline-none transition-all text-lg placeholder-gray-600 resize-none"
-                  placeholder="Type your answer here... Be as detailed as possible."
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                />
+                <div className="relative mb-6">
+                  <textarea
+                    className="w-full bg-white/95 border border-[var(--glass-border)] rounded-2xl p-6 min-h-[220px] focus:border-[var(--neon-blue)] outline-none transition-all text-base text-[#1a1a1a] placeholder-gray-400 resize-none shadow-sm"
+                    placeholder="Type or speak your answer here... Be as detailed as possible."
+                    value={userAnswer}
+                    onChange={(e) => setUserAnswer(e.target.value)}
+                  />
 
-                <div className="flex justify-end mt-8">
+                  {/* Mic Voice Button */}
+                  <button
+                    type="button"
+                    onClick={handleVoiceInput}
+                    title={listening ? "Listening... click to stop" : "Speak your answer"}
+                    className={`absolute bottom-4 right-4 p-3 rounded-full flex items-center justify-center transition-all ${
+                      listening ? "mic-btn-active" : "mic-btn"
+                    }`}
+                  >
+                    <RiMicAiFill size={20} className={listening ? "animate-bounce" : ""} />
+                  </button>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-[var(--accent-color)] font-semibold">
+                    {listening ? "🎙️ Recording answer..." : "💡 Tip: You can type or use the mic button to speak."}
+                  </span>
                   <button
                     onClick={submitAnswer}
                     disabled={loading}
-                    className="bg-white text-black px-10 py-4 rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
+                    className="bg-[#3E5F44] hover:bg-[#2e4733] text-white px-8 py-3.5 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50 shadow-md cursor-pointer"
                   >
-                    {loading ? <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div> : <><FiCheckCircle /> Submit Answer</>}
+                    {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <><FiCheckCircle /> Submit Answer</>}
                   </button>
                 </div>
               </div>
             </div>
           ) : (
             <div className="animate-fade-in">
-              <div className="text-center mb-16">
-                <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-orange-500/20">
-                  <FiAward size={48} className="text-white" />
+              <div className="text-center mb-14">
+                <div className="w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg">
+                  <FiAward size={40} className="text-white" />
                 </div>
-                <h1 className="text-5xl font-bold mb-4">Interview Complete!</h1>
-                <p className="text-gray-400 text-xl">Here is your comprehensive performance analysis.</p>
+                <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--dark-brown)] mb-3">Interview Complete!</h1>
+                <p className="text-[var(--body-text)] text-lg opacity-85">Here is your comprehensive performance analysis.</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div className="glass p-8 rounded-3xl border border-white/5 text-center">
-                  <FiCheckCircle className="mx-auto mb-4 text-green-400" size={32} />
-                  <div className="text-4xl font-bold mb-1">{Math.round(results.reduce((a,c)=>a+c.accuracyScore,0)/results.length)}/10</div>
-                  <div className="text-sm text-gray-500 uppercase font-bold tracking-tighter">Technical Accuracy</div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] text-center shadow-md">
+                  <FiCheckCircle className="mx-auto mb-3 text-[var(--deep-green)]" size={32} />
+                  <div className="text-3xl font-extrabold text-[var(--dark-brown)] mb-1">{Math.round(results.reduce((a,c)=>a+c.accuracyScore,0)/results.length)}/10</div>
+                  <div className="text-xs text-[var(--accent-color)] uppercase font-bold tracking-wider">Technical Accuracy</div>
                 </div>
-                <div className="glass p-8 rounded-3xl border border-white/5 text-center">
-                  <FiCpu className="mx-auto mb-4 text-blue-400" size={32} />
-                  <div className="text-4xl font-bold mb-1">{Math.round(results.reduce((a,c)=>a+c.confidenceScore,0)/results.length)}/10</div>
-                  <div className="text-sm text-gray-500 uppercase font-bold tracking-tighter">Confidence Level</div>
+                <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] text-center shadow-md">
+                  <FiCpu className="mx-auto mb-3 text-blue-600" size={32} />
+                  <div className="text-3xl font-extrabold text-[var(--dark-brown)] mb-1">{Math.round(results.reduce((a,c)=>a+c.confidenceScore,0)/results.length)}/10</div>
+                  <div className="text-xs text-[var(--accent-color)] uppercase font-bold tracking-wider">Confidence Level</div>
                 </div>
-                <div className="glass p-8 rounded-3xl border border-white/5 text-center">
-                  <FiMessageCircle className="mx-auto mb-4 text-purple-400" size={32} />
-                  <div className="text-4xl font-bold mb-1">{Math.round(results.reduce((a,c)=>a+c.communicationScore,0)/results.length)}/10</div>
-                  <div className="text-sm text-gray-500 uppercase font-bold tracking-tighter">Communication</div>
+                <div className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] text-center shadow-md">
+                  <FiMessageCircle className="mx-auto mb-3 text-purple-600" size={32} />
+                  <div className="text-3xl font-extrabold text-[var(--dark-brown)] mb-1">{Math.round(results.reduce((a,c)=>a+c.communicationScore,0)/results.length)}/10</div>
+                  <div className="text-xs text-[var(--accent-color)] uppercase font-bold tracking-wider">Communication</div>
                 </div>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {results.map((res, idx) => (
-                  <div key={idx} className="glass p-8 rounded-3xl border border-white/5">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-3">
-                      <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-sm">{idx + 1}</span>
+                  <div key={idx} className="glass-card p-8 rounded-3xl border border-[var(--glass-border)] shadow-md">
+                    <h3 className="text-xl font-bold text-[var(--dark-brown)] mb-4 flex items-center gap-3">
+                      <span className="w-8 h-8 rounded-full bg-[var(--neon-blue)]/20 text-[var(--deep-green)] font-extrabold flex items-center justify-center text-sm">{idx + 1}</span>
                       {res.question}
                     </h3>
-                    <div className="bg-white/5 p-6 rounded-2xl border border-white/5 mb-6">
-                      <p className="text-gray-300 italic">"{res.feedback}"</p>
+                    <div className="bg-white/80 p-5 rounded-2xl border border-[var(--glass-border)] mb-4 shadow-sm">
+                      <p className="text-[var(--body-text)] italic">"{res.feedback}"</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {res.suggestions.map((s, i) => (
-                        <span key={i} className="text-xs font-bold px-3 py-1.5 bg-[var(--neon-blue)]/10 text-[var(--neon-blue)] rounded-lg border border-[var(--neon-blue)]/20">
+                      {res.suggestions?.map((s, i) => (
+                        <span key={i} className="text-xs font-bold px-3 py-1.5 bg-[var(--neon-blue)]/15 text-[var(--deep-green)] rounded-lg border border-[var(--neon-blue)]/30">
                           {s}
                         </span>
                       ))}
@@ -197,17 +239,12 @@ const InterviewSimulator = () => {
                 ))}
               </div>
 
-              <div className="mt-16 flex justify-center gap-6">
+              <div className="mt-12 flex justify-center gap-4">
                 <button
                   onClick={() => setQuestions([])}
-                  className="px-10 py-4 border border-white/10 rounded-2xl font-bold hover:bg-white/5 transition-all"
+                  className="px-8 py-3.5 bg-white/80 hover:bg-white text-[var(--dark-brown)] border-2 border-[var(--glass-border)] rounded-xl font-bold shadow-sm transition-all cursor-pointer"
                 >
                   Try Another Role
-                </button>
-                <button
-                  className="px-10 py-4 bg-white text-black rounded-2xl font-bold hover:scale-105 transition-all"
-                >
-                  Download Report (PDF)
                 </button>
               </div>
             </div>

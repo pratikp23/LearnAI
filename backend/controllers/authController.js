@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import User from "../models/userModel.js"
 import Otp from "../models/otpModel.js"
-import sendMail, { sendMagicLinkMail } from "../configs/Mail.js"
+import sendMail, { sendMagicLinkMail, sendSignupOtpMail } from "../configs/Mail.js"
 
 
 
@@ -221,7 +221,7 @@ export const sendSignupOtp = async (req, res) => {
             { upsert: true, new: true }
         )
         
-        await sendMail(email, otp)
+        await sendSignupOtpMail(email, otp)  // Use signup-specific email subject
         return res.status(200).json({ message: "Verification OTP sent successfully" })
     } catch (error) {
         console.log("sendSignupOtp error:", error)

@@ -1,12 +1,18 @@
 import Course from "../models/courseModel.js";
-import razorpay from 'razorpay'
+import Razorpay from 'razorpay'
 import User from "../models/userModel.js";
 import dotenv from "dotenv"
 dotenv.config()
-//const razorpayInstance = new razorpay({
-    //key_id: process.env.RAZORPAY_KEY_ID,
-    //key_secret: process.env.RAZORPAY_SECRET,
 
+// Lazily initialize Razorpay only when real keys are provided
+const getRazorpayInstance = () => {
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_SECRET;
+  if (!keyId || !keySecret || keyId.includes("add your") || keySecret.includes("add your")) {
+    throw new Error("Razorpay keys are not configured. Please add RAZORPAY_KEY_ID and RAZORPAY_SECRET to your .env file.");
+  }
+  return new Razorpay({ key_id: keyId, key_secret: keySecret });
+};
 
 export const createOrder = async (req, res) => {
   try {
@@ -16,17 +22,17 @@ export const createOrder = async (req, res) => {
     if (!course) return res.status(404).json({ message: "Course not found" });
 
     const options = {
-      amount: course.price * 100, // in paisa
+      amount: course.price * 100, // in paisa (1 INR = 100 paisa)
       currency: 'INR',
-      receipt: `${courseId}.toString()`,
+      receipt: `receipt_${courseId.toString()}`,  // Fixed: was incorrectly using template literal
     };
 
+    const razorpayInstance = getRazorpayInstance();
     const order = await razorpayInstance.orders.create(options);
     return res.status(200).json(order);
   } catch (err) {
     console.log(err)
-    return res.status(500).json({ message: `Order creation failed ${err}` });
-
+    return res.status(500).json({ message: `Order creation failed: ${err.message}` });
   }
 };
 
@@ -34,10 +40,10 @@ export const createOrder = async (req, res) => {
 
 export const verifyPayment = async (req, res) => {
   try {
-    
-        const {razorpay_order_id , courseId , userId} = req.body
-        const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
-        if(orderInfo.status === 'paid') {
+    const { razorpay_order_id, courseId, userId } = req.body
+    const razorpayInstance = getRazorpayInstance();
+    const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
+    if (orderInfo.status === 'paid') {
       // Update user and course enrollment
       const user = await User.findById(userId);
       if (!user.enrolledCourses.includes(courseId)) {
@@ -57,7 +63,7 @@ export const verifyPayment = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error during payment verification" });
+    return res.status(500).json({ message: `Internal server error during payment verification: ${error.message}` });
   }
 };
 

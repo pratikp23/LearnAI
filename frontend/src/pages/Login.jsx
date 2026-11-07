@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.jpg";
-import google from "../assets/google.png"; // make sure this exists
+import google from "../assets/google.png";
 
 import { auth, provider } from "../utils/Firebase";
 import axios from "axios";
@@ -51,7 +51,6 @@ function Login() {
   const googleLogin = async () => {
     try {
       const response = await signInWithPopup(auth, provider);
-
       const user = response.user;
 
       const result = await axios.post(
@@ -76,28 +75,28 @@ function Login() {
   };
 
   return (
-    <div className="bg-purple-50 w-[100vw] h-[100vh] flex items-center justify-center flex-col gap-3">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 font-['Outfit']">
       <form
-        className="w-[90%] md:w-[800px] h-[600px] bg-white text-black shadow-xl rounded-2xl flex"
+        className="w-[95%] md:w-[840px] min-h-[580px] bg-white shadow-2xl rounded-3xl flex overflow-hidden border border-[var(--glass-border)] animate-slide-up"
         onSubmit={(e) => e.preventDefault()}
       >
         {/* LEFT */}
-        <div className="md:w-[50%] w-full flex flex-col items-center justify-center gap-4">
-          <div>
-            <h1 className="font-semibold text-black text-2xl">
-              Welcome back
+        <div className="md:w-[55%] w-full flex flex-col items-center justify-center p-8 md:p-12 gap-5">
+          <div className="text-center md:text-left w-[85%]">
+            <h1 className="font-extrabold text-[var(--dark-brown)] text-3xl">
+              Welcome Back
             </h1>
-            <h2 className="text-gray-500 text-lg">
-              Login to your account
+            <h2 className="text-[var(--accent-color)] text-sm font-semibold mt-1">
+              Log in to continue your learning journey
             </h2>
           </div>
 
           {/* EMAIL */}
-          <div className="flex flex-col gap-1 w-[85%]">
-            <label className="font-semibold text-black">Email</label>
+          <div className="flex flex-col gap-1.5 w-[85%]">
+            <label className="text-xs font-bold text-[var(--dark-brown)] uppercase tracking-wider">Email</label>
             <input
               type="text"
-              className="border border-gray-300 rounded w-full h-[35px] px-3 bg-white text-black outline-none focus:border-black"
+              className="border border-[var(--glass-border)] rounded-xl w-full h-[44px] px-4 bg-white text-[#1a1a1a] outline-none focus:border-[var(--neon-blue)] font-medium shadow-sm transition-all"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -105,65 +104,67 @@ function Login() {
           </div>
 
           {/* PASSWORD */}
-          <div className="flex flex-col gap-1 w-[85%] relative">
-            <label className="font-semibold text-black">Password</label>
+          <div className="flex flex-col gap-1.5 w-[85%] relative">
+            <label className="text-xs font-bold text-[var(--dark-brown)] uppercase tracking-wider">Password</label>
             <input
               type={show ? "text" : "password"}
-              className="border border-gray-300 rounded w-full h-[35px] px-3 bg-white text-black outline-none focus:border-black"
-              placeholder="********"
+              className="border border-[var(--glass-border)] rounded-xl w-full h-[44px] px-4 bg-white text-[#1a1a1a] outline-none focus:border-[var(--neon-blue)] font-medium shadow-sm transition-all"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
 
             {!show ? (
               <MdOutlineRemoveRedEye
-                className="absolute right-3 top-9 cursor-pointer"
+                className="absolute right-4 top-9 cursor-pointer text-gray-500 hover:text-[var(--deep-green)] text-lg"
                 onClick={() => setShow(true)}
               />
             ) : (
               <MdRemoveRedEye
-                className="absolute right-3 top-9 cursor-pointer"
+                className="absolute right-4 top-9 cursor-pointer text-[var(--deep-green)] text-lg"
                 onClick={() => setShow(false)}
               />
             )}
           </div>
 
           {/* ROLE */}
-          <div className="flex gap-3">
-            <span
-              className={`px-3 py-1 border border-gray-300 rounded cursor-pointer ${
+          <div className="flex gap-3 w-[85%]">
+            <button
+              type="button"
+              className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${
                 role === "student"
-                  ? "bg-black text-white"
-                  : "hover:bg-gray-100 text-black"
+                  ? "bg-[#3E5F44] text-white border-[#3E5F44] shadow-sm"
+                  : "bg-white/80 border-[var(--glass-border)] text-[var(--dark-brown)] hover:bg-[#5F8D4E]/10"
               }`}
               onClick={() => setRole("student")}
             >
               Student
-            </span>
+            </button>
 
-            <span
-              className={`px-3 py-1 border border-gray-300 rounded cursor-pointer ${
+            <button
+              type="button"
+              className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${
                 role === "educator"
-                  ? "bg-black text-white"
-                  : "hover:bg-gray-100 text-black"
+                  ? "bg-[#3E5F44] text-white border-[#3E5F44] shadow-sm"
+                  : "bg-white/80 border-[var(--glass-border)] text-[var(--dark-brown)] hover:bg-[#5F8D4E]/10"
               }`}
               onClick={() => setRole("educator")}
             >
               Educator
-            </span>
+            </button>
           </div>
 
           {/* LOGIN BUTTON */}
           <button
-            className="w-[80%] h-[40px] bg-black text-white rounded"
+            className="w-[85%] h-[46px] bg-[#3E5F44] hover:bg-[#2e4733] text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center mt-2"
             onClick={handleLogin}
             disabled={loading}
           >
-            {loading ? <ClipLoader size={20} color="white" /> : "Login"}
+            {loading ? <ClipLoader size={20} color="white" /> : "Log In"}
           </button>
 
           <span
-            className="text-sm cursor-pointer text-gray-500"
+            className="text-xs cursor-pointer text-[var(--accent-color)] hover:text-[var(--deep-green)] font-bold"
             onClick={() => navigate("/forgotpassword")}
           >
             Forgot password?
@@ -171,17 +172,17 @@ function Login() {
 
           {/* GOOGLE */}
           <div
-            className="w-[80%] h-[40px] border flex items-center justify-center gap-2 cursor-pointer"
+            className="w-[85%] h-[44px] border-2 border-[var(--glass-border)] hover:bg-[#5F8D4E]/10 rounded-xl flex items-center justify-center gap-2 cursor-pointer font-bold text-[var(--dark-brown)] transition-all shadow-sm"
             onClick={googleLogin}
           >
             <img src={google} alt="google" className="w-5" />
-            <span className="text-gray-500">Google</span>
+            <span className="text-sm">Continue with Google</span>
           </div>
 
-          <div className="text-gray-500">
+          <div className="text-xs text-[var(--body-text)] font-medium">
             Don't have an account?{" "}
             <span
-              className="underline text-black cursor-pointer"
+              className="underline text-[var(--deep-green)] font-bold cursor-pointer hover:text-[#2e4733]"
               onClick={() => navigate("/signup")}
             >
               Sign up
@@ -190,8 +191,12 @@ function Login() {
         </div>
 
         {/* RIGHT */}
-        <div className="w-[50%] bg-black hidden md:flex flex-col items-center justify-center rounded-r-2xl">
-          <img src={logo} className="w-20" alt="logo" />
+        <div className="w-[45%] bg-gradient-to-br from-[#3E5F44] to-[#5C4033] hidden md:flex flex-col items-center justify-center p-8 text-center text-white relative">
+          <img src={logo} className="w-24 rounded-full border-4 border-white shadow-2xl mb-4" alt="logo" />
+          <h3 className="text-2xl font-bold font-['Playfair_Display']">LearnAI</h3>
+          <p className="text-xs text-white/80 mt-2 max-w-xs leading-relaxed">
+            Empower your intelligence with AI-driven learning paths, quizzes, and personalized roadmaps.
+          </p>
         </div>
       </form>
     </div>
@@ -199,4 +204,3 @@ function Login() {
 }
 
 export default Login;
-

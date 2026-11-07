@@ -15,28 +15,32 @@ function Cardspage() {
   }, [courseData])
 
   return (
-    <div className='relative flex items-center justify-center flex-col py-20 w-full bg-transparent'>
+    <div className='relative flex items-center justify-center flex-col py-16 w-full bg-transparent'>
       <div className="text-center mb-12 px-4">
-        <h1 className='md:text-6xl text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]'>
+        <h1 className='md:text-5xl text-3xl font-extrabold text-[var(--dark-brown)] mb-4'>
           Our Popular Courses
         </h1>
-        <p className='lg:w-2/3 md:w-4/5 mx-auto text-lg text-gray-400 font-light leading-relaxed'>
+        <p className='lg:w-2/3 md:w-4/5 mx-auto text-lg text-[var(--body-text)] leading-relaxed opacity-85'>
           Explore top-rated courses designed to boost your skills, enhance careers, and unlock opportunities in tech, AI, business, and beyond.
         </p>
       </div>
 
-      <div className='w-full max-w-7xl flex items-center justify-center flex-wrap gap-8 px-4 mb-16'>
+      <div className='w-full max-w-7xl flex items-center justify-center flex-wrap gap-8 px-4 mb-14'>
         {popularCourses.length > 0 ? (
           popularCourses.map((item, index) => (
             <Card key={index} id={item._id} thumbnail={item.thumbnail} title={item.title} price={item.price} category={item.category} reviews={item.reviews} />
           ))
         ) : (
-          <p className="text-gray-500 text-xl">Loading courses...</p>
+          <p className="text-[var(--dark-brown)] text-xl font-medium">Loading courses...</p>
         )}
       </div>
 
-      <button className='group px-8 py-3 border border-[var(--neon-blue)] text-white rounded-full text-lg font-light flex items-center gap-3 transition-all duration-300 hover:bg-[var(--neon-blue)] hover:text-black hover:shadow-[0_0_30px_rgba(0,243,255,0.4)]' onClick={() => navigate("/allcourses")}>
-        View all Courses <SiViaplay className='w-6 h-6 transition-transform group-hover:scale-110' />
+      <button
+        className='group px-8 py-3.5 bg-[#3E5F44] hover:bg-[#2e4733] text-white rounded-full text-base font-bold flex items-center gap-3 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer'
+        onClick={() => navigate("/allcourses")}
+      >
+        <span>View all Courses</span>
+        <SiViaplay className='w-5 h-5 transition-transform group-hover:scale-110' />
       </button>
     </div>
   )

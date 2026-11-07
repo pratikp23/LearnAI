@@ -5,7 +5,8 @@ import Mistake from "../models/mistakeModel.js";
 import fs from 'fs';
 dotenv.config();
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent";
+// const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
 const callGemini = async (prompt) => {
     return callGeminiMultimodal(prompt);

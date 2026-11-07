@@ -13,12 +13,12 @@ function ReviewPage() {
   }, [allReview])
 
   return (
-    <div className='flex items-center justify-center flex-col py-20 w-full bg-transparent'>
-      <div className="text-center mb-16 px-4">
-        <h1 className='md:text-6xl text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--neon-blue)] via-white to-[var(--neon-purple)] mb-4 drop-shadow-[0_0_15px_rgba(188,19,254,0.3)]'>
+    <div className='flex items-center justify-center flex-col py-16 w-full bg-transparent'>
+      <div className="text-center mb-14 px-4">
+        <h1 className='md:text-5xl text-3xl font-extrabold text-[var(--dark-brown)] mb-4'>
           Real Reviews from Real Learners
         </h1>
-        <p className='lg:w-2/3 md:w-3/4 mx-auto text-lg text-gray-400 font-light leading-relaxed'>
+        <p className='lg:w-2/3 md:w-3/4 mx-auto text-lg text-[var(--body-text)] leading-relaxed opacity-85'>
           Discover how our Virtual Courses are transforming learning experiences through real feedback from students and professionals worldwide.
         </p>
       </div>
@@ -29,7 +29,7 @@ function ReviewPage() {
             <ReviewCard key={index} rating={item.rating} image={item.user.photoUrl} text={item.comment} name={item.user.name} role={item.user.role} />
           ))
         ) : (
-          <p className="text-gray-500 text-xl italic">No reviews yet. Be the first to share your experience!</p>
+          <p className="text-[var(--dark-brown)] text-xl italic font-medium">No reviews yet. Be the first to share your experience!</p>
         )}
       </div>
     </div>
