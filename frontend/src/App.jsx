@@ -44,49 +44,53 @@ export const serverUrl =
     : "https://learning-management-system-backend-z7kv.onrender.com");
 
 function App() {
-
-  let { userData } = useSelector(state => state.user)
+  const { userData } = useSelector(state => state.user)
 
   getCurrentUser()
   getCouseData()
   getCreatorCourseData()
   getAllReviews()
+
   return (
     <>
-
       <ToastContainer />
       <ScrollToTop />
       <Routes>
+        {/* Public Routes */}
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={!userData ? <SignUp /> : <Navigate to={"/"} />} />
-        <Route path='/profile' element={userData ? <Profile /> : <Navigate to={"/signup"} />} />
-        <Route path='/allcourses' element={<PrivateRoute><AllCourses /></PrivateRoute>} />
-        <Route path='/viewcourse/:courseId' element={userData ? <ViewCourse /> : <Navigate to={"/signup"} />} />
-        <Route path='/editprofile' element={userData ? <EditProfile /> : <Navigate to={"/signup"} />} />
-        <Route path='/enrolledcourses' element={userData ? <EnrolledCourse /> : <Navigate to={"/signup"} />} />
-        <Route path='/viewlecture/:courseId' element={userData ? <ViewLecture /> : <Navigate to={"/signup"} />} />
-        <Route path='/searchwithai' element={userData ? <SearchWithAi /> : <Navigate to={"/signup"} />} />
-        <Route path='/roadmap' element={userData ? <RoadmapGenerator /> : <Navigate to={"/signup"} />} />
-        <Route path='/ai-hub' element={userData ? <AIHub /> : <Navigate to={"/signup"} />} />
-        <Route path='/interview-simulator' element={userData ? <InterviewSimulator /> : <Navigate to={"/signup"} />} />
-        <Route path='/study-planner' element={userData ? <StudyPlanner /> : <Navigate to={"/signup"} />} />
-        <Route path='/quiz' element={userData ? <AIQuiz /> : <Navigate to={"/signup"} />} />
-        <Route path='/error-tracker' element={userData ? <MistakeEngine /> : <Navigate to={"/signup"} />} />
-        <Route path='/resume-analyzer' element={userData ? <ResumeAnalyzer /> : <Navigate to={"/signup"} />} />
-
-        <Route path='/dashboard' element={userData?.role === "educator" ? <Dashboard /> : <Navigate to={"/signup"} />} />
-        <Route path='/courses' element={userData?.role === "educator" ? <Courses /> : <Navigate to={"/signup"} />} />
-        <Route path='/addcourses/:courseId' element={userData?.role === "educator" ? <AddCourses /> : <Navigate to={"/signup"} />} />
-        <Route path='/createcourses' element={userData?.role === "educator" ? <CreateCourse /> : <Navigate to={"/signup"} />} />
-        <Route path='/createlecture/:courseId' element={userData?.role === "educator" ? <CreateLecture /> : <Navigate to={"/signup"} />} />
-        <Route path='/editlecture/:courseId/:lectureId' element={userData?.role === "educator" ? <EditLecture /> : <Navigate to={"/signup"} />} />
+        <Route path='/login' element={!userData ? <Login /> : <Navigate to="/" replace />} />
+        <Route path='/signup' element={!userData ? <SignUp /> : <Navigate to="/" replace />} />
         <Route path='/forgotpassword' element={<ForgotPassword />} />
         <Route path='/login-magic' element={<LoginMagic />} />
+
+        {/* Student & Authenticated Routes */}
+        <Route path='/allcourses' element={<PrivateRoute><AllCourses /></PrivateRoute>} />
+        <Route path='/profile' element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path='/editprofile' element={<PrivateRoute><EditProfile /></PrivateRoute>} />
+        <Route path='/viewcourse/:courseId' element={<PrivateRoute><ViewCourse /></PrivateRoute>} />
+        <Route path='/enrolledcourses' element={<PrivateRoute><EnrolledCourse /></PrivateRoute>} />
+        <Route path='/viewlecture/:courseId' element={<PrivateRoute><ViewLecture /></PrivateRoute>} />
+        <Route path='/searchwithai' element={<PrivateRoute><SearchWithAi /></PrivateRoute>} />
+        <Route path='/roadmap' element={<PrivateRoute><RoadmapGenerator /></PrivateRoute>} />
+        <Route path='/ai-hub' element={<PrivateRoute><AIHub /></PrivateRoute>} />
+        <Route path='/interview-simulator' element={<PrivateRoute><InterviewSimulator /></PrivateRoute>} />
+        <Route path='/study-planner' element={<PrivateRoute><StudyPlanner /></PrivateRoute>} />
+        <Route path='/quiz' element={<PrivateRoute><AIQuiz /></PrivateRoute>} />
+        <Route path='/error-tracker' element={<PrivateRoute><MistakeEngine /></PrivateRoute>} />
+        <Route path='/resume-analyzer' element={<PrivateRoute><ResumeAnalyzer /></PrivateRoute>} />
+
+        {/* Educator Only Routes */}
+        <Route path='/dashboard' element={<PrivateRoute educatorOnly><Dashboard /></PrivateRoute>} />
+        <Route path='/courses' element={<PrivateRoute educatorOnly><Courses /></PrivateRoute>} />
+        <Route path='/addcourses/:courseId' element={<PrivateRoute educatorOnly><AddCourses /></PrivateRoute>} />
+        <Route path='/createcourses' element={<PrivateRoute educatorOnly><CreateCourse /></PrivateRoute>} />
+        <Route path='/createlecture/:courseId' element={<PrivateRoute educatorOnly><CreateLecture /></PrivateRoute>} />
+        <Route path='/editlecture/:courseId/:lectureId' element={<PrivateRoute educatorOnly><EditLecture /></PrivateRoute>} />
+
+        {/* Catch-all */}
+        <Route path='*' element={<Navigate to="/" replace />} />
       </Routes>
-
     </>
-
   )
 }
 
