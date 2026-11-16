@@ -19,7 +19,12 @@ const getCurrentUser = () => {
             }
 
             try {
-                const result = await axios.get(serverUrl + "/api/user/currentuser", { withCredentials: true })
+                const token = localStorage.getItem("token")
+                const headers = token ? { Authorization: `Bearer ${token}` } : {}
+                const result = await axios.get(serverUrl + "/api/user/currentuser", { 
+                    headers,
+                    withCredentials: true 
+                })
                 dispatch(setUserData(result.data))
             } catch (error) {
                 console.log("getCurrentUser error:", error)

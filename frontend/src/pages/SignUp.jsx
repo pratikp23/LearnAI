@@ -26,6 +26,7 @@ function SignUp() {
     const navigate = useNavigate()
     let [show,setShow] = useState(false)
     const [loading,setLoading]= useState(false)
+    const [googleLoading, setGoogleLoading] = useState(false)
     let dispatch = useDispatch()
 
     useEffect(() => {
@@ -135,26 +136,34 @@ function SignUp() {
     };
 
     const googleSignUp = async () => {
+        if (googleLoading) return;
+        setGoogleLoading(true);
         try {
-            const response = await signInWithPopup(getFirebaseAuth(),provider)
-            let user = response.user
-            let name = user.displayName;
-            let email = user.email
+            const auth = getFirebaseAuth();
+            const response = await signInWithPopup(auth, provider);
+            const user = response.user;
+            const name = user.displayName || user.email?.split("@")[0] || "User";
+            const email = user.email;
+            const photoUrl = user.photoURL || "";
             
-            const result = await axios.post(serverUrl + "/api/auth/googlesignup" , {name , email ,role}
-                , {withCredentials:true}
-            )
+            const result = await axios.post(
+                serverUrl + "/api/auth/googlesignup",
+                { name, email, photoUrl, role },
+                { withCredentials: true }
+            );
             if (result.data?.token) {
                 localStorage.setItem("token", result.data.token);
             }
-            dispatch(setUserData(result.data))
-            navigate("/")
-            toast.success("SignUp Successfully")
+            dispatch(setUserData(result.data));
+            navigate("/");
+            toast.success("Account created and logged in with Google!");
         } catch (error) {
-            console.log(error)
+            console.error("Google sign up error:", error);
             toast.error(getErrorMessage(error, "Google sign up failed. Please try again."));
+        } finally {
+            setGoogleLoading(false);
         }
-    }
+    };
 
     return (
         <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#FAFAFC] relative overflow-hidden">
@@ -268,10 +277,21 @@ function SignUp() {
                         <div className="flex-1 h-[1px] bg-[#EEEEF2]"></div>
                     </div>
                     
-                    <div className="w-[85%] h-[46px] border border-[#EEEEF2] hover:bg-gray-50 rounded-xl flex items-center justify-center gap-2 cursor-pointer font-bold text-[#171717] transition-all shadow-sm" onClick={googleSignUp}>
-                        <img src={google} alt="google" className="w-5" />
-                        <span className="text-sm">Continue with Google</span>
-                    </div>
+                    <button
+                        type="button"
+                        disabled={googleLoading || loading}
+                        className="w-[85%] h-[46px] border border-[#EEEEF2] hover:bg-gray-50 rounded-xl flex items-center justify-center gap-2 cursor-pointer font-bold text-[#171717] transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                        onClick={googleSignUp}
+                    >
+                        {googleLoading ? (
+                            <ClipLoader size={18} color="#5B21B6" />
+                        ) : (
+                            <>
+                                <img src={google} alt="google" className="w-5" />
+                                <span className="text-sm">Continue with Google</span>
+                            </>
+                        )}
+                    </button>
                     
                     <div className="text-xs text-[#666666] font-medium">
                         Already have an account? <span className="underline text-[#5B21B6] font-bold cursor-pointer hover:text-[#4C1D95]" onClick={()=>navigate("/login")}>Log in</span>

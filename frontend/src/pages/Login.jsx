@@ -27,6 +27,7 @@ function Login() {
   const [role, setRole] = useState("student");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   useEffect(() => {
     if (location.state?.email) {
@@ -60,17 +61,20 @@ function Login() {
   };
 
   const googleLogin = async () => {
+    if (googleLoading) return;
+    setGoogleLoading(true);
     try {
-      const response = await signInWithPopup(getFirebaseAuth(), provider);
+      const auth = getFirebaseAuth();
+      const response = await signInWithPopup(auth, provider);
       const user = response.user;
 
       const result = await axios.post(
         serverUrl + "/api/auth/googlesignup",
         {
-          name: user.displayName,
+          name: user.displayName || user.email?.split("@")[0] || "User",
           email: user.email,
+          photoUrl: user.photoURL || "",
           role,
-          isLogin: true,
         },
         { withCredentials: true }
       );
@@ -82,10 +86,12 @@ function Login() {
       const dest = location.state?.from?.pathname || "/";
       navigate(dest);
 
-      toast.success("Login Successfully");
+      toast.success("Logged in successfully with Google!");
     } catch (error) {
-      console.log(error);
+      console.error("Google sign-in error:", error);
       toast.error(getErrorMessage(error, "Google sign-in failed. Please try again."));
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -187,13 +193,21 @@ function Login() {
           </span>
 
           {/* GOOGLE */}
-          <div
-            className="w-[85%] h-[46px] border border-[#EEEEF2] hover:bg-gray-50 rounded-xl flex items-center justify-center gap-2 cursor-pointer font-bold text-[#171717] transition-all shadow-sm"
+          <button
+            type="button"
+            disabled={googleLoading || loading}
+            className="w-[85%] h-[46px] border border-[#EEEEF2] hover:bg-gray-50 rounded-xl flex items-center justify-center gap-2 cursor-pointer font-bold text-[#171717] transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={googleLogin}
           >
-            <img src={google} alt="google" className="w-5" />
-            <span className="text-sm">Continue with Google</span>
-          </div>
+            {googleLoading ? (
+              <ClipLoader size={18} color="#5B21B6" />
+            ) : (
+              <>
+                <img src={google} alt="google" className="w-5" />
+                <span className="text-sm">Continue with Google</span>
+              </>
+            )}
+          </button>
 
           <div className="text-xs text-[#666666] font-medium">
             Don't have an account?{" "}

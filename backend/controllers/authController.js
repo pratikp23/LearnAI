@@ -134,34 +134,54 @@ export const logOut = async(req,res)=>{
 }
 
 
-export const googleSignup = async (req,res) => {
+export const googleSignup = async (req, res) => {
     try {
-        const {name , email , role, isLogin} = req.body
-        let user= await User.findOne({email})
-        if(!user){
-            if (isLogin) {
-                return res.status(400).json({message:"User not registered, please register first"})
-            }
-            user = await User.create({
-            name , email ,role
-        })
-        }
-        let token =await genToken(user._id)
-        res.cookie("token",token,{
-            httpOnly:true,
-            secure:true,
-            sameSite:"none",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
-        return res.status(200).json(sanitizeUser(user, token))
+        const { name, email, role, photoUrl } = req.body;
 
+        if (!email || typeof email !== 'string') {
+            return res.status(400).json({ message: "Valid email address is required for Google authentication." });
+        }
+
+        const normalizedEmail = email.toLowerCase().trim();
+        const userName = (name && typeof name === 'string' && name.trim()) 
+            ? name.trim() 
+            : normalizedEmail.split('@')[0];
+
+        let user = await User.findOne({ email: normalizedEmail });
+
+        if (!user) {
+            // Automatically register new user seamlessly via Google OAuth
+            user = await User.create({
+                name: userName,
+                email: normalizedEmail,
+                role: (role === "educator") ? "educator" : "student",
+                photoUrl: photoUrl || "",
+                isOtpVerifed: true // Google accounts have already verified email
+            });
+        } else {
+            // If user already exists and has no photo, update with Google avatar
+            if (!user.photoUrl && photoUrl) {
+                user.photoUrl = photoUrl;
+                await user.save();
+            }
+        }
+
+        const token = await genToken(user._id);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        return res.status(200).json(sanitizeUser(user, token));
 
     } catch (error) {
-        console.log(error)
-         return res.status(500).json({message:"Google authentication encountered an issue. Please try again."})
+        console.error("Google authentication error:", error);
+        return res.status(500).json({ message: "Google authentication encountered an issue. Please try again." });
     }
-    
-}
+};
 
 export const sendOtp = async (req,res) => {
     try {
